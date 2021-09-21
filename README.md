@@ -10,6 +10,25 @@ Se persiguen varios objetivos con este repositorio:
 
 2. Conocer e interactuar con el proceso del control de versiones de scripts de un código con el sistema Git-Github.
 
+# Organización
+
+Los scripts R asociados a cada tema son:
+
+- Tema 1: "Multicriterio"
+    
+    + "teoriadecision_funciones_multicriterio.R" 
+    + "teoriadecision_funciones_multicriterio_diagram.R" 
+    + "teoriadecision_funciones_multicriterio_utiles.R" 
+
+- Tema 2: "Incertidumbre"
+    
+    + "teoriadecision_funciones_incertidumbre.R" 
+
+- Tema 4: "Bayesiana"
+    
+    + "teoriadecision_funciones_bayesiana.R" 
+
+
 # Qué hacer si se detectan errores
 
 Varios métodos:
