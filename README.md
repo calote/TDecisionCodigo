@@ -14,17 +14,17 @@ Se persiguen varios objetivos con este repositorio:
 
 Los scripts R asociados a cada tema son:
 
-- Tema 1: "Multicriterio"
+- **Tema 1: "Incertidumbre"**
+    
+    + "teoriadecision_funciones_incertidumbre.R" 
+
+- **Tema 2: "Multicriterio"**
     
     + "teoriadecision_funciones_multicriterio.R" 
     + "teoriadecision_funciones_multicriterio_diagram.R" 
     + "teoriadecision_funciones_multicriterio_utiles.R" 
 
-- Tema 2: "Incertidumbre"
-    
-    + "teoriadecision_funciones_incertidumbre.R" 
-
-- Tema 4: "Bayesiana"
+- **Tema 4: "Bayesiana"**
     
     + "teoriadecision_funciones_bayesiana.R" 
 
