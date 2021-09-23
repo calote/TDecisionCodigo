@@ -1,4 +1,4 @@
-# Introducción 
+# Introducción (esto es lo hemos cambiado)
 
 
 En este repositorio **"TDecisionCodigo"** se mantendrán actualizados todos los scripts R que se usan para la asignatura "Teoría de la Decisión" del Grado en Estadística de la Universidad de Sevilla.
