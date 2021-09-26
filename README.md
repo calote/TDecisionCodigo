@@ -1,4 +1,4 @@
-# Introducción (esto es lo hemos cambiado)
+# Introducción
 
 
 En este repositorio **"TDecisionCodigo"** se mantendrán actualizados todos los scripts R que se usan para la asignatura "Teoría de la Decisión" del Grado en Estadística de la Universidad de Sevilla.
@@ -33,7 +33,7 @@ Los scripts R asociados a cada tema son:
 
 Varios métodos:
 
-- Crear un "Issues" específicando dónde se ha encontrado la errata.
+- Crear un "Issues" ("propuesta") específicando dónde se ha encontrado la errata.
 
-- Crear un "Pull requests" (PR). 
+- Crear un "Pull requests" (PR) ("solicitud de cambios"). 
 
