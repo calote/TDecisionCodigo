@@ -2,12 +2,12 @@
 ## Funciones útiles ----
 
 crea.tablaX = function(vector_matporfilas,numalternativas=3,numestados=4) {
-  
+
   X = matrix(vector_matporfilas,nrow=numalternativas,ncol=numestados,byrow=TRUE)
   colnames(X) = paste('e',1:numestados,sep='');
   rownames(X) = paste('d',1:numalternativas,sep='');
   return(X);
-  
+
 }
 
 # Introducimos los datos en R en forma de matriz:
@@ -25,14 +25,14 @@ which.min.general = function(vector) {
   minimo = min(vector);
   res = which(vector == minimo);
   return(res);
-  
+
 }
 
 which.max.general = function(vector) {
   maximo = max(vector);
   res = which(vector == maximo);
   return(res);
-  
+
 }
 
 
@@ -46,23 +46,23 @@ distanciaEuclidea = function(pto1,pto2) {
 
 
 criterio.tablaX.ejemplos = function(cual=1) {
-  
+
   if (cual==2) { ## cual == 2  ## desfav.
     X = crea.tablaX(c(2,12,-3,5,5,-1,0,10,-2),numalternativas = 3,numestados = 3)
   } else if (cual==3) { ## cual == 3  ## desfav.
     X = crea.tablaX(c(125,120,156,60,130,80),numalternativas = 3,numestados = 2)
   } else {  ## cual == 1
     X = crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0),numalternativas = 4,numestados = 3)
-  }  
+  }
   return(X);
-  
+
 }
 
 ## Funciones Métodos de Decisión bajo Incertidumbre ----
 
 ## Criterio de Wald o Pesimista
 criterio.Wald = function(tablaX,favorable=TRUE) {
-  
+
   X = tablaX;
   if (favorable) {
     AltW = apply(X,MARGIN=1,min);
@@ -84,10 +84,10 @@ criterio.Wald = function(tablaX,favorable=TRUE) {
   resultados$ValorAlternativas = AltW;
   resultados$ValorOptimo = Wald;
   resultados$AlternativaOptima = Alt_Wald;
-  
+
   return(resultados);
-  
-  
+
+
 }
 
 
@@ -95,19 +95,19 @@ criterio.Wald = function(tablaX,favorable=TRUE) {
 
 
 criterio.Optimista = function(tablaX,favorable=TRUE) {
-  
+
   X = tablaX;
   if (favorable) {
     AltM = apply(X,MARGIN=1,max);
     ##AltM
     Maximax = max(AltM);
-    Alt_Maximax = which.max.general(AltM);  
+    Alt_Maximax = which.max.general(AltM);
     metodo = 'favorable';
   } else {
     AltM = apply(X,MARGIN=1,min);
     ##AltM
     Maximax = min(AltM);
-    Alt_Maximax = which.min.general(AltM);  
+    Alt_Maximax = which.min.general(AltM);
     metodo = 'desfavorable';
   }
   resultados = list();
@@ -117,10 +117,10 @@ criterio.Optimista = function(tablaX,favorable=TRUE) {
   resultados$ValorAlternativas = AltM;
   resultados$ValorOptimo = Maximax;
   resultados$AlternativaOptima = Alt_Maximax;
-  
+
   return(resultados);
-  
-  
+
+
 }
 
 
@@ -132,14 +132,14 @@ criterio.Hurwicz = function(tablaX,alfa=0.3,favorable=TRUE) {
   if (favorable) {
     Altmin = apply(X,MARGIN=1,min);
     Altmax= apply(X,MARGIN=1,max);
-    AltH = alfa * Altmax + (1-alfa) * Altmin 
+    AltH = alfa * Altmax + (1-alfa) * Altmin
     Hurwicz = max(AltH)
     Alt_Hurwicz = which.max.general(AltH)
     metodo = 'favorable';
   } else {
     Altmin = apply(X,MARGIN=1,min);
     Altmax= apply(X,MARGIN=1,max);
-    AltH = (1-alfa) * Altmax + alfa * Altmin 
+    AltH = (1-alfa) * Altmax + alfa * Altmin
     Hurwicz = min(AltH)
     Alt_Hurwicz = which.min.general(AltH)
     metodo = 'desfavorable';
@@ -154,9 +154,9 @@ criterio.Hurwicz = function(tablaX,alfa=0.3,favorable=TRUE) {
   resultados$AlternativaOptima = Alt_Hurwicz;
 
   return(resultados);
-  
-  
-  
+
+
+
 }
 
 ## factor de optimismo   (alfab * "lo mejor" Altmax en favor. y Altmin en desf.)
@@ -170,12 +170,12 @@ criterio.Hurwicz.General = function(tablaX,alfa=0.3,favorable=TRUE) {
     if (alfa<=1) {
       valfa = c(alfa);
     } else {
-      valfa = seq(from=0,to=1,by=(1/alfa)); ## alfa: 100, 200, 
+      valfa = seq(from=0,to=1,by=(1/alfa)); ## alfa: 100, 200,
     }
     vHurwicz = rep(0,length(valfa))
     Alt_vHurwicz = rep(0,length(valfa))
     for (i in 1:length(valfa)) {
-      alfab = valfa[i];  
+      alfab = valfa[i];
       vAltH = alfab * Altmax + (1-alfab) * Altmin;
       vHurwicz[i] = max(vAltH);
       Alt_vHurwicz[i] = which.max(vAltH);
@@ -188,17 +188,17 @@ criterio.Hurwicz.General = function(tablaX,alfa=0.3,favorable=TRUE) {
     if (alfa<=1) {
       valfa = c(alfa);
     } else {
-      valfa = seq(from=0,to=1,by=(1/alfa)); ## alfa: 100, 200, 
+      valfa = seq(from=0,to=1,by=(1/alfa)); ## alfa: 100, 200,
     }
     vHurwicz = rep(0,length(valfa))
     Alt_vHurwicz = rep(0,length(valfa))
     for (i in 1:length(valfa)) {
-      alfab = valfa[i];  
+      alfab = valfa[i];
       vAltH = (1-alfab) * Altmax + alfab * Altmin;
       vHurwicz[i] = min(vAltH);
       Alt_vHurwicz[i] = which.min(vAltH);
       Alt_vHurwicz_g = which.min.general(vAltH);
-      
+
     }
     metodo = 'desfavorable';
   }
@@ -213,12 +213,12 @@ criterio.Hurwicz.General = function(tablaX,alfa=0.3,favorable=TRUE) {
     resultados$AlternativaOptima = Alt_vHurwicz_g;
   } else {
     resultados$AlternativaOptima = Alt_vHurwicz;
-  }  
-  
+  }
+
   return(resultados);
-  
-  
-  
+
+
+
 }
 
 
@@ -231,23 +231,23 @@ dibuja.criterio.Hurwicz = function(tablaX,favorable=TRUE) {
   vHurwicz = rep(0,length(valfa));
   Alt_vHurwicz = rep(0,length(valfa));
   for (i in 1:length(valfa)) {
-    alfab = valfa[i];  
-    if (favorable) { 
-      vAltH = alfab * Altmax + (1-alfab) * Altmin; 
+    alfab = valfa[i];
+    if (favorable) {
+      vAltH = alfab * Altmax + (1-alfab) * Altmin;
       vHurwicz[i] = max(vAltH)
     } else {
-      vAltH = alfab * Altmin + (1-alfab) * Altmax; 
-      vHurwicz[i] = min(vAltH)      
+      vAltH = alfab * Altmin + (1-alfab) * Altmax;
+      vHurwicz[i] = min(vAltH)
     }
-    
+
   }
-  
+
   x0=0;x1=1;
   y0 = min(Altmin);
   y1 = max(Altmax);
   rg = y1-y0;
   y0=y0-0.1*rg;y1=y1+0.1*rg;
-  plot(c(x0,x1), c(y0,y1), type = "n", xlab = "alpha", ylab = "Criterio Hurwicz"); 
+  plot(c(x0,x1), c(y0,y1), type = "n", xlab = "alpha", ylab = "Criterio Hurwicz");
   nn = length(Altmin);
   colores = rainbow(nn);
   abline(v=0);
@@ -263,7 +263,7 @@ dibuja.criterio.Hurwicz = function(tablaX,favorable=TRUE) {
       aa = Altmax[i];
       bb = (Altmin[i] - Altmax[i]);
       abline(a=aa,b=bb,col=colores[i]);
-    }        
+    }
   }
   lines(valfa,vHurwicz,col=rainbow(nn+1)[nn+1],lty=3,lwd=3)
   if (favorable) {
@@ -271,9 +271,9 @@ dibuja.criterio.Hurwicz = function(tablaX,favorable=TRUE) {
     title("Criterio de Hurwicz (favorable - línea discontinua)")
   } else {
     legend("topright",legend=rownames(X),fill=colores,inset=0.05)
-    title("Criterio de Hurwicz (desfavorable - línea discontinua)")    
+    title("Criterio de Hurwicz (desfavorable - línea discontinua)")
   }
-  
+
 }
 
 
@@ -283,7 +283,7 @@ dibuja.criterio.Hurwicz = function(tablaX,favorable=TRUE) {
 ## Savage
 
 criterio.Savage = function(tablaX,favorable=TRUE) {
-  
+
   X = tablaX;
   if (favorable) {
     Mejores = apply(X,MARGIN=2,max);
@@ -316,26 +316,26 @@ criterio.Savage = function(tablaX,favorable=TRUE) {
   resultados$ValorAlternativas = AltWS;
   resultados$ValorOptimo = Savage;
   resultados$AlternativaOptima = Alt_Savage;
-  
+
   return(resultados);
-  
-  
+
+
 }
 
 
 
 criterio.Laplace = function(tablaX,favorable=TRUE) {
-  
+
   X = tablaX;
   if (favorable) {
     AltL = apply(X,MARGIN=1,mean);
     Laplace = max(AltL) # favorable
-    Alt_Laplace = which.max.general(AltL)  
+    Alt_Laplace = which.max.general(AltL)
     metodo = 'favorable';
   } else {
     AltL = apply(X,MARGIN=1,mean);
     Laplace = min(AltL) # desfavorable
-    Alt_Laplace = which.min.general(AltL)  
+    Alt_Laplace = which.min.general(AltL)
     metodo = 'desfavorable';
   }
   resultados = list();
@@ -345,15 +345,15 @@ criterio.Laplace = function(tablaX,favorable=TRUE) {
   resultados$ValorAlternativas = AltL;
   resultados$ValorOptimo = Laplace;
   resultados$AlternativaOptima = Alt_Laplace;
-  
+
   return(resultados);
-  
+
 }
 
 
 
 criterio.PuntoIdeal = function(tablaX,favorable=TRUE) {
-  
+
   X = tablaX;
   if (favorable) {
     MejoresPT = apply(X,MARGIN=2,max); # favorable
@@ -362,12 +362,14 @@ criterio.PuntoIdeal = function(tablaX,favorable=TRUE) {
       AltPT[i] = distanciaEuclidea(MejoresPT,X[i,])
     }
     ##AltPT
+    names(AltPT) = rownames(tablaX)
     PuntoIdeal = min(AltPT);
     Alt_PuntoIdeal = which.min.general(AltPT);
     metodo = 'favorable';
   } else {
     MejoresPT = apply(X,MARGIN=2,min); # desfavorable
     AltPT = rep(0,dim(X)[1])
+    names(AltPT) = rownames(tablaX)
     for (i in 1:dim(X)[1]) {
       AltPT[i] = distanciaEuclidea(MejoresPT,X[i,])
     }
@@ -384,62 +386,62 @@ criterio.PuntoIdeal = function(tablaX,favorable=TRUE) {
   resultados$ValorAlternativas = AltPT;
   resultados$ValorOptimo = PuntoIdeal;
   resultados$AlternativaOptima = Alt_PuntoIdeal;
-  
+
   return(resultados);
-  
+
 }
 
 criterio.Todos = function(tablaX,alfa=0.3,favorable=TRUE) {
-  
+
   cri01 = criterio.Wald(tablaX,favorable);
   cri02 = criterio.Optimista(tablaX,favorable);
   cri03 = criterio.Hurwicz(tablaX,alfa,favorable);
   cri04 = criterio.Savage(tablaX,favorable);
   cri05 = criterio.Laplace(tablaX,favorable);
   cri06 = criterio.PuntoIdeal(tablaX,favorable);
-  
-  numestados = ncol(tablaX)  
+
+  numestados = ncol(tablaX)
   numalterna = nrow(tablaX)
-  
+
   resultado = cbind(tablaX,cri01$ValorAlternativas,cri02$ValorAlternativas,
                     cri03$ValorAlternativas,cri04$ValorAlternativas,
                     cri05$ValorAlternativas,cri06$ValorAlternativas);
-  
+
   decopt = c(rep(NA,numestados),cri01$AlternativaOptima[1],
              cri02$AlternativaOptima[1],cri03$AlternativaOptima[1],
              cri04$AlternativaOptima[1],cri05$AlternativaOptima[1],
              cri06$AlternativaOptima[1]);
-  
+
   resultado = rbind(resultado,decopt);
-  
+
   colnames(resultado)[numestados+1] = cri01$criterio;
   colnames(resultado)[numestados+2] = cri02$criterio;
   colnames(resultado)[numestados+3] = cri03$criterio;
   colnames(resultado)[numestados+4] = cri04$criterio;
   colnames(resultado)[numestados+5] = cri05$criterio;
   colnames(resultado)[numestados+6] = cri06$criterio;
-  
+
   if (favorable) {
     rownames(resultado)[numalterna+1] = 'iAlt.Opt (fav.)';
-  } else {    
-    rownames(resultado)[numalterna+1] = 'iAlt.Opt (Desfav.)';  
+  } else {
+    rownames(resultado)[numalterna+1] = 'iAlt.Opt (Desfav.)';
   }
-  
+
   ## nuevo
   resultado = as.data.frame(resultado)
   resultado = format(resultado,digits=4)
-  decopt = c(rep(NA,numestados),
-             paste0("d",cri01$AlternativaOptima,collapse = ","),
-             paste0("d",cri02$AlternativaOptima,collapse = ","),
-             paste0("d",cri03$AlternativaOptima,collapse = ","),
-             paste0("d",cri04$AlternativaOptima,collapse = ","),
-             paste0("d",cri05$AlternativaOptima,collapse = ","),
-             paste0("d",cri06$AlternativaOptima,collapse = ","));
+  decopt = c(rep('--',numestados),
+             paste0(names(cri01$AlternativaOptima),collapse = ","),
+             paste0(names(cri02$AlternativaOptima),collapse = ","),
+             paste0(names(cri03$AlternativaOptima),collapse = ","),
+             paste0(names(cri04$AlternativaOptima),collapse = ","),
+             paste0(names(cri05$AlternativaOptima),collapse = ","),
+             paste0(names(cri06$AlternativaOptima),collapse = ","));
   resultado[nrow(resultado),] = decopt
   ## fin nuevo
-  
+
   return(resultado)
-  
+
 }
 
 
