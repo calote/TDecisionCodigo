@@ -6,12 +6,12 @@ library(stringr)
 # Definición de funciones ----------------------------
 
 # #Genera Criterio
-# func_genera_Criterio(nalt,Minimo=0,Maximo=1000) 
+# func_genera_Criterio(nalt,Minimo=0,Maximo=1000)
 # #Genera Matriz Valoraciones desde Criterio
-# func_conv_a_01_Criterio(vc_Val,Desig=TRUE)  
+# func_conv_a_01_Criterio(vc_Val,Desig=TRUE)
 # #
 # #Genera MValoraciones desde número alternativas
-# func_genera_Mvaloraciones(nalt,Minimo=0,Maximo=1000,Desig=TRUE) 
+# func_genera_Mvaloraciones(nalt,Minimo=0,Maximo=1000,Desig=TRUE)
 # #
 # #Genera Matriz de Criterios
 # func_genera_MatrizCriterios(nalt,ncri,vMin=rep(0,ncri),vMax=rep(1000,ncri))
@@ -31,7 +31,7 @@ library(stringr)
   # qgraph(A1)
   # qgraph(A1[cuales,cuales])
   #qgraph(A1[-cuales,-cuales])
-  
+
 
 # Inicio definición de funciones ---------------------
 
@@ -56,8 +56,8 @@ func_conv_a_01_Criterio = function(vc_Val,Desig=TRUE) {
         } else {
           mSal[i1,i2] = 0
         }
-        
-      }  
+
+      }
     }
   }
   return(mSal)
@@ -93,7 +93,7 @@ func_genera_MatrizCriterios = function(nalt,ncri,vMin=rep(0,ncri),vMax=rep(1000,
   }
   colnames(VCri) = paste0("C",1:ncol(VCri))
   rownames(VCri) = paste0("a",1:nrow(VCri))
-  
+
   return(VCri)
 }
 
@@ -131,19 +131,19 @@ func_comprueba_transitiva = function(A,i,j,k) {
 
 
 func_comprueba_transitiva_MValoraciones = function(A1) {
-  
+
   for (i in 1:ncol(A1)) {
     for (j in 1:ncol(A1)) {
       if (j!=i) {
         for (k in 1:ncol(A1)) {
           if ((j!=k) & (k!=i)) {
             if (!func_comprueba_transitiva(A1,i,j,k)) {
-              
+
               #stop(i,j,k,": no cumplen transitiva")
               message(i,j,k,": no cumplen transitiva")
               return(FALSE)
             }
-          }  
+          }
         }
       }
     }
@@ -175,8 +175,8 @@ func_ELECTRE_malts_T = function(array1) {
             msal[i,j] = as.character(k)
           } else {
             msal[i,j] = paste(msal[i,j],k,sep=",")
-          }    
-        } 
+          }
+        }
       }
     }
   }
@@ -185,15 +185,15 @@ func_ELECTRE_malts_T = function(array1) {
 
 
 func_ELECTRE_resMIndices = function(res_electre) {
-  
+
   mi1 = func_ELECTRE_malts_T(res_electre$Imas)
   #mi1
   mi2 = func_ELECTRE_malts_T(res_electre$Iigual)
   #mi2
   mi3 = func_ELECTRE_malts_T(res_electre$Imenos)
   #mi3
-  
-  
+
+
   for (i in 1:nrow(mi1)) {
     mf = rbind(mi1[i,],mi2[i,],mi3[i,])
     if (i==1) {
@@ -204,33 +204,33 @@ func_ELECTRE_resMIndices = function(res_electre) {
   }
   msal = as.data.frame(msal)
   colnames(msal) = paste0("A",1:ncol(msal))
-  
+
   msal$Inds = rep(c("I+","I=","I-"),nrow(msal) %/% 3)
   msal = msal[,c(ncol(msal),1:(ncol(msal)-1))]
-  
+
   msal$Alts = rep(paste0("A",1:(ncol(msal)-1)),each=3)
   msal = msal[,c(ncol(msal),1:(ncol(msal)-1))]
   msal0 = msal
-  
-  KE_msal = msal %>% 
-    kable(booktabs=T) %>% 
-    kable_styling() %>% 
+
+  KE_msal = msal %>%
+    kable(booktabs=T) %>%
+    kable_styling() %>%
     row_spec(0,align="c",color="blue")
   #colores = rainbow(3)
   colores = gray(seq(0.5,0.9,length.out = 3),alpha=0.2)
   for (i in 1:3) {
-    KE_msal = KE_msal %>% 
+    KE_msal = KE_msal %>%
       row_spec(seq(i,nrow(msal),by=3),background=colores[i],align="c",bold=T)
   }
-  KE_msal = KE_msal %>% 
-    column_spec(1,background = "white",width = "4em",bold = T,color="blue") %>% 
-    column_spec(2,width = "4em",color="red",bold=T,border_right = T) %>% 
-    column_spec(3:ncol(msal),width="10em") %>% 
-    collapse_rows(columns = 1) %>% 
+  KE_msal = KE_msal %>%
+    column_spec(1,background = "white",width = "4em",bold = T,color="blue") %>%
+    column_spec(2,width = "4em",color="red",bold=T,border_right = T) %>%
+    column_spec(3:ncol(msal),width="10em") %>%
+    collapse_rows(columns = 1) %>%
     footnote(general = "ELECTRE: Conjunto de Índices",general_title = "")
-  
+
   if ( !(knitr::is_html_output() | interactive() ) ) {
-    # KE_msal = KE_msal %>% 
+    # KE_msal = KE_msal %>%
     #   as_image()
   }
 
@@ -243,15 +243,15 @@ func_ELECTRE_resMIndices = function(res_electre) {
 
 
 func_ELECTRE_resTConcordancia = function(res_electre,digitos=4) {
-  
+
   mi1 = res_electre$ind.concordancia
   #mi1
   mi2 = res_electre$ind.concordancia.gorro
   #mi2
   mi3 = res_electre$test.concordancia
   #mi3
-  
-  
+
+
   for (i in 1:nrow(mi1)) {
     mf = rbind(mi1[i,],mi2[i,],mi3[i,])
     if (i==1) {
@@ -263,41 +263,41 @@ func_ELECTRE_resTConcordancia = function(res_electre,digitos=4) {
   msal = round(msal,digits = digitos)
   msal = as.data.frame(msal)
   colnames(msal) = paste0("A",1:ncol(msal))
-  
+
   msal$Inds = rep(c("Ijk","IGjk","TC"),nrow(msal) %/% 3)
   msal = msal[,c(ncol(msal),1:(ncol(msal)-1))]
-  
+
   msal$Alts = rep(paste0("A",1:(ncol(msal)-1)),each=3)
   msal = msal[,c(ncol(msal),1:(ncol(msal)-1))]
   msal0 = msal
-  
+
   filas = seq(3,nrow(msal),by=3)
   msal[filas,3:ncol(msal)] = cell_spec(ifelse(msal[filas,3:ncol(msal)]>=1,"T","F"),
                                    background = ifelse(msal[filas,3:ncol(msal)]>=1,"blue","white"),
                                    color=ifelse(msal[filas,3:ncol(msal)]>=1,"white","black"))
-  
-  KE_msal = msal %>% 
-    kable(booktabs=T,digits = 3,escape = F,format = "html") %>% 
-    kable_styling() %>% 
+
+  KE_msal = msal %>%
+    kable(booktabs=T,digits = 3,escape = F,format = "html") %>%
+    kable_styling() %>%
     row_spec(0,align="c",color="blue")
   #colores = rainbow(3)
   colores = gray(seq(0.5,0.9,length.out = 3),alpha=0.2)
   for (i in 1:3) {
-    KE_msal = KE_msal %>% 
+    KE_msal = KE_msal %>%
       row_spec(seq(i,nrow(msal),by=3),background=colores[i],align="c",bold=T)
   }
-  KE_msal = KE_msal %>% 
-    column_spec(1,background = "white",width = "4em",bold = T,color="blue") %>% 
-    column_spec(2,width = "4em",color="red",bold=T,border_right = T) %>% 
-    column_spec(3:ncol(msal),width="10em") %>% 
-    collapse_rows(columns = 1) %>% 
+  KE_msal = KE_msal %>%
+    column_spec(1,background = "white",width = "4em",bold = T,color="blue") %>%
+    column_spec(2,width = "4em",color="red",bold=T,border_right = T) %>%
+    column_spec(3:ncol(msal),width="10em") %>%
+    collapse_rows(columns = 1) %>%
     footnote(general = "ELECTRE: Test Concordancia",general_title = "")
-  
+
   if ( !(knitr::is_html_output() | interactive() ) ) {
-    # KE_msal = KE_msal %>% 
+    # KE_msal = KE_msal %>%
     #   as_image()
   }
-  
+
   res = list(
     MIndices = msal0,
     KE = KE_msal
@@ -308,7 +308,7 @@ func_ELECTRE_resTConcordancia = function(res_electre,digitos=4) {
 
 
 func_ELECTRE_resTDiscordancia = function(res_electre) {
-  
+
   #res_electre = elec_p2
   s1 = func_ELECTRE_resMIndices(res_electre)
   filas = seq(3,nrow(s1$MIndices),by=3)
@@ -328,7 +328,7 @@ func_ELECTRE_resTDiscordancia = function(res_electre) {
          mf2[i,j] = ""
          mf3[i,j] = TRUE
          next
-       } 
+       }
        if (length(b2l)>1) {
          crit = b2l[1]
          dif0 = md[j,crit] - md[i,crit]
@@ -354,15 +354,15 @@ func_ELECTRE_resTDiscordancia = function(res_electre) {
            mf2[i,j] = paste0(dif0,"(",vd[crit],")")
          }
        }
-       
+
     }
   }
-  
+
   mi1 = mf1
   mi2 = mf2
   mi3 = matrix(as.character(as.numeric(mf3)),nrow(mf3),ncol(mf3))
 
-  
+
   for (i in 1:nrow(mi1)) {
     mf = rbind(mi1[i,],mi2[i,],mi3[i,])
     if (i==1) {
@@ -374,39 +374,39 @@ func_ELECTRE_resTDiscordancia = function(res_electre) {
   #msal = round(msal,digits = digitos)
   msal = as.data.frame(msal,stringsAsFactors = F)
   colnames(msal) = paste0("A",1:ncol(msal))
-  
+
   msal$Inds = rep(c("I-","Djk","TD"),nrow(msal) %/% 3)
   msal = msal[,c(ncol(msal),1:(ncol(msal)-1))]
-  
+
   msal$Alts = rep(paste0("A",1:(ncol(msal)-1)),each=3)
   msal = msal[,c(ncol(msal),1:(ncol(msal)-1))]
   msal0 = msal
-  
+
   filas = seq(3,nrow(msal),by=3)
   msal[filas,3:ncol(msal)] = cell_spec(ifelse(msal[filas,3:ncol(msal)]=="1","T","F"),
                                        background = ifelse(msal[filas,3:ncol(msal)]=="1","blue","white"),
                                        color=ifelse(msal[filas,3:ncol(msal)]=="1","white","black"))
-  
-  KE_msal = msal %>% 
-    kable(booktabs=T,digits = 3,escape = F) %>% 
-    kable_styling() %>% 
+
+  KE_msal = msal %>%
+    kable(booktabs=T,digits = 3,escape = F) %>%
+    kable_styling() %>%
     row_spec(0,align="c",color="blue")
   #colores = rainbow(3)
   colores = gray(seq(0.5,0.9,length.out = 3),alpha=0.2)
   for (i in 1:3) {
-    KE_msal = KE_msal %>% 
+    KE_msal = KE_msal %>%
       row_spec(seq(i,nrow(msal),by=3),background=colores[i],align="c",bold=T)
   }
-  KE_msal = KE_msal %>% 
-    column_spec(1,background = "white",width = "4em",bold = T,color="blue") %>% 
-    column_spec(2,width = "4em",color="red",bold=T,border_right = T) %>% 
-    column_spec(3:ncol(msal),width="10em") %>% 
-    collapse_rows(columns = 1) %>% 
+  KE_msal = KE_msal %>%
+    column_spec(1,background = "white",width = "4em",bold = T,color="blue") %>%
+    column_spec(2,width = "4em",color="red",bold=T,border_right = T) %>%
+    column_spec(3:ncol(msal),width="10em") %>%
+    collapse_rows(columns = 1) %>%
     footnote(general = paste0("ELECTRE: Test Discordancia: ",
                               "vd=(",paste0(vd,collapse=","),")"
-                              ),general_title = "") 
+                              ),general_title = "")
   if ( !(knitr::is_html_output() | interactive() ) ) {
-    # KE_msal = KE_msal %>% 
+    # KE_msal = KE_msal %>%
     #   as_image()
   }
   res = list(
@@ -414,8 +414,8 @@ func_ELECTRE_resTDiscordancia = function(res_electre) {
     KE = KE_msal
   )
   return(res)
-  
-}  
+
+}
 
 
 func_ELECTRE_resTSuperacion = function(res_electre) {
@@ -428,21 +428,21 @@ func_ELECTRE_resTSuperacion = function(res_electre) {
   ms1 = data.matrix(ms1)
   ms2 = s2$MIndices[filas,3:ncol(s2$MIndices)]
   ms2 = sapply(ms2,as.integer)  # mejora para R 4.x.x
-  #ms2 = data.matrix(ms2)  
-  #if (sum(ms2==2)>0) { # data.matrix convierte character a factor y luego numeric --> 1, 2 
+  #ms2 = data.matrix(ms2)
+  #if (sum(ms2==2)>0) { # data.matrix convierte character a factor y luego numeric --> 1, 2
   #  ms2 = ms2 - 1
-  #} 
+  #}
   ms3 =  ms1 * ms2
   md = res_electre$datos
   vd = md[nrow(md),]
-  
-  
+
+
 
   mi1 = ms1
   mi2 = ms2
   mi3 = ms3
-  
-  
+
+
   for (i in 1:nrow(mi1)) {
     mf = rbind(mi1[i,],mi2[i,],mi3[i,])
     if (i==1) {
@@ -454,14 +454,14 @@ func_ELECTRE_resTSuperacion = function(res_electre) {
   #msal = round(msal,digits = digitos)
   msal = as.data.frame(msal,stringsAsFactors = F)
   colnames(msal) = paste0("A",1:ncol(msal))
-  
+
   msal$Inds = rep(c("TC","TD","RSup"),nrow(msal) %/% 3)
   msal = msal[,c(ncol(msal),1:(ncol(msal)-1))]
-  
+
   msal$Alts = rep(paste0("A",1:(ncol(msal)-1)),each=3)
   msal = msal[,c(ncol(msal),1:(ncol(msal)-1))]
   msal0 = msal
-  
+
   filas = seq(3,nrow(msal),by=3)
   msal_b = msal0[filas,3:ncol(msal0)]
   k=0
@@ -478,7 +478,7 @@ func_ELECTRE_resTSuperacion = function(res_electre) {
   df = as.data.frame(df,stringsAsFactors = F)
   colnames(df) = c("De","A")
   df = df[!is.na(df$De),]
-  
+
 
   filas = seq(1,nrow(msal),by=3)
   msal[filas,3:ncol(msal)] = cell_spec(ifelse(msal[filas,3:ncol(msal)]=="1","T","F"),
@@ -488,38 +488,38 @@ func_ELECTRE_resTSuperacion = function(res_electre) {
   msal[filas,3:ncol(msal)] = cell_spec(ifelse(msal[filas,3:ncol(msal)]=="1","T","F"),
                                        background = ifelse(msal[filas,3:ncol(msal)]=="1","red","white"),
                                        color=ifelse(msal[filas,3:ncol(msal)]=="1","white","black"))
-  
+
   filas = seq(3,nrow(msal),by=3)
   msal[filas,3:ncol(msal)] = cell_spec(ifelse(msal[filas,3:ncol(msal)]=="1","T","F"),
                                        background = ifelse(msal[filas,3:ncol(msal)]=="1","blue","white"),
                                        color=ifelse(msal[filas,3:ncol(msal)]=="1","white","black"))
-  
-  KE_msal = msal %>% 
-    kable(booktabs=T,digits = 3,escape = F) %>% 
-    kable_styling() %>% 
+
+  KE_msal = msal %>%
+    kable(booktabs=T,digits = 3,escape = F) %>%
+    kable_styling() %>%
     row_spec(0,align="c",color="blue")
   #colores = rainbow(3)
   colores = gray(seq(0.5,0.9,length.out = 3),alpha=0.2)
   for (i in 1:3) {
-    KE_msal = KE_msal %>% 
+    KE_msal = KE_msal %>%
       row_spec(seq(i,nrow(msal),by=3),background=colores[i],align="c",bold=T)
   }
-  KE_msal = KE_msal %>% 
-    column_spec(1,background = "white",width = "4em",bold = T,color="blue") %>% 
-    column_spec(2,width = "4em",color="red",bold=T,border_right = T) %>% 
-    column_spec(3:ncol(msal),width="10em") %>% 
-    collapse_rows(columns = 1) %>% 
+  KE_msal = KE_msal %>%
+    column_spec(1,background = "white",width = "4em",bold = T,color="blue") %>%
+    column_spec(2,width = "4em",color="red",bold=T,border_right = T) %>%
+    column_spec(3:ncol(msal),width="10em") %>%
+    collapse_rows(columns = 1) %>%
     footnote(general = paste0("ELECTRE: Relación Superación: ",
                               "alpha = ",alpha,", ",
                               "vd=(",paste0(vd,collapse=","),")"
     ),general_title = "")
-  
+
   if ( !(knitr::is_html_output() | interactive() ) ) {
-    # KE_msal = KE_msal %>% 
+    # KE_msal = KE_msal %>%
     #   as_image()
   }
 
-  
+
   res = list(
     MIndices = msal0,
     KE = KE_msal,
@@ -527,18 +527,18 @@ func_ELECTRE_resTSuperacion = function(res_electre) {
     Nucleo = res_electre$nucleo_aprox
   )
   return(res)
-  
-}  
+
+}
 
 func_ELECTRE_Completo = function(res_electre) {
-  
- alpha = res_electre$alpha  
+
+ alpha = res_electre$alpha
  t1 = func_ELECTRE_resMIndices(res_electre)
  t2 = func_ELECTRE_resTConcordancia(res_electre)
  t3 = func_ELECTRE_resTDiscordancia(res_electre)
  t4 = func_ELECTRE_resTSuperacion(res_electre)
- 
- 
+
+
  res = list(
    MIndices = t1,
    TConcordancia = t2,
@@ -547,9 +547,89 @@ func_ELECTRE_Completo = function(res_electre) {
    Grafo = t4$Grafo,
    Nucleo = res_electre$nucleo_aprox
  )
-  
+
  return(res)
-  
-  
+
+
 }
-  
+
+
+# FUNCIONES ADICIONALES PARA EL MÉTODO PROMETHEE  --------------------
+
+library(factoextra)
+
+calculo_tablaM = function(tabdecs.X,pesos.criterios,tab.fpref) {
+    ##tabdecs.X = tabdec.X
+    num.alt = nrow(tabdecs.X);
+    num.cri = ncol(tabdecs.X);
+    tabla.M = matrix(NA,num.alt,num.cri);
+    for (i in 1:num.alt) {
+        for (j in 1:num.cri) {
+            total = 0
+            for (h in 1:num.alt) {
+                if (i!=h) {
+                    vai = tabdecs.X[i,j];
+                    vah = tabdecs.X[h,j];
+                    cual = tab.fpref[j,1];
+                    qi = tab.fpref[j,2];
+                    pi = tab.fpref[j,3];
+                    si = tab.fpref[j,4];
+                    total = total + fpref.todas(cual,vai,vah,qi,pi,si) - fpref.todas(cual,vah,vai,qi,pi,si)
+                }
+            }
+            tabla.M[i,j] = (1/(num.alt-1)) * total;
+        }
+    }
+    dimnames(tabla.M) = list(rownames(tabdecs.X), colnames(tabdecs.X))
+    return(tabla.M);
+}
+
+
+
+multicriterio.metodo.promethee_plano_GAIA_med = function(tabdecs.X,pesos.criterios,tab.fpref) {
+
+    num.alt = nrow(tabdecs.X)
+    num.cri = ncol(tabdecs.X)
+    tabla.M1 =  calculo_tablaM(tabdec.X,pesos.criterios,tab.fpref)
+    # princomp()
+    PCA.UNIC = prcomp(tabla.M1, center = TRUE, scale. = TRUE)
+    #GAIA = predict(PCA.UNIC)[,1:2]
+    #rownames(GAIA) = rownames(tabla.M1)
+    Plano.GAIA = factoextra::fviz_pca_biplot(PCA.UNIC,
+                                             geom =c("point", "text"),
+                                             repel = TRUE,
+                                             #addEllipses = TRUE,
+                                             col.ind = "#FC4E07",
+                                             axes = c(1, 2),
+                                             pointsize = 1.5,
+                                             title = "Plano GAIA (Promethee II)")
+
+    v.flujos.netos = rowSums(tabla.M1 * matrix(pesos.criterios,
+                                               nrow = num.alt,
+                                               ncol = num.cri,
+                                               byrow=TRUE))
+
+    vflujos.netos.ordenados = sort(v.flujos.netos, decreasing = TRUE)
+
+    resumen.pca = summary(PCA.UNIC)
+    #resumen.pca$sdev
+    delta_ProyeccionGAIA = resumen.pca$importance[3,2] * 100
+
+    result = list(
+        tabla.M = tabla.M1,
+        vflujos.netos = v.flujos.netos,
+        vflujos.netos.ordenados = vflujos.netos.ordenados,
+        alt.ordenadas = names(vflujos.netos.ordenados),
+        delta_ProyeccionGAIA = delta_ProyeccionGAIA,
+        Plano.GAIA = Plano.GAIA
+    )
+
+    return(result)
+
+}
+
+
+# res8gaia = multicriterio.metodo.promethee_plano_GAIA_med(tabdec.X,pesos.criterios,tab.fpref)
+# res8gaia
+
+
