@@ -18,51 +18,51 @@
 
 # Funciones: Sintaxis ------
 # func_estudio_arbolbayesiano_completo = function(probs_estados,probs_X_cond_estados,
-#                                                 tv,favorable=T,baselogaritmo=2) 
+#                                                 tv,favorable=T,baselogaritmo=2)
 
 # func_estudio_entropias = function(probs_estados,probs_X_cond_estados,baselogaritmo=2)
 # func_estudio_arbolbayesiano_benefcostes = function(probs_estados,probs_X_cond_estados,
-#                                                    tv,favorable=T) 
+#                                                    tv,favorable=T)
 
-# func_distribucion_conjunta = function(probs_estados,probs_X_cond_estados) 
-# func_distribucion_marginal_X = function(probs_estados,probs_X_cond_estados) 
-# func_distribucion_E_cond_X = function(probs_estados,probs_X_cond_estados) 
+# func_distribucion_conjunta = function(probs_estados,probs_X_cond_estados)
+# func_distribucion_marginal_X = function(probs_estados,probs_X_cond_estados)
+# func_distribucion_E_cond_X = function(probs_estados,probs_X_cond_estados)
 # # General
 # # A priori
-# func_valoracion_esperada = function(tabla_valoraciones,probs_estados) 
+# func_valoracion_esperada = function(tabla_valoraciones,probs_estados)
 # func_valoracion_esperada_a_posteriori = function(tabla_valoraciones,probs_estados,
 #                                                        probs_X_cond_estados)
-# func_mejor_valoracion_esperada_alternativa = function(valoracion_esperada,favorable=T) 
-# func_mejor_alternativa = function(valoracion_esperada,favorable=T) 
-# func_mejor_alternativa_multiple = function(valoracion_esperada,favorable=T) 
-# func_valoracion_mejor_alternativa_apriori = function(tabla_valoraciones,probs_estados,favorable=T) 
-# func_mejor_alternativa_apriori = function(tabla_valoraciones,probs_estados,favorable=T) 
-# func_mejor_alternativa_apriori_multiple = function(tabla_valoraciones,probs_estados,favorable=T) 
+# func_mejor_valoracion_esperada_alternativa = function(valoracion_esperada,favorable=T)
+# func_mejor_alternativa = function(valoracion_esperada,favorable=T)
+# func_mejor_alternativa_multiple = function(valoracion_esperada,favorable=T)
+# func_valoracion_mejor_alternativa_apriori = function(tabla_valoraciones,probs_estados,favorable=T)
+# func_mejor_alternativa_apriori = function(tabla_valoraciones,probs_estados,favorable=T)
+# func_mejor_alternativa_apriori_multiple = function(tabla_valoraciones,probs_estados,favorable=T)
 
 # func_VEIP_tv = function(tv,probs_estados,favorable=TRUE,que_alt_Ref = NULL)
 
 # # devuelve vector con las mejores valoraciones para cada x_j de X
 # func_valoracion_mejor_esperada_a_posteriori = function(tabla_valoraciones,probs_estados,
-#                                             probs_X_cond_estados,favorable=T) 
+#                                             probs_X_cond_estados,favorable=T)
 # # devuelve vector con las mejores alternativas para cada x_j de X
 # func_mejor_alternativa_a_posteriori = function(tabla_valoraciones,probs_estados,probs_X_cond_estados,
-#                                                favorable=T) 
+#                                                favorable=T)
 # # REII: Resultado esperado con información perfecta
-# func_REII = function(tabla_valoraciones,probs_estados,probs_X_cond_estados,favorable=T) 
+# func_REII = function(tabla_valoraciones,probs_estados,probs_X_cond_estados,favorable=T)
 # # RER: Resultado esperado con riesgo  (a priori)
-# func_RER = function(tabla_valoraciones,probs_estados,favorable=T) 
+# func_RER = function(tabla_valoraciones,probs_estados,favorable=T)
 # # VEX: valor esperado máximo para el decisor por la información adicional X
-# func_VEX = function(tabla_valoraciones,probs_estados,probs_X_cond_estados,favorable=T) 
+# func_VEX = function(tabla_valoraciones,probs_estados,probs_X_cond_estados,favorable=T)
 # ## función de entropía de una distribución unidimensional (marginal o condicionada)
-# func_entropia = function(probs,baselogaritmo=2) 
-# func_entropias_estados_cond_X = function(probs_estados,probs_X_cond_estados,baselogaritmo=2) 
-# func_entropia_aposteriori = function(probs_estados,probs_X_cond_estados,baselogaritmo=2) 
-# func_informacion_canal = function(probs_estados,probs_X_cond_estados,baselogaritmo=2) 
-# func_coeficiente_redundancia_canal = function(probs_estados,probs_X_cond_estados,baselogaritmo=2) 
+# func_entropia = function(probs,baselogaritmo=2)
+# func_entropias_estados_cond_X = function(probs_estados,probs_X_cond_estados,baselogaritmo=2)
+# func_entropia_aposteriori = function(probs_estados,probs_X_cond_estados,baselogaritmo=2)
+# func_informacion_canal = function(probs_estados,probs_X_cond_estados,baselogaritmo=2)
+# func_coeficiente_redundancia_canal = function(probs_estados,probs_X_cond_estados,baselogaritmo=2)
 
 # Mejoras: -------
 ## 13-1-2021: -------
-# - Nueva función para calcular el VEIP: 
+# - Nueva función para calcular el VEIP:
 #     "func_VEIP_tv = function(tv,probs_estados,favorable=TRUE,que_alt_Ref = NULL)"
 # - Mejoradas las funciones: "func_estudio_arbolbayesiano_benefcostes()",
 #     "func_estudio_entropias()", "func_estudio_arbolbayesiano_completo()"
@@ -111,7 +111,7 @@ func_valoracion_esperada_a_posteriori = function(tabla_valoraciones,probs_estado
   # probs_estados: vector
   # probs_X_cond_estados: matrix, filas distrib. condicionadas para cada estado
   X_cond_estados = func_distribucion_E_cond_X(probs_estados,probs_X_cond_estados);
-  
+
   return( apply(X_cond_estados,2,function(x) (func_valoracion_esperada(tabla_valoraciones,x))) )
 }
 
@@ -119,28 +119,28 @@ func_mejor_valoracion_esperada_alternativa = function(valoracion_esperada,favora
   if (favorable) {
     return( max(valoracion_esperada) )
   } else {
-    return( min(valoracion_esperada) )    
+    return( min(valoracion_esperada) )
   }
 }
 
 func_mejor_alternativa = function(valoracion_esperada,favorable=T) {
-  if (favorable) {    
+  if (favorable) {
     #return( which.max(valoracion_esperada) )
     alt = which.max(valoracion_esperada)
     return(names(valoracion_esperada)[alt])
   } else {
-    #return( which.min(valoracion_esperada) )    
+    #return( which.min(valoracion_esperada) )
     alt = which.min(valoracion_esperada)
     return(names(valoracion_esperada)[alt])
   }
 }
 
 func_mejor_alternativa_multiple = function(valoracion_esperada,favorable=T) {
-  if (favorable) {    
+  if (favorable) {
     #return( which(valoracion_esperada==max(valoracion_esperada)) )
-    alt = which(valoracion_esperada==max(valoracion_esperada)) 
+    alt = which(valoracion_esperada==max(valoracion_esperada))
     return(names(valoracion_esperada)[alt])
-    
+
   } else {
     #return( which(valoracion_esperada==min(valoracion_esperada)) )
     alt = which(valoracion_esperada==min(valoracion_esperada))
@@ -153,7 +153,7 @@ func_valoracion_mejor_alternativa_apriori = function(tabla_valoraciones,probs_es
   val_esperadas_apriori = func_valoracion_esperada(tabla_valoraciones,probs_estados)
   return( func_mejor_valoracion_esperada_alternativa(val_esperadas_apriori,favorable) )
 }
-  
+
 func_mejor_alternativa_apriori = function(tabla_valoraciones,probs_estados,favorable=T) {
   val_esperadas_apriori = func_valoracion_esperada(tabla_valoraciones,probs_estados)
   #browser()
@@ -202,7 +202,7 @@ func_REII = function(tabla_valoraciones,probs_estados,probs_X_cond_estados,favor
   marginal_X = func_distribucion_marginal_X(probs_estados,probs_X_cond_estados);
   val_mejor_aposteriori = func_valoracion_mejor_esperada_a_posteriori(tabla_valoraciones,probs_estados,
                                                                 probs_X_cond_estados,favorable);
-  return( as.numeric(marginal_X %*% val_mejor_aposteriori) )   
+  return( as.numeric(marginal_X %*% val_mejor_aposteriori) )
 }
 
 # RER: Resultado esperado con riesgo  (a priori)
@@ -215,7 +215,7 @@ func_RER = function(tabla_valoraciones,probs_estados,favorable=T) {
 func_VEX = function(tabla_valoraciones,probs_estados,probs_X_cond_estados,favorable=T) {
   REII = func_REII(tabla_valoraciones,probs_estados,probs_X_cond_estados,favorable);
   RER = func_RER(tabla_valoraciones,probs_estados,favorable);
-  return( REII - RER )   
+  return( REII - RER )
 }
 
 ## función de entropía de una distribución unidimensional (marginal o condicionada)
@@ -242,7 +242,7 @@ func_entropia_aposteriori = function(probs_estados,probs_X_cond_estados,baseloga
   entropias_estados_cond_X = func_entropias_estados_cond_X(probs_estados,probs_X_cond_estados,
                                                            baselogaritmo);
   return( sum(marginal_X * entropias_estados_cond_X) )
-}  
+}
 
 
 func_informacion_canal = function(probs_estados,probs_X_cond_estados,baselogaritmo=2) {
@@ -260,23 +260,23 @@ func_coeficiente_redundancia_canal = function(probs_estados,probs_X_cond_estados
 
 func_estudio_entropias = function(probs_estados,probs_X_cond_estados,baselogaritmo=2,
                                   nb_alt = NULL,nb_est = NULL,nb_X = NULL) {
-  
+
   if (is.null(nb_est))
     nombs.E <- names(probs_estados) <- rownames(probs_X_cond_estados) <- paste("E",1:length(probs_estados),sep="")
-  else 
+  else
     nombs.E <- names(probs_estados) <- rownames(probs_X_cond_estados) <- nb_est
-  
+
   if (is.null(nb_X))
     nombs.X <- colnames(probs_X_cond_estados) <- paste("X",1:dim(probs_X_cond_estados)[2],sep="")
   else
     nombs.X <- colnames(probs_X_cond_estados) <- nb_X
-  
+
   #nombs.A <- rownames(tv) <- paste("A",1:dim(tv)[1],sep="")
   if (is.null(nb_alt))
     nombs.A <- paste("A",1:length(probs_estados),sep="")
   else
     nombs.A <- nb_alt
-  
+
   marginal_X = func_distribucion_marginal_X(probs_estados,probs_X_cond_estados)
   names(marginal_X) = nombs.X
   entropia_apriori = func_entropia(probs_estados,baselogaritmo)
@@ -288,8 +288,8 @@ func_estudio_entropias = function(probs_estados,probs_X_cond_estados,baselogarit
   resultado = list();
   resultado$marginal_X = marginal_X
   resultado$entropia_apriori =  entropia_apriori
-  resultado$entropias_aposteriori =  entropias_aposteriori  
-  resultado$entropia_aposteriori =  entropia_aposteriori  
+  resultado$entropias_aposteriori =  entropias_aposteriori
+  resultado$entropia_aposteriori =  entropia_aposteriori
   resultado$informacion_canal =  informacion_canal
   resultado$coeficiente_redundancia =  coeficiente_redundancia
 ## En porcentaje:
@@ -299,22 +299,22 @@ func_estudio_entropias = function(probs_estados,probs_X_cond_estados,baselogarit
 
 func_estudio_arbolbayesiano_benefcostes = function(probs_estados,probs_X_cond_estados,tv,favorable=T,
                                                    nb_alt = NULL,nb_est = NULL,nb_X = NULL) {
-  
+
   if (is.null(nb_est))
     nombs.E <- names(probs_estados) <- rownames(probs_X_cond_estados) <- colnames(tv) <- paste("E",1:length(probs_estados),sep="")
-  else 
+  else
     nombs.E <- names(probs_estados) <- rownames(probs_X_cond_estados) <- colnames(tv) <- nb_est
 
   if (is.null(nb_X))
     nombs.X <- colnames(probs_X_cond_estados) <- paste("X",1:dim(probs_X_cond_estados)[2],sep="")
   else
     nombs.X <- colnames(probs_X_cond_estados) <- nb_X
-  
+
   if (is.null(nb_alt))
     nombs.A <- rownames(tv) <- paste("A",1:dim(tv)[1],sep="")
   else
     nombs.A <- rownames(tv) <- nb_alt
-  
+
   conjunta = func_distribucion_conjunta(probs_estados,probs_X_cond_estados)
   marginal_X = func_distribucion_marginal_X(probs_estados,probs_X_cond_estados)
   names(marginal_X) = nombs.X
@@ -323,7 +323,7 @@ func_estudio_arbolbayesiano_benefcostes = function(probs_estados,probs_X_cond_es
   names(val_esperadas_apriori) = nombs.A
   mat_val_esperadas_aposteriori = func_valoracion_esperada_a_posteriori(tv,probs_estados,probs_X_cond_estados)
   rownames(mat_val_esperadas_aposteriori) = nombs.A
-  #func_mejor_valoracion_esperada_alternativa(val_esperadas_apriori,favorable) 
+  #func_mejor_valoracion_esperada_alternativa(val_esperadas_apriori,favorable)
   #func_mejor_alternativa(val_esperadas_apriori,favorable)
   #func_mejor_alternativa_multiple(val_esperadas_apriori,favorable)
 
@@ -347,15 +347,21 @@ func_estudio_arbolbayesiano_benefcostes = function(probs_estados,probs_X_cond_es
     vxi = func_VEIP_tv(tv,
                        probs_estados = E_cond_X[,nombs.X[i]],
                        favorable = favorable,
-                       que_alt_Ref = mejor_alts_apriori,
+                       que_alt_Ref = mejor_alts_apriori[1],
                        nb_alt = nb_alt,nb_est = nb_est)
     valor_VEX_Xi$REaltpriori[i] = vxi[[1]]
     valor_VEX_Xi$REMAXi[i] = vxi[[2]]
     valor_VEX_Xi$VEXi[i] = vxi[[3]]
-  }  
+  }
+  if (length(mejor_alts_apriori)>1) { # solución a priori múltiple
+      warning("Soluciones múltiples en estudio a priori! ",
+              paste(mejor_alts_apriori,", "),
+              " no sería correcto el cálculo de valor_VEX_Xi" )
+  }
   valor_VEX_Xi = as.matrix.data.frame(valor_VEX_Xi)
-  
-resultados = list()  
+
+
+resultados = list()
 resultados$probs_conjunta = conjunta
 resultados$probs_marginal_X = marginal_X
 resultados$probs_E_cond_X = E_cond_X
@@ -369,8 +375,8 @@ resultados$mat_val_esperadas_aposteriori = mat_val_esperadas_aposteriori
   resultados$valor_RER = valor_RER
   resultados$valor_VEX = valor_VEX
   resultados$valor_VEX_Xi = valor_VEX_Xi
-return(resultados)  
-  
+return(resultados)
+
 }
 
 func_estudio_arbolbayesiano_completo = function(probs_estados,probs_X_cond_estados,tv,favorable=T,baselogaritmo=2,
@@ -380,26 +386,26 @@ func_estudio_arbolbayesiano_completo = function(probs_estados,probs_X_cond_estad
   #browser()
   resultados$informe_benefcostes = func_estudio_arbolbayesiano_benefcostes(probs_estados,probs_X_cond_estados,tv,favorable,nb_alt,nb_est,nb_X)
   resultados$informe_entropia = func_estudio_entropias(probs_estados,probs_X_cond_estados,baselogaritmo,nb_alt,nb_est,nb_X)
-    
+
   return(resultados)
 }
 
 
-func_VEIP_tv = function(tv,probs_estados,favorable=TRUE,que_alt_Ref = NULL, 
+func_VEIP_tv = function(tv,probs_estados,favorable=TRUE,que_alt_Ref = NULL,
                         nb_alt = NULL,nb_est = NULL) {
-  
+
   if (is.null(nb_est))
     nombs.E <- names(probs_estados) <- colnames(tv) <- paste("E",1:length(probs_estados),sep="")
-  else 
+  else
     nombs.E <- names(probs_estados) <- colnames(tv) <- nb_est
 
   if (is.null(nb_alt))
     nombs.A <- rownames(tv) <- paste("A",1:dim(tv)[1],sep="")
   else
     nombs.A <- rownames(tv) <- nb_alt
-  
+
   REMA = func_valoracion_mejor_alternativa_apriori(tv,probs_estados,favorable)
-  
+
   if (is.null(que_alt_Ref)) {
     if (favorable) {
       mejores = apply(tv,MARGIN = 2,max)
@@ -410,17 +416,16 @@ func_VEIP_tv = function(tv,probs_estados,favorable=TRUE,que_alt_Ref = NULL,
     }
   } else {
     REIP = REMA
-    REMA = sum( tv[que_alt_Ref,] * probs_estados) 
+    REMA = sum( tv[que_alt_Ref,] * probs_estados)
   }
   VEIP = REIP - REMA
-  
+
   result = list()
   result$REMA = REMA
   result$REIP = REIP
   result$VEIP = VEIP
-  
+
   return(result)
 }
-                        
-                        
-                        
+
+
