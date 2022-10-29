@@ -1,5 +1,6 @@
 library(diagram)
-source("teoriadecision_funciones_multicriterio.R")
+# AVISO: antes de usar este fichero, use siempre antes esta llamada
+# source("teoriadecision_funciones_multicriterio.R")
 
 # Xmatriznivel1=Xmat.criterios
 # Xmatriznivel2
@@ -7,9 +8,9 @@ source("teoriadecision_funciones_multicriterio.R")
 
 multicriterio.metodoahp.diagrama = function(Xmatriznivel1,Xmatriznivel2) {
   ##Xmatriznivel2 = array(NA,dim=c(num.alt,num.alt,num.cri))
-  ##Xmatriznivel2[,,1] = 
-  
-  resultados = multicriterio.metodoAHP.variante3.completo(Xmatriznivel1,Xmatriznivel2) 
+  ##Xmatriznivel2[,,1] =
+
+  resultados = multicriterio.metodoAHP.variante3.completo(Xmatriznivel1,Xmatriznivel2)
   num.criterios = nrow(Xmatriznivel1)
   num.alternativas = dim(Xmatriznivel2)[1]
   num.nodos = 1+num.criterios+num.alternativas
@@ -27,7 +28,7 @@ multicriterio.metodoahp.diagrama = function(Xmatriznivel1,Xmatriznivel2) {
     nn = 1+num.criterios+i
     M[nn,nn] = round(pesos.globales[i],4)
   }
-  dp =plotmat(M, pos = c(1,num.criterios,num.alternativas), name = nombres.nodos, lwd = 1, box.lwd = 2, 
+  dp =plotmat(M, pos = c(1,num.criterios,num.alternativas), name = nombres.nodos, lwd = 1, box.lwd = 2,
               curve = 0, cex.txt = 0.8, box.size = 0.1, box.type = "square",
               box.prop = 0.25, main = "Estructura Jerárquica (AHP)",
               arr.pos = 0.65, arr.lcol = c("red"), arr.col = c("blue"),
@@ -38,8 +39,8 @@ multicriterio.metodoahp.diagrama = function(Xmatriznivel1,Xmatriznivel2) {
               box.col = c("lightblue", rep("green",num.criterios),rep("orange",num.alternativas))
   )
   ##box.col = c("lightblue", "green", "yellow", "orange"))
-  
-  
+
+
 }
 
 # M <- matrix(nrow = 6, ncol = 6, byrow = TRUE, data = 0)
@@ -71,10 +72,10 @@ multicriterio.metodoahp.diagrama = function(Xmatriznivel1,Xmatriznivel2) {
 # ## box.lcol: color de línea de las cajas
 # ## box.cex: tamaño letra en las cajas
 # ## txt.col: color del texto en las cajas
-# ## pos: o vector que especifica num. elementos en cada fila, 
+# ## pos: o vector que especifica num. elementos en cada fila,
 # ##      o matriz de 2 columnas que especifican (x,y) de cada elemento
 # ##      o NULL se colocan en círculo
-# ## latex: F (expresiones serán interpretadas antes imprimir), 
+# ## latex: F (expresiones serán interpretadas antes imprimir),
 # ##        T (si código latex se imprime)
 # ## relsize: factor de escala para el tamaño del grafo
 # ## M: matriz cuadrada de coeficientes, que especifica los arcos (filas: to, columnas: desde)
@@ -85,7 +86,7 @@ multicriterio.metodoahp.diagrama = function(Xmatriznivel1,Xmatriznivel2) {
 # postscript("ahp_diagrama.ps")
 # jpeg("ahp_diagrama.jpg",quality=95)
 # png("ahp_diagrama.png")
-# dp =plotmat(M, pos = c(1,3,2), name = nombres.nodos, lwd = 1, box.lwd = 2, 
+# dp =plotmat(M, pos = c(1,3,2), name = nombres.nodos, lwd = 1, box.lwd = 2,
 #         curve = 0, cex.txt = 0.8, box.size = 0.1, box.type = "square",
 #         box.prop = 0.25, main = "Estructura Jerárquica (AHP)",
 #         arr.pos = 0.65, arr.lcol = c("red"), arr.col = c("blue"),
