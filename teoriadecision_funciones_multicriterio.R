@@ -3,7 +3,7 @@
 
 ## Nota: mayor utilidad (mayor valor) mejor
 
-#### multicriterio.crea.matrizvaloraciones = function(vector_matporfilas,numalternativas=4)  
+#### multicriterio.crea.matrizvaloraciones = function(vector_matporfilas,numalternativas=4)
 #### multicriterio.crea.matrizvaloraciones_mej = function(vector_valoraciones_diagsup,numalternativas=4,v.nombres.alternativas = NULL)
 #### multicriterio.crea.matrizdecision = function(vector_matporfilas,numalternativas=3,numcriterios=4)
 
@@ -16,54 +16,54 @@
 #### multicriterio.homogeneizacion.promethee = function(Xmatrizdecision,v.delta.min,v.delta.max)
 
 ## 3. Método AHP (función de utilidad a partir de comparaciones por pares)
-#### multicriterio.metodoAHP.variante1.autovectormayorautovalor = function(Xmatrizvaloraciones) 
-#### multicriterio.metodoAHP.variante2.mediageometrica = function(Xmatrizvaloraciones) 
-#### multicriterio.metodoAHP.variante3.basico = function(Xmatrizvaloraciones) 
-  
-  
-#### multicriterio.metodoAHP.pesosglobales = function(pesos.criterios,matriz.pesos.locales) 
-#### multicriterio.metodoAHP.coef.inconsistencia = function(Xmatrizvaloraciones) 
+#### multicriterio.metodoAHP.variante1.autovectormayorautovalor = function(Xmatrizvaloraciones)
+#### multicriterio.metodoAHP.variante2.mediageometrica = function(Xmatrizvaloraciones)
+#### multicriterio.metodoAHP.variante3.basico = function(Xmatrizvaloraciones)
 
-#### multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel2) 
+
+#### multicriterio.metodoAHP.pesosglobales = function(pesos.criterios,matriz.pesos.locales)
+#### multicriterio.metodoAHP.coef.inconsistencia = function(Xmatrizvaloraciones)
+
+#### multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel2)
 
 
 ## 4. Multicriterio Electre
-#### multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concordancia.minimo.alpha,no.se.compensan,que.alternativas=TRUE) 
-  
+#### multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concordancia.minimo.alpha,no.se.compensan,que.alternativas=TRUE)
+
 #### multicriterio.metodoelectre_varlibro <- function (Mvalor, pesos.criterios,umbral.c=NA,umbral.d=NA) {
 
 
 
 ## 5. Método Promethee I y II
-# multicriterio.metodo.promethee_i = function(tabdecs.X,pesos.criterios,tab.fpref) 
-# multicriterio.metodo.promethee_ii = function(tabdecs.X,pesos.criterios,tab.fpref) 
-# multicriterio.metodo.promethee_i_med = function(tabdecs.X,pesos.criterios,tab.fpref) 
-# multicriterio.metodo.promethee_ii_med = function(tabdecs.X,pesos.criterios,tab.fpref) 
-# 
-# fpref.criterio_usual = function(vaj,vah) 
-# fpref.cuasi_criterio = function(vaj,vah,qi) 
-# fpref.criterio_preflineal = function(vaj,vah,pi) 
-# fpref.criterio_nivel = function(vaj,vah,qi,pi) 
-# fpref.criterio_preflineal_indif = function(vaj,vah,qi,pi) 
-# fpref.criterio_gaussiano = function(vaj,vah,qi,pi,si) 
-# fpref.todas = function(cual,vaj,vah,qi=0,pi=1,si=0.5) 
-# 
-# indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) 
-# 
-# flujo.entrante.Promethee = function(tab.indices) 
-# flujo.saliente.Promethee = function(tab.indices) 
-# flujo.neto.Promethee = function(tab.indices) 
-# 
-# flujomed.entrante.Promethee = function(tab.indices) 
-# flujomed.saliente.Promethee = function(tab.indices) 
-# flujomed.neto.Promethee = function(tab.indices) 
+# multicriterio.metodo.promethee_i = function(tabdecs.X,pesos.criterios,tab.fpref)
+# multicriterio.metodo.promethee_ii = function(tabdecs.X,pesos.criterios,tab.fpref)
+# multicriterio.metodo.promethee_i_med = function(tabdecs.X,pesos.criterios,tab.fpref)
+# multicriterio.metodo.promethee_ii_med = function(tabdecs.X,pesos.criterios,tab.fpref)
+#
+# fpref.criterio_usual = function(vaj,vah)
+# fpref.cuasi_criterio = function(vaj,vah,qi)
+# fpref.criterio_preflineal = function(vaj,vah,pi)
+# fpref.criterio_nivel = function(vaj,vah,qi,pi)
+# fpref.criterio_preflineal_indif = function(vaj,vah,qi,pi)
+# fpref.criterio_gaussiano = function(vaj,vah,qi,pi,si)
+# fpref.todas = function(cual,vaj,vah,qi=0,pi=1,si=0.5)
+#
+# indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref)
+#
+# flujo.entrante.Promethee = function(tab.indices)
+# flujo.saliente.Promethee = function(tab.indices)
+# flujo.neto.Promethee = function(tab.indices)
+#
+# flujomed.entrante.Promethee = function(tab.indices)
+# flujomed.saliente.Promethee = function(tab.indices)
+# flujomed.neto.Promethee = function(tab.indices)
 
 
 
 ## 6. Método axiomático de Arrow y Raymond
 
-# func_calcula_matrizclasificacion = function(Mvalor) 
-# multicriterio.metodoaxiomatico.ArrowRaymond = function(Mvalor) 
+# func_calcula_matrizclasificacion = function(Mvalor)
+# multicriterio.metodoaxiomatico.ArrowRaymond = function(Mvalor)
 
 
 
@@ -84,7 +84,7 @@ multicriterio.crea.matrizvaloraciones = function(vector_matporfilas,numalternati
     rownames(X) = colnames(X)
   }
   return(X)
-  
+
 }
 
 ## ejemplos de uso:
@@ -92,7 +92,7 @@ multicriterio.crea.matrizvaloraciones = function(vector_matporfilas,numalternati
 ##(Xmat.criterios = multicriterio.crea.matrizvaloraciones(c(1,2,1/2,1),2))
 
 multicriterio.crea.matrizvaloraciones_mej = function(vector_valoraciones_diagsup,numalternativas=4,v.nombres.alternativas = NULL) {
-  
+
   if (is.null(v.nombres.alternativas)) {
     nbalt = paste0("a",1:numalternativas)
   } else {
@@ -108,23 +108,23 @@ multicriterio.crea.matrizvaloraciones_mej = function(vector_valoraciones_diagsup
     }
   }
   return(mat)
-}  
+}
 
-# v_val = c(5, 3, 7, 3, 
-#           3, 6, 9, 
-#           1, 3, 
+# v_val = c(5, 3, 7, 3,
+#           3, 6, 9,
+#           1, 3,
 #           1)
 # m1 = multicriterio.crea.matrizvaloraciones_mej(v_val,numalternativas = 5)
-# v_val = c(5, 3, 7, 3, 
-#           3, 6, 9, 
-#           1, 3, 
+# v_val = c(5, 3, 7, 3,
+#           3, 6, 9,
+#           1, 3,
 #           1)
 # vnb = c("Precio","Cercania","Valoraciones","Dormitorios","Utensilios de cocina")
 # m1b = multicriterio.crea.matrizvaloraciones_mej(v_val,numalternativas = 5,v.nombres.alternativas = vnb)
 
 multicriterio.crea.matrizdecision = function(vector_matporfilas,numalternativas=3,
                                     numcriterios=4,v.nombresalt=NULL,v.nombrescri=NULL) {
-  
+
   X = matrix(vector_matporfilas,nrow=numalternativas,ncol=numcriterios,byrow=TRUE)
   ##X = matrix(c(100,15,7,40,50,200,25,7,60,200,100,20,4,25,25,200,30,20,70,350,250,25,15,100,500),nrow=5,ncol=5,byrow=TRUE);
   ##rownames(X) = c('a1','a2','a3','a4','a5');
@@ -134,14 +134,14 @@ multicriterio.crea.matrizdecision = function(vector_matporfilas,numalternativas=
     colnames(X) = paste('C',1:numcriterios,sep='');
   } else{
     colnames(X) = v.nombrescri
-  }  
+  }
   if (is.null(v.nombresalt)) {
     rownames(X) = paste('a',1:numalternativas,sep='');
   } else{
     rownames(X) = v.nombresalt
   }
   return(X);
-  
+
 }
 
 
@@ -163,14 +163,14 @@ multicriterio.constfuncutilidad.maximales = function(Xmatrizvaloraciones) {
   A1p1 = A1
   diag(A1p1) = rep(0,ncol(A1))
   while (!is.null(dim(A1p1))) {
-    
+
     #colSums(A1p1)
-    
+
     alts_min = which(colSums(A1p1)==min(colSums(A1p1)))
     #alts_min
-    
+
     if (length(alts_min)>1) {
-      
+
       A2 = A1p1[alts_min,alts_min]
       # investiga cuales están dominados
       Dom = rep(FALSE,length(alts_min))
@@ -182,15 +182,15 @@ multicriterio.constfuncutilidad.maximales = function(Xmatrizvaloraciones) {
             # indiferente
           } else {
             Dom[i] = TRUE
-          }   
+          }
         }
       }
       #Dom
       alts_min = alts_min[!Dom]
     } else {
-      # alts_min  
+      # alts_min
     }
-    
+
     for (k in 1:length(alts_min)) futil[names(alts_min)[k]] = ncol(A1p1)
     # futil[names(alts_min)] = ncol(A1p1)
     #futil
@@ -200,9 +200,9 @@ multicriterio.constfuncutilidad.maximales = function(Xmatrizvaloraciones) {
       A1p1 = NULL
     }
     #A1p1
-    
+
   }
-  
+
   futil[is.na(futil)] = 1
   return(futil)
 }
@@ -230,7 +230,7 @@ multicriterio.constfuncutilidad.estructuraborrosa = function(Xmatrizvaloraciones
   return(flujo.neto)
   #sort(flujo.neto)
 }
-  
+
 
 ## EJEMPLO USO:
 ## vector = c(0,0.6,0.2,0.8,0.4,0,0.2,0,0.5,0.1,0,0.1,0.2,0,0.1,0)
@@ -253,10 +253,10 @@ multicriterio.homogeneizacion.nadir = function(Xmatrizdecision) {
   numcolus = ncol(X)
   (m.vcol.min = matrix(vcol.min,numfilas,numcolus,byrow=T))
   (m.vcol.max = matrix(vcol.max,numfilas,numcolus,byrow=T))
-  
+
   Nueva.X = (X-m.vcol.min)/(m.vcol.max - m.vcol.min)
   return(Nueva.X)
-  
+
 }
 
 ## EJEMPLO USO:
@@ -329,7 +329,7 @@ if (ncol(dset) != nrow(dset)) {
 recip <- 0
 for (i in 1:nitem) {
   for (j in 1:nitem) {
-    if (dset[i, j] < 1/dset[j, i] * 0.99 || dset[i, j] > 
+    if (dset[i, j] < 1/dset[j, i] * 0.99 || dset[i, j] >
           1/dset[j, i] * 1.01) {
       recip <- 1
     }
@@ -343,10 +343,10 @@ if (recip == 1) {
 }
 
 
-# Uso: 
+# Uso:
 #   (Xmat.cri1 = multicriterio.crea.matrizvaloraciones(c(1,1/4,4,4,1,9,1/4,1/9,1),3,nombre.alternativas))
 #   multicriterio.metodoAHP.chequeo.matrizcomparaciones(Xmat.cri1)
-# 
+#
 # (Xmat.cri1 = multicriterio.crea.matrizvaloraciones(c(1,1/4,4,1/4,1,9,1/4,1/9,1),3,nombre.alternativas))
 # multicriterio.metodoAHP.chequeo.matrizcomparaciones(Xmat.cri1)
 
@@ -358,8 +358,8 @@ if (recip == 1) {
 
 multicriterio.metodoAHP.variante1.autovectormayorautovalor = function(Xmatrizvaloraciones) {
 ##C.valora = matrix(c(1,2,6,9,1/2,1,4,9,1/6,1/4,1,3,1/9,1/9,1/3,1),4,4,byrow=T)
-##rownames(C.valora) = c('a1','a2','a3','a4'); 
-##colnames(C.valora) = c('a1','a2','a3','a4'); 
+##rownames(C.valora) = c('a1','a2','a3','a4');
+##colnames(C.valora) = c('a1','a2','a3','a4');
 
 C.valora = Xmatrizvaloraciones
 
@@ -372,9 +372,9 @@ icual = which.max(autova.C)
 lambda = autova.C[icual]
 #lambda
 if (is.null(dim(autovec.C))) {
- autovector.v = autovec.C 
+ autovector.v = autovec.C
 } else {
- autovector.v = autovec.C[,icual] 
+ autovector.v = autovec.C[,icual]
 }
 #autovector.v
 #sum(autovector.v)
@@ -393,7 +393,7 @@ tablaresumen = rbind(tablaresumen,c(rep(NA,ncol(C.valora)+1),sum(autovector.v),N
 (RI.coef.inconsistencia = CI.coef.inconsistencia/CA.coefs.inconsistencia.aleatorio[mm])
 if (mm <= 2) {
   texto='Consistencia aceptable';
-} else {  
+} else {
 if (RI.coef.inconsistencia < 0.1) {
   texto = 'Consistencia aceptable'
 } else {
@@ -401,7 +401,7 @@ if (RI.coef.inconsistencia < 0.1) {
 }
 }
  salida = list()
- salida$Xmat = C.valora 
+ salida$Xmat = C.valora
  salida$autovalor = lambda
  salida$suma.autovector = sum(autovector.v)
  salida$normaeuclidea.autovector = sqrt(sum(autovector.v^2))
@@ -423,9 +423,9 @@ if (RI.coef.inconsistencia < 0.1) {
 
 
 
-  
+
 ### Variante 2: Método de los mínimos cuadrados de logaritmos o media geométrica.
-  
+
 func_media.geometrica = function(vector) {
   return( prod(vector)^(1/length(vector)) )
 }
@@ -435,10 +435,10 @@ func_media.geometrica = function(vector) {
 multicriterio.metodoAHP.variante2.mediageometrica = function(Xmatrizvaloraciones) {
 
   C.valora = Xmatrizvaloraciones
-    
+
   #C.valora = matrix(c(1,2,6,9,1/2,1,4,9,1/6,1/4,1,3,1/9,1/9,1/3,1),4,4,byrow=T)
-  #rownames(C.valora) = c('a1','a2','a3','a4'); 
-  #colnames(C.valora) = c('a1','a2','a3','a4'); 
+  #rownames(C.valora) = c('a1','a2','a3','a4');
+  #colnames(C.valora) = c('a1','a2','a3','a4');
   #C.valora
   (mgeoms = apply(C.valora,1,func_media.geometrica))
   #sum(mgeoms)
@@ -447,18 +447,18 @@ multicriterio.metodoAHP.variante2.mediageometrica = function(Xmatrizvaloraciones
   tablaresumen = C.valora
   tablaresumen = cbind(tablaresumen,mgeoms,prioridades.relativas)
   tablaresumen = rbind(tablaresumen,c(rep(NA,ncol(C.valora)),sum(mgeoms),NA))
-  
-  
+
+
   salida = list()
-  salida$Xmat = C.valora 
+  salida$Xmat = C.valora
   salida$mediasgeometricas = mgeoms
   salida$suma.mediasgeometricas = sum(mgeoms)
   salida$valoraciones.ahp = valoraciones.finales.ahp
   salida$valoraciones.ahp.ordenadas = sort(valoraciones.finales.ahp,decreasing = T)
   salida$tablaresumen = tablaresumen
   return(salida)
-  
-}  
+
+}
 
 
 ## EJEMPLO USO:
@@ -469,8 +469,8 @@ multicriterio.metodoAHP.variante2.mediageometrica = function(Xmatrizvaloraciones
 
 
 
-  
-  
+
+
 
 ### Variante 3:  Método de sintetización básico.
 
@@ -480,10 +480,10 @@ multicriterio.metodoAHP.variante2.mediageometrica = function(Xmatrizvaloraciones
 
 
 multicriterio.metodoAHP.variante3.basico = function(Xmatrizvaloraciones) {
-  
+
   #C.valora = matrix(c(1,2,6,9,1/2,1,4,9,1/6,1/4,1,3,1/9,1/9,1/3,1),4,4,byrow=T)
-  #rownames(C.valora) = c('a1','a2','a3','a4'); 
-  #colnames(C.valora) = c('a1','a2','a3','a4'); 
+  #rownames(C.valora) = c('a1','a2','a3','a4');
+  #colnames(C.valora) = c('a1','a2','a3','a4');
   C.valora = Xmatrizvaloraciones
 
   (suma.columnas = colSums(C.valora));
@@ -501,7 +501,7 @@ multicriterio.metodoAHP.variante3.basico = function(Xmatrizvaloraciones) {
   ##  return(rowMeans(matriz/matrix(c(colSums(matriz)),nrow=dim(matriz)[1],ncol=dim(matriz)[2],byrow=TRUE)))
 
   salida = list()
-  salida$Xmat = C.valora 
+  salida$Xmat = C.valora
   salida$sumacolumnas = suma.columnas
   salida$Xmat.normalizada = C.valora.normalizada
   salida$valoraciones.ahp = prioridades.relativas
@@ -514,9 +514,9 @@ multicriterio.metodoAHP.variante3.basico = function(Xmatrizvaloraciones) {
 
 ### Método AHP: obtención de los pesos globales de las alternativas
 
-##Las siguientes funciones nos permiten obtener los pesos globales de las alternativas según el método AHP, 
+##Las siguientes funciones nos permiten obtener los pesos globales de las alternativas según el método AHP,
 ##a partir de las matrices de comparación 2 a 2:
-  
+
 ##ahp.pesos.finales <- function(pesos.criterios,pesos.locales)
 multicriterio.metodoAHP.pesosglobales = function(pesos.criterios,matriz.pesos.locales) {
   vector1 = as.numeric(pesos.criterios%*%matriz.pesos.locales)
@@ -530,20 +530,20 @@ multicriterio.metodoAHP.pesosglobales_entabla = function(pesos.criterios,
                                                          matriz.pesos.locales) {
   vector1 = as.numeric(pesos.criterios%*%matriz.pesos.locales)
   #names(vector1) = colnames(matriz.pesos.locales)
-  
+
   tablafinal = rbind(t(matriz.pesos.locales),pesos.criterios)
   tablafinal = cbind(tablafinal,c(vector1,NA))
   rownames(tablafinal)[nrow(tablafinal)] = "Ponder.Criterios"
   colnames(tablafinal)[ncol(tablafinal)] = "Ponderadores Globales"
-  
+
   return(tablafinal)
 }
 
 
 
-##La siguiente función nos permite calcular los coeficientes de inconsistencia 
+##La siguiente función nos permite calcular los coeficientes de inconsistencia
 ##  para cada matriz de comparación 2 a 2:
-  
+
 multicriterio.metodoAHP.coef.inconsistencia = function(Xmatrizvaloraciones) {
   C.valora = Xmatrizvaloraciones
   autovalores.C = eigen(C.valora,symmetric=F);
@@ -579,11 +579,11 @@ multicriterio.metodoAHP.coef.inconsistencia = function(Xmatrizvaloraciones) {
 
 ##multicriterio.metodoAHP.variante3.basico.coef.inconsistencia(C.valora)
 multicriterio.metodoAHP.variante3.basico.coef.inconsistencia = function(Xmatrizvaloraciones) {
-  
-  
+
+
   #C.valora = matrix(c(1,3,6,1/3,1,3,1/6,1/3,1),3,3,byrow=T)
-  #rownames(C.valora) = c('a1','a2','a3'); 
-  #colnames(C.valora) = c('a1','a2','a3'); 
+  #rownames(C.valora) = c('a1','a2','a3');
+  #colnames(C.valora) = c('a1','a2','a3');
   C.valora = Xmatrizvaloraciones
 
   (suma.columnas = colSums(C.valora));
@@ -593,7 +593,7 @@ multicriterio.metodoAHP.variante3.basico.coef.inconsistencia = function(Xmatrizv
   (prioridades.relativas = rowMeans(C.valora.normalizada))
 
   paso1 = C.valora %*% prioridades.relativas
-  paso2 = paso1 / prioridades.relativas 
+  paso2 = paso1 / prioridades.relativas
   lambda = mean(paso2)
   tablaresumen = C.valora
   tablaresumen = cbind(tablaresumen,paso1,paso2)
@@ -613,7 +613,7 @@ multicriterio.metodoAHP.variante3.basico.coef.inconsistencia = function(Xmatrizv
       texto='Consistencia no aceptable. Revisar las comparaciones de criterios por pares';
     }
   }
-  
+
   salida = list()
   salida$lambda = lambda
   salida$m = mm
@@ -623,15 +623,15 @@ multicriterio.metodoAHP.variante3.basico.coef.inconsistencia = function(Xmatrizv
   salida$mensaje = texto
   salida$tablaresumen = tablaresumen
   return(salida);
-  
+
 }
 
 
 ##Xmatriznivel2 = array(NA,dim=c(num.alt,num.alt,num.cri))
-##Xmatriznivel2[,,1] = 
-  
+##Xmatriznivel2[,,1] =
+
 multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel2) {
-  
+
   inconsistencia.nivel1 = multicriterio.metodoAHP.coef.inconsistencia(Xmatriznivel1)
   pesos.nivel1 = multicriterio.metodoAHP.variante3.basico(Xmatriznivel1)
   num.cri.nivel1 = dim(Xmatriznivel2)[3]
@@ -657,9 +657,9 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
   salida$inconsistencia.nivel1 = inconsistencia.nivel1
   salida$l.inconsistencia.nivel2 = l.inconsistencia.nivel2
   salida$pesos.globales = pesos.globales
-  
+
   salida$pesos.globales_entabla = pesos.globales_entabla
-  
+
   return(salida)
 }
 
@@ -668,27 +668,27 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
 # (Xmat.criterios = multicriterio.crea.matrizvaloraciones(c(1,2,1/2,1),2,c("Rendimiento","Riesgo")))
 # (Xmat.rendimiento = multicriterio.crea.matrizvaloraciones(c(1,3,1/3,1),2,c("Alt. A","Alt. B")))
 # (Xmat.riesgo = multicriterio.crea.matrizvaloraciones(c(1,1/2,2,1),2,c("Alt. A","Alt. B")))
-# 
+#
 # num.alt = 2
 # num.cri = 2
 # Xmatriznivel2 = array(NA,dim=c(num.alt,num.alt,num.cri))
 # Xmatriznivel2[,,1] = Xmat.rendimiento
 # Xmatriznivel2[,,2] = Xmat.riesgo
 # multicriterio.metodoAHP.variante3.completo(Xmat.criterios,Xmatriznivel2)
-  
+
 
 
 # # Ejercicio 4
-# 
+#
 # (Xmat.criterios = multicriterio.crea.matrizvaloraciones(c(1,2,1/2,1),2,c("Rendimiento","Riesgo")))
 # (Xmat.rendimiento = multicriterio.crea.matrizvaloraciones(c(1,3,1/3,1),2,c("Alt. A","Alt. B")))
 # (Xmat.riesgo = multicriterio.crea.matrizvaloraciones(c(1,1/2,2,1),2,c("Alt. A","Alt. B")))
-# 
+#
 # (pesos.criterios = multicriterio.metodoAHP.variante3.basico(Xmat.criterios))
 # (pesos.rendimiento = multicriterio.metodoAHP.variante3.basico(Xmat.rendimiento))
 # (pesos.riesgo = multicriterio.metodoAHP.variante3.basico(Xmat.riesgo))
-# 
-# 
+#
+#
 # multicriterio.metodoAHP.coef.inconsistencia(Xmat.criterios)
 # multicriterio.metodoAHP.coef.inconsistencia(Xmat.rendimiento)
 # multicriterio.metodoAHP.coef.inconsistencia(Xmat.riesgo)
@@ -701,13 +701,13 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
 
 
 multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concordancia.minimo.alpha,no.se.compensan,que.alternativas=TRUE) {
-  
+
   if (!is.logical(que.alternativas)) {
     tabdec.X = tabdecs.X[que.alternativas,];
   } else {
     tabdec.X = tabdecs.X;
-  } 
-  
+  }
+
   num.alt = dim(tabdec.X)[1];
   num.cri = dim(tabdec.X)[2];
   Imas = array(F,dim=c(num.alt,num.alt,num.cri));
@@ -719,7 +719,7 @@ multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concord
   dimnames(Imas)[[3]] = colnames(tabdec.X)
   dimnames(Iigual)[[3]] = colnames(tabdec.X)
   dimnames(Imenos)[[3]] = colnames(tabdec.X)
-  
+
   for (j in 1:num.alt) {
     for (k in 1:num.alt) {
       for (i in 1:num.cri) {
@@ -733,12 +733,12 @@ multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concord
       }
     }
   }
-  
+
   ind.concordancia = array(NA,dim=c(num.alt,num.alt));
   ind.concordancia.gorro = array(NA,dim=c(num.alt,num.alt));
   rownames(ind.concordancia)=rownames(tabdec.X);colnames(ind.concordancia)=rownames(tabdec.X);
   rownames(ind.concordancia.gorro)=rownames(tabdec.X);colnames(ind.concordancia.gorro)=rownames(tabdec.X);
-  
+
   suma.pesos.criterios = sum(pesos.criterios);
   for (j in 1:num.alt) {
     for (k in 1:num.alt) {
@@ -749,7 +749,7 @@ multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concord
       ind.concordancia.gorro[j,k] = suma1/suma3;
     }
   }
-  
+
   test.concordancia = array(F,dim=c(num.alt,num.alt));
   for (j in 1:num.alt) {
     for (k in 1:num.alt) {
@@ -769,26 +769,26 @@ multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concord
       for (i in 1:num.cri) {
         if (Imenos[j,k,i]) {
           suma2 = suma2 + 1;
-          suma1 = suma1 + ( (tabdec.X[k,i]-tabdec.X[j,i]) < no.se.compensan[i] ); 
+          suma1 = suma1 + ( (tabdec.X[k,i]-tabdec.X[j,i]) < no.se.compensan[i] );
         }
       }
       if ((suma2==0) | ((suma1!=0) & (suma1 == suma2))) {  # suma1==0 equivale a Imenos es vacío
-        test.discordancia[j,k] = TRUE; 
+        test.discordancia[j,k] = TRUE;
       }
     }
   }
-  
+
   relacion.dominante2 = matrix(as.logical(test.concordancia * test.discordancia),num.alt,num.alt)
   rownames(test.concordancia)=rownames(tabdec.X);colnames(test.concordancia)=rownames(tabdec.X);
   rownames(test.discordancia)=rownames(tabdec.X);colnames(test.discordancia)=rownames(tabdec.X);
   rownames(relacion.dominante2)=rownames(tabdec.X);colnames(relacion.dominante2)=rownames(tabdec.X);
-  
+
   suma = apply(relacion.dominante2,2,sum,na.rm=T)
   nucleo = which(suma==0)
 
-  
+
   resultado = list();
-  
+
   ##tabdecs.X,pesos.criterios,nivel.concordancia.minimo.alpha,no.se.compensan,que.alternativas=TRUE
   resultado$datos = rbind(tabdec.X,pesos.criterios,no.se.compensan)
   resultado$alpha = nivel.concordancia.minimo.alpha
@@ -798,28 +798,28 @@ multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concord
   resultado$ind.concordancia = ind.concordancia;
   resultado$ind.concordancia.gorro = ind.concordancia.gorro;
   resultado$test.concordancia = test.concordancia;
-  resultado$test.discordancia = test.discordancia;  
+  resultado$test.discordancia = test.discordancia;
   resultado$relacion.dominante = relacion.dominante2;
   resultado$nucleo_aprox = nucleo
-  
-  return(resultado); 
+
+  return(resultado);
 }
 
 
 # tabdec.X = matrix(c(20, 13, 15, 30, 5, 40,0.3, 0.5, 0.1, 0.7, 0.9, 0,1.3, 4, 2.2, 1, 4, 1,3, 3, 5, 2, 7, 1),4,6,byrow=T);
 # colnames(tabdec.X) = c('a1', 'a2', 'a3', 'a4', 'a5', 'a6');
-# rownames(tabdec.X) = c('V1', 'V2', 'V3', 'V4'); 
+# rownames(tabdec.X) = c('V1', 'V2', 'V3', 'V4');
 # tabdec.X = t(tabdec.X)
 # tabdec.X
-# 
+#
 # pesos.criterios = c(0.3,0.2,0.4,0.1);
 # nivel.concordancia.minimo.alpha = 0.7;
 # no.se.compensan = c(15,Inf,2,Inf);
-# 
-# 
+#
+#
 # paso01 = multicriterio.metodoELECTRE_I(tabdec.X,pesos.criterios,nivel.concordancia.minimo.alpha,no.se.compensan);
 # paso01;
-# 
+#
 # paso02 = multicriterio.metodoELECTRE_I(tabdec.X,pesos.criterios,nivel.concordancia.minimo.alpha,no.se.compensan,c(1,2));
 # paso02;
 
@@ -833,17 +833,17 @@ multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concord
 #  12,35,15,45,75,6),nrow=5,ncol=6,byrow=T)
 #  rownames(Mvalor) = c("A1","A2","A3","A4","A5")
 #  colnames(Mvalor) = c("C1","C2","C3","C4","C5","C6")
-# 
+#
 # Mvalor[,5] = -Mvalor[,5]
 # Mvalor[,6] = -Mvalor[,6]
 # # SON TODAS DE MAXIMIZACIÓN
 # Mvalor
-# 
+#
 # pesos.criterios = c(0.15,0.25,0.20,0.10,0.20,0.10)
-# multicriterio.metodoelectre_varlibro(Mvalor, pesos.criterios,umbral.c=NA,umbral.d=NA) 
-# multicriterio.metodoelectre_varlibro(Mvalor, pesos.criterios) 
-# multicriterio.metodoelectre_varlibro(Mvalor, pesos.criterios,umbral.c=0.66,umbral.d=0.7) 
-# multicriterio.metodoelectre_varlibro(Mvalor, pesos.criterios,umbral.c=0.7,umbral.d=0.81) 
+# multicriterio.metodoelectre_varlibro(Mvalor, pesos.criterios,umbral.c=NA,umbral.d=NA)
+# multicriterio.metodoelectre_varlibro(Mvalor, pesos.criterios)
+# multicriterio.metodoelectre_varlibro(Mvalor, pesos.criterios,umbral.c=0.66,umbral.d=0.7)
+# multicriterio.metodoelectre_varlibro(Mvalor, pesos.criterios,umbral.c=0.7,umbral.d=0.81)
 
 
 multicriterio.metodoelectre_varlibro <- function (Mvalor, pesos.criterios,umbral.c=NA,umbral.d=NA) {
@@ -867,18 +867,18 @@ multicriterio.metodoelectre_varlibro <- function (Mvalor, pesos.criterios,umbral
   }
   rownames(Mindconcor) = colnames(Mindconcor) = rownames(Mvalor)
   #Mindconcor
-  
+
   Mdecnormalizada = matrix(NA,nrow=num.alt,ncol=num.cri)
   rownames(Mdecnormalizada) = rownames(Mvalor)
   colnames(Mdecnormalizada) = colnames(Mvalor)
-  
+
   min.col = apply(Mvalor,2,min)
   max.col = apply(Mvalor,2,max)
-  
+
   Mdecnormalizada = abs(t(t(Mvalor)/(max.col-min.col)))
   Mdecnormalizada.pond = t(t(Mdecnormalizada) * pesos.criterios)
-  
-  
+
+
   Minddiscor = matrix(NA,nrow = num.alt,ncol=num.alt)
   for (i in 1:num.alt) {
     for (j in 1:num.alt) {
@@ -888,7 +888,7 @@ multicriterio.metodoelectre_varlibro <- function (Mvalor, pesos.criterios,umbral
         for (k in 1:num.cri) {
           if (Mvalor[i,k]<Mvalor[j,k]) {
             max.num = max(max.num, abs(Mdecnormalizada.pond[i,k]-Mdecnormalizada.pond[j,k]))
-          } 
+          }
           max.den = max(max.den, abs(Mdecnormalizada.pond[i,k]-Mdecnormalizada.pond[j,k]))
         }
         Minddiscor[i,j] = max.num/max.den
@@ -897,10 +897,10 @@ multicriterio.metodoelectre_varlibro <- function (Mvalor, pesos.criterios,umbral
   }
   rownames(Minddiscor) = colnames(Minddiscor) = rownames(Mvalor)
   Minddiscor
-  
+
   umbral.c.medio = mean(Mindconcor,na.rm=T)
   umbral.d.medio = mean(Minddiscor,na.rm=T)
-  
+
   if (is.na(umbral.c)) {
     umbral.c.temp = umbral.c.medio
   }else {
@@ -913,11 +913,11 @@ multicriterio.metodoelectre_varlibro <- function (Mvalor, pesos.criterios,umbral
   }
   Mindconcor_conc = (Mindconcor>=umbral.c.temp) * 1.0
   Minddiscor_disc = (Minddiscor<=umbral.d.temp) * 1.0
-  
+
   Minddominancia_agregada = Mindconcor_conc * Minddiscor_disc
   suma = apply(Minddominancia_agregada,2,sum,na.rm=T)
   nucleo = which(suma==0)
-  
+
   salida = list()
   salida$Mvalor = Mvalor
   salida$pesos.criterios = pesos.criterios
@@ -932,7 +932,7 @@ multicriterio.metodoelectre_varlibro <- function (Mvalor, pesos.criterios,umbral
   salida$Minddominancia_agregada = Minddominancia_agregada
   salida$nucleo_aprox = nucleo
   return(salida)
-  
+
 }
 
 
@@ -958,7 +958,7 @@ fpref.criterio_usual = function(vaj,vah) {
 fpref.cuasi_criterio = function(vaj,vah,qi) {
   di = vaj - vah;
   if (di <= qi) {
-    res = 0; 
+    res = 0;
   } else {
     res = 1;
   }
@@ -968,9 +968,9 @@ fpref.cuasi_criterio = function(vaj,vah,qi) {
 fpref.criterio_preflineal = function(vaj,vah,pi) {
   di = vaj - vah;
   if (di <= 0) {
-    res = 0; 
+    res = 0;
   } else if (di > pi) {
-    res = 1; 
+    res = 1;
   } else {
     res = di/pi;
   }
@@ -980,8 +980,8 @@ fpref.criterio_preflineal = function(vaj,vah,pi) {
 fpref.criterio_nivel = function(vaj,vah,qi,pi) {
   di = vaj - vah;
   if (di <= qi) {
-    res = 0; 
-  } else if (di > pi) {
+    res = 0;
+  } else if (di >= pi) {
     res = 1;
   } else {
     res = 0.5;
@@ -992,7 +992,7 @@ fpref.criterio_nivel = function(vaj,vah,qi,pi) {
 fpref.criterio_preflineal_indif = function(vaj,vah,qi,pi) {
   di = vaj - vah;
   if (di <= qi) {
-    res = 0; 
+    res = 0;
   } else if (di > pi) {
     res = 1;
   } else {
@@ -1004,7 +1004,7 @@ fpref.criterio_preflineal_indif = function(vaj,vah,qi,pi) {
 fpref.criterio_gaussiano = function(vaj,vah,qi,pi,si) {
   di = vaj - vah;
   if (di <= 0) {
-    res = 0; 
+    res = 0;
   } else {
     res = 1 - exp((-di^2)/(2*si^2));
   }
@@ -1013,17 +1013,17 @@ fpref.criterio_gaussiano = function(vaj,vah,qi,pi,si) {
 
 fpref.todas = function(cual,vaj,vah,qi=0,pi=1,si=0.5) {
   if (cual == 2) {
-    res = fpref.cuasi_criterio(vaj,vah,qi); 
+    res = fpref.cuasi_criterio(vaj,vah,qi);
   } else if (cual==3) {
-    res = fpref.criterio_preflineal(vaj,vah,pi); 
+    res = fpref.criterio_preflineal(vaj,vah,pi);
   } else if (cual==4) {
     res = fpref.criterio_nivel(vaj,vah,qi,pi);
   } else if (cual==5) {
-    res = fpref.criterio_preflineal_indif(vaj,vah,qi,pi);        
+    res = fpref.criterio_preflineal_indif(vaj,vah,qi,pi);
   } else if (cual==6) {
-    res = fpref.criterio_gaussiano(vaj,vah,qi,pi,si);     
+    res = fpref.criterio_gaussiano(vaj,vah,qi,pi,si);
   } else {
-    res = fpref.criterio_usual(vaj,vah); 
+    res = fpref.criterio_usual(vaj,vah);
   }
   return(res);
 }
@@ -1059,7 +1059,7 @@ indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) {
 
 
 ##Cálculo de **flujos entrantes**, **flujos salientes**:
-  
+
 flujo.entrante.Promethee = function(tab.indices) {
   res = rowSums(tab.indices);
   return(res);
@@ -1078,17 +1078,17 @@ flujo.neto.Promethee = function(tab.indices) {
 }
 
 
-## En algunas ocasiones, se utilizan como **flujos entrantes** y **flujos salientes** 
-## las medias por fila y columnas (pero sin considerar el elemento diagonal que es 0 
+## En algunas ocasiones, se utilizan como **flujos entrantes** y **flujos salientes**
+## las medias por fila y columnas (pero sin considerar el elemento diagonal que es 0
 ## siempre), y no la suma:
-  
+
 flujomed.entrante.Promethee = function(tab.indices) {
   res = rowSums(tab.indices)/(dim(tab.indices)[1]-1);
   return(res);
 }
 
 flujomed.saliente.Promethee = function(tab.indices) {
-  res = colSums(tab.indices)/(dim(tab.indices)[1]-1);  
+  res = colSums(tab.indices)/(dim(tab.indices)[1]-1);
   return(res);
 }
 
@@ -1102,9 +1102,9 @@ flujomed.neto.Promethee = function(tab.indices) {
 
 
 ## Clasificación del **método Promethee I**:
-  
+
 multicriterio.metodo.promethee_i = function(tabdecs.X,pesos.criterios,tab.fpref) {
-  
+
   tab.indices =  indice.prefmulticriterio(tabdecs.X,pesos.criterios,tab.fpref);
   vflujo.ent = flujo.entrante.Promethee(tab.indices);
   vflujo.sal = flujo.saliente.Promethee(tab.indices);
@@ -1129,7 +1129,7 @@ multicriterio.metodo.promethee_i = function(tabdecs.X,pesos.criterios,tab.fpref)
       }
     }
   }
-  ##return(tab.Pthee.i);  
+  ##return(tab.Pthee.i);
   salida = list()
   salida$tabla.indices = tab.indices
   salida$vflujos.ent=vflujo.ent
@@ -1142,11 +1142,11 @@ multicriterio.metodo.promethee_i = function(tabdecs.X,pesos.criterios,tab.fpref)
 
 
 ## Clasificación del **método Promethee II**:
-  
+
 multicriterio.metodo.promethee_ii = function(tabdecs.X,pesos.criterios,tab.fpref) {
-  
+
   tab.indices =  indice.prefmulticriterio(tabdecs.X,pesos.criterios,tab.fpref);
-  vflujos.netos = flujo.neto.Promethee(tab.indices); 
+  vflujos.netos = flujo.neto.Promethee(tab.indices);
   colnames(tab.indices)=rownames(tab.indices) = rownames(tabdecs.X)
   names(vflujos.netos) = rownames(tabdecs.X)
   num.alt = length(vflujos.netos);
@@ -1163,7 +1163,7 @@ multicriterio.metodo.promethee_ii = function(tabdecs.X,pesos.criterios,tab.fpref
       }
     }
   }
-  #return(tab.Pthee.ii);  
+  #return(tab.Pthee.ii);
   salida = list()
   salida$tabla.indices = tab.indices
   salida$vflujos.netos=vflujos.netos
@@ -1174,11 +1174,11 @@ multicriterio.metodo.promethee_ii = function(tabdecs.X,pesos.criterios,tab.fpref
 
 
 
-## Las siguientes funciones, son una variante de los anteriores, 
+## Las siguientes funciones, son una variante de los anteriores,
 ## en la que se utilizan los flujos medios:
-  
+
 multicriterio.metodo.promethee_i_med = function(tabdecs.X,pesos.criterios,tab.fpref) {
-  
+
   tab.indices =  indice.prefmulticriterio(tabdecs.X,pesos.criterios,tab.fpref);
   vflujo.ent = flujomed.entrante.Promethee(tab.indices);
   vflujo.sal = flujomed.saliente.Promethee(tab.indices);
@@ -1201,7 +1201,7 @@ multicriterio.metodo.promethee_i_med = function(tabdecs.X,pesos.criterios,tab.fp
       }
     }
   }
-  ##return(tab.Pthee.i);  
+  ##return(tab.Pthee.i);
   salida = list()
   salida$tabla.indices = tab.indices
   salida$vflujos.ent=vflujo.ent
@@ -1213,9 +1213,9 @@ multicriterio.metodo.promethee_i_med = function(tabdecs.X,pesos.criterios,tab.fp
 
 
 multicriterio.metodo.promethee_ii_med = function(tabdecs.X,pesos.criterios,tab.fpref) {
-  
+
   tab.indices =  indice.prefmulticriterio(tabdecs.X,pesos.criterios,tab.fpref);
-  vflujos.netos = flujomed.neto.Promethee(tab.indices); 
+  vflujos.netos = flujomed.neto.Promethee(tab.indices);
   colnames(tab.indices)=rownames(tab.indices) = rownames(tabdecs.X)
   names(vflujos.netos) = rownames(tabdecs.X)
   num.alt = length(vflujos.netos);
@@ -1234,7 +1234,7 @@ multicriterio.metodo.promethee_ii_med = function(tabdecs.X,pesos.criterios,tab.f
   salida$tabla.indices = tab.indices
   salida$vflujos.netos=vflujos.netos
   salida$tablarelacionsupera = tab.Pthee.ii
-  ##return(tab.Pthee.ii);  
+  ##return(tab.Pthee.ii);
   return(salida)
 }
 
@@ -1257,7 +1257,7 @@ func_calcula_matrizclasificacion = function(Mvalor) {
   num.alter=nrow(Mvalor)
   num.crit=ncol(Mvalor)
   Mclasificacion = matrix(NA,nrow=num.alter,ncol=num.alter)
-  rownames(Mclasificacion) = colnames(Mclasificacion) = rownames(Mvalor) 
+  rownames(Mclasificacion) = colnames(Mclasificacion) = rownames(Mvalor)
   for (i in 1:nrow(Mvalor)) {
     for (j in 1:nrow(Mvalor)) {
       if (i!=j) {
@@ -1294,13 +1294,13 @@ multicriterio.metodoaxiomatico.ArrowRaymond = function(Mvalor) {
      }
      salida[[i]] = salidatemp
      alternativas.salen = c(alternativas.salen,nombres.alternativas[inds.orden[1]])
-  } 
+  }
   alternativas.salen = c(alternativas.salen,nombres.alternativas[inds.orden[2]])
   salidas = list()
   salidas$pasos = salida
   salidas$alternativasordenadas = alternativas.salen[length(alternativas.salen):1]
  return(salidas)
- 
+
 }
 
 
