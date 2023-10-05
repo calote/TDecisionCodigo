@@ -8,7 +8,7 @@
 #### multicriterio.crea.matrizdecision = function(vector_matporfilas,numalternativas=3,numcriterios=4)
 
 ## 1. MÉTODOS DE CONSTRUCCIÓN DE FUNCIONES DE VALOR O UTILIDAD:
-#### multicriterio.constfuncutilidad.nomaximales = function(Xmatrizvaloraciones)
+#### multicriterio.constfuncutilidad.maximales = function(Xmatrizvaloraciones)
 #### multicriterio.constfuncutilidad.estructuraborrosa = function(Xmatrizvaloraciones)
 
 ## 2. Homogeneización de columnas de una tabla de decisión
@@ -23,6 +23,7 @@
 
 #### multicriterio.metodoAHP.pesosglobales = function(pesos.criterios,matriz.pesos.locales)
 #### multicriterio.metodoAHP.coef.inconsistencia = function(Xmatrizvaloraciones)
+#### multicriterio.metodoAHP.pesosglobales_entabla = function(pesos.criterios,matriz.pesos.locales) 
 
 #### multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel2)
 
