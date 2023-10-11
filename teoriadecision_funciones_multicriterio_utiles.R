@@ -1,7 +1,9 @@
 library(knitr)
-library(kableExtra)
-library(dplyr)
+suppressWarnings(library(kableExtra))
+suppressPackageStartupMessages(library(dplyr))
 library(stringr)
+suppressPackageStartupMessages(library(factoextra))
+
 
 # Definición de funciones ----------------------------
 
@@ -556,7 +558,9 @@ func_ELECTRE_Completo = function(res_electre) {
 
 # FUNCIONES ADICIONALES PARA EL MÉTODO PROMETHEE  --------------------
 
-library(factoextra)
+## Promethee Gaia -----
+
+#library(factoextra)
 
 calculo_tablaM = function(tabdecs.X,pesos.criterios,tab.fpref) {
     ##tabdecs.X = tabdec.X
@@ -631,5 +635,197 @@ multicriterio.metodo.promethee_plano_GAIA_med = function(tabdecs.X,pesos.criteri
 
 # res8gaia = multicriterio.metodo.promethee_plano_GAIA_med(tabdec.X,pesos.criterios,tab.fpref)
 # res8gaia
+
+
+## Promethee Windows -----
+
+
+multicriterio.metodo.promethee_windows_funconversion = function(cual = 1) {
+
+
+    #tab.fpref
+    # 1: fpref.criterio_usual = function(vaj,vah)                   # Usual
+    # 2: fpref.cuasi_criterio = function(vaj,vah,qi)                # U-shape
+    # 3: fpref.criterio_preflineal = function(vaj,vah,pi)           # V-shape
+    # 4: fpref.criterio_nivel = function(vaj,vah,qi,pi)             # Level
+    # 5: fpref.criterio_preflineal_indif = function(vaj,vah,qi,pi)  # Linear
+    # 6: fpref.criterio_gaussiano = function(vaj,vah,qi,pi,si)      # Gaussian
+
+    nombre = switch (cual,
+                     "Usual (1)",
+                     "U-shape (2)",
+                     "V-shape (3)",
+                     "Level (4)",
+                     "Linear (5)",
+                     "Gaussian (6)"
+    )
+    return(nombre)
+}
+
+
+# multicriterio.metodo.promethee_windows_funconversion()
+# multicriterio.metodo.promethee_windows_funconversion(3)
+# multicriterio.metodo.promethee_windows_funconversion(7)
+
+multicriterio.metodo.promethee_windows_bloque01 = function(tab.fpref, pesos.criterios, fminmax = NULL) {
+
+    fnum = tab.fpref[,1]
+    f01_nb = sapply(fnum, multicriterio.metodo.promethee_windows_funconversion)
+
+    mbloque01 = rbind(pesos.criterios,
+                      f01_nb,
+                      tab.fpref[,2],
+                      tab.fpref[,3],
+                      tab.fpref[,4])
+    rownames(mbloque01) = c("Pesos", "Funciones Preferencias",
+                            "Q: Indiferencia", "P: Preferencia",
+                            "S: Gausiano")
+    colnames(mbloque01) = paste0("Criterio", 1:ncol(mbloque01))
+
+    if (!is.null(fminmax)) {
+        mbloque01 = rbind(fminmax,
+                          mbloque01)
+        rownames(mbloque01)[1] = "Min/Max"
+    }
+
+    return(mbloque01)
+}
+
+# ebloque01 = multicriterio.metodo.promethee_windows_bloque01(tab.fpref01, pesos.criterios01)
+#
+# ebloque01b = multicriterio.metodo.promethee_windows_bloque01(tab.fpref01, pesos.criterios01,
+#                                                 c("min","max","min","max"))
+
+
+# Estadísticas
+
+multicriterio.metodo.promethee_windows_bloque02 = function(matdecision, fminmax = NULL) {
+    fDesvtipica = function(x) {
+        n = length(x)
+        res = (sd(x))*(sqrt(n-1)/sqrt(n))
+        return(res)
+    }
+    l1 = list(Minimo = min, Maximo = max, Media = mean, DesvTipica = fDesvtipica)
+    l2 = vector("list",length(l1))
+    for (i in 1:length(l1)) {
+        l2[[i]] = sapply(as.data.frame(matdecision), l1[[i]])
+    }
+    res = t(sapply(l2, rbind))
+    rownames(res) = c("Minimo","Maximo", "Media","Desviacion Tipica")
+    colnames(res) = paste0("Criterio",1:ncol(res))
+    return(res)
+    #sapply(as.data.frame(matdecision), min)
+}
+
+# ebloque02 = multicriterio.metodo.promethee_windows_bloque02(matdecision)
+#
+# eres = rbind(ebloque01b,
+#              round(ebloque02,2),
+#              matdecision)
+# eres
+
+multicriterio.metodo.promethee_windows = function(matdecision, tab.fpref, pesos.criterios, fminmax = NULL) {
+
+
+    res01_i = multicriterio.metodo.promethee_i_med(
+        tabdecs.X = matdecision,
+        pesos.criterios = pesos.criterios,
+        tab.fpref = tab.fpref
+    )
+    #res01_i
+
+    res01_ii = multicriterio.metodo.promethee_ii_med(
+        tabdecs.X = matdecision,
+        pesos.criterios = pesos.criterios,
+        tab.fpref = tab.fpref
+    )
+    #res01_ii
+
+    #library(dplyr)
+    df_res = data.frame(Phi = res01_ii$vflujos.netos,
+                        Phi.mas = res01_i$vflujos.ent,  # entrante es suma por filas (Phi+)
+                        Phi.menos = res01_i$vflujos.sal) # saliente es suma por columnas (Phi-)
+    df_res2 = round(df_res,4) %>%
+        arrange(desc(Phi))
+
+    df_res2 = cbind("Rango" = rank(-df_res2$Phi, ties.method = "first"),
+                    df_res2)
+
+
+
+    if (!is.null(fminmax)) {
+
+        for (i in 1:ncol(matdecision)) {
+            if (fminmax[i]=="min") {
+                matdecision[,i] = - matdecision[,i]
+            }
+        }
+        ebloque01 = multicriterio.metodo.promethee_windows_bloque01(tab.fpref, pesos.criterios,
+                                                                    fminmax)
+        ebloque02 = multicriterio.metodo.promethee_windows_bloque02(matdecision)
+
+    } else {
+
+        ebloque01 = multicriterio.metodo.promethee_windows_bloque01(tab.fpref, pesos.criterios)
+        ebloque02 = multicriterio.metodo.promethee_windows_bloque02(matdecision)
+    }
+
+    eres = rbind(ebloque01,
+                 round(ebloque02,2),
+                 matdecision)
+    res = list(Escenario = eres,
+               Acciones = df_res2)
+
+    return(res)
+
+}
+
+
+
+multicriterio.metodo.promethee_windows_kableExtra_html = function(res_promethee_windows) {
+
+    #library(kableExtra)
+    tab01 = kbl(res_promethee_windows$Escenario) |>
+        kable_paper("striped", full_width = F) |>
+        pack_rows("Preferencias",1,6) |>
+        pack_rows("Estadísticas",7,10) |>
+        pack_rows("Evaluaciones",11,nrow(res_promethee_windows$Escenario))
+
+    tab02 = kbl(res_promethee_windows$Acciones) |>
+        kable_paper("striped", full_width = F)
+
+    res = list(tabEscenario = tab01,
+               tabAcciones = tab02)
+}
+
+
+multicriterio.metodo.promethee_windows_kableExtra_pdf = function(res_promethee_windows) {
+
+    #library(kableExtra)
+    tab01 = kbl(res_promethee_windows$Escenario, booktabs = T) |>
+        #kable_paper("striped", full_width = F) |>
+        pack_rows("Preferencias",1,6) |>
+        pack_rows("Estadísticas",7,10) |>
+        pack_rows("Evaluaciones",11,nrow(res_promethee_windows$Escenario))
+
+    tab02 = kbl(res_promethee_windows$Acciones, booktabs = T)
+
+    res = list(tabEscenario = tab01,
+               tabAcciones = tab02)
+}
+
+
+multicriterio.metodo.promethee_windows_kableExtra = function(res_promethee_windows) {
+
+    es_html = knitr::is_html_output()
+    if (es_html) {
+        res = multicriterio.metodo.promethee_windows_kableExtra_html(res_promethee_windows)
+    } else {
+        res = multicriterio.metodo.promethee_windows_kableExtra_pdf(res_promethee_windows)
+    }
+    return(res)
+
+}
+
 
 
