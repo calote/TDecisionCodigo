@@ -1,3 +1,6 @@
+library(formattable)
+library(htmltools)
+library(webshot)
 
 ## FUNCIONES MÉTODOS MULTICRITERIOS
 
@@ -23,7 +26,7 @@
 
 #### multicriterio.metodoAHP.pesosglobales = function(pesos.criterios,matriz.pesos.locales)
 #### multicriterio.metodoAHP.coef.inconsistencia = function(Xmatrizvaloraciones)
-#### multicriterio.metodoAHP.pesosglobales_entabla = function(pesos.criterios,matriz.pesos.locales) 
+#### multicriterio.metodoAHP.pesosglobales_entabla = function(pesos.criterios,matriz.pesos.locales)
 
 #### multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel2)
 
@@ -150,9 +153,9 @@ multicriterio.crea.matrizdecision = function(vector_matporfilas,numalternativas=
 
 
 
-## Métodos de construcción de funciones de valor o utilidad
+## Métodos de construcción de funciones de valor o utilidad ------
 
-## Método 1: maximales (no borrosos)
+## Método 1: maximales (no borrosos) -----
 
 
 multicriterio.constfuncutilidad.maximales = function(Xmatrizvaloraciones) {
@@ -215,7 +218,7 @@ multicriterio.constfuncutilidad.maximales = function(Xmatrizvaloraciones) {
 ## funcutilidad.maximal = multicriterio.constfuncutilidad.maximales(Xmat)
 ## sort(funcutilidad.maximal,decreasing = T)
 
-## Método 2: con estructura borrosa
+## Método 2: con estructura borrosa ------
 
 multicriterio.constfuncutilidad.estructuraborrosa = function(Xmatrizvaloraciones) {
   #X = matrix(c(0,0.6,0.2,0.8,0.4,0,0.2,0,0.5,0.1,0,0.1,0.2,0,0.1,0),nrow=4,ncol=4,byrow=TRUE);
@@ -241,7 +244,7 @@ multicriterio.constfuncutilidad.estructuraborrosa = function(Xmatrizvaloraciones
 
 
 
-## Homogeneización tabla decisión: Método 1 Nadir
+## Homogeneización tabla decisión: Método 1 Nadir -----
 
 multicriterio.homogeneizacion.nadir = function(Xmatrizdecision) {
   ##X = matrix(c(100,15,7,40,50,200,25,7,60,200,100,20,4,25,25,200,30,20,70,350,250,25,15,100,500),nrow=5,ncol=5,byrow=TRUE);
@@ -267,7 +270,7 @@ multicriterio.homogeneizacion.nadir = function(Xmatrizdecision) {
 ## matriz_homogeneizada
 
 
-## Homogeneización tabla decisión: Método 2 Promethee
+## Homogeneización tabla decisión: Método 2 Promethee -----
 
 ## función complementaria
 func_matriz.relacion.borrosa = function(vcolumna,delta.min,delta.max) {
@@ -315,7 +318,7 @@ multicriterio.homogeneizacion.promethee = function(Xmatrizdecision,v.delta.min,v
 ## matriz_homogeneizada
 
 
-## 3. Método AHP (función de utilidad a partir de comparaciones por pares)
+## 3. Método AHP (función de utilidad a partir de comparaciones por pares) -----
 
 
 ### Chequeo matriz comparaciones 2 a 2 correcta
@@ -697,8 +700,214 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
 # sort(pesosglobales.ahp,T)
 
 
+### Mejoras Tabla AHP (formattable) ------
 
-### Multicriterio Electre
+
+export_formattable <- function(f, file, width = "100%", height = NULL,
+                               background = "white", delay = 0.2)
+{
+    w <- formattable::as.htmlwidget(f, width = width, height = height)
+    path <- htmltools::html_print(w, background = background, viewer = NULL)
+    url <- paste0("file:///", gsub("\\\\", "/", normalizePath(path)))
+    webshot::webshot(url,
+                     file = file,
+                     selector = ".formattable_widget",
+                     delay = delay)
+}
+#export_formattable(AnalyzeTable(carAhp), file = "table01.png")
+#export_formattable(lres$tb01sal, file = "table01.png")
+
+
+#library(formattable)
+multicriterio.metodoAHP.pesosglobales_formattable = function(tb.nivel01, l_tb.nivel02,
+                                                             que.variante = 1) {
+
+
+    if (que.variante == 1) {
+        #Calculamos los pesos locales:
+        pesos.nivel01 = multicriterio.metodoAHP.variante1.autovectormayorautovalor(tb.nivel01)
+
+        l_pesos.nivel02 = lapply(1:length(l_tb.nivel02),
+                                 function(x)
+                                     multicriterio.metodoAHP.variante1.autovectormayorautovalor(l_tb.nivel02[[x]])
+        )
+
+    } else if (que.variante == 2) {
+        #Calculamos los pesos locales:
+        pesos.nivel01 = multicriterio.metodoAHP.variante2.mediageometrica(tb.nivel01)
+
+        l_pesos.nivel02 = lapply(1:length(l_tb.nivel02),
+                                 function(x)
+                                     multicriterio.metodoAHP.variante2.mediageometrica(l_tb.nivel02[[x]])
+        )
+
+    } else if (que.variante == 3) {
+        #Calculamos los pesos locales:
+        pesos.nivel01 = multicriterio.metodoAHP.variante3.basico(tb.nivel01)
+
+        l_pesos.nivel02 = lapply(1:length(l_tb.nivel02),
+                                 function(x)
+                                     multicriterio.metodoAHP.variante3.basico(l_tb.nivel02[[x]])
+        )
+
+    }
+
+
+
+    v_incons_nivel01 = multicriterio.metodoAHP.coef.inconsistencia(tb.nivel01)
+    v_incons_nivel01 = ifelse(is.na(v_incons_nivel01$RI.coef.inconsistencia),
+                              0,v_incons_nivel01$RI.coef.inconsistencia)
+    v_incons_nivel02 = sapply(1:length(l_tb.nivel02),
+                              function(x) {
+                                  r1 = multicriterio.metodoAHP.coef.inconsistencia(l_tb.nivel02[[x]])
+                                  r2 = ifelse(is.na(r1$RI.coef.inconsistencia),0,r1$RI.coef.inconsistencia)
+                                  return(r2)
+                              }
+    )
+    v_incons_todos = c(v_incons_nivel01, v_incons_nivel02)
+    #browser()
+    m_pesos.nivel02 = do.call(rbind,
+                              lapply(1:length(l_pesos.nivel02), function(x) l_pesos.nivel02[[x]]$valoraciones.ahp)
+    )
+    # Calculamos ahora los pesos globales:
+
+    pglobales = multicriterio.metodoAHP.pesosglobales_entabla(pesos.nivel01$valoraciones.ahp,
+                                                              m_pesos.nivel02)
+
+    ind_ord_r = c(nrow(pglobales), 1:(nrow(pglobales)-1) )
+    ind_ord_c = c(ncol(pglobales), 1:(ncol(pglobales)-1) )
+    pglobales_mej = t(pglobales[ind_ord_r,ind_ord_c])
+    pglobales_mej[1,1] = 1
+
+    pglobales_mej2 = pglobales_mej
+    pglobales_mej2[1,-1] = NA
+
+    # BUENO: t2
+
+    formatea_NA = formatter("span",
+                            style = x ~ style(color = ifelse(is.na(x), "white", x)))
+    formatea_negrita <- formatter("span",
+                                  style = x ~ style("font-weight" = ifelse(is.na(x), "bold", NA)))
+    # formatea_inconsistencia <- formatter("span",
+    #                               x ~ icontext(ifelse(x>=100,"remove",NA),x),
+    #                               style = x ~ style(background = ifelse(x>=100, "yellow","lightyellow")))
+    formatea_inconsistencia <- formatter("span",
+                                         x ~ icontext(ifelse(x>=0.10,"remove","ok"),paste0(round(100*x,2),"%")),
+                                         style = x ~ style(display = "block",
+                                                           padding = "0 4px", #padding = "0 4px 0 -40px",
+                                                           `border-radius` = "4px",
+                                                           color = ifelse(x>=0.10,"red","green"),
+                                                           background = ifelse(x>=0.10, "yellow",csscolor(gradient(as.numeric(x),"lightyellow","#ffff70"))))
+    )
+
+    # https://help.displayr.com/hc/en-us/articles/360003132036-How-to-Customize-a-Table-Using-the-Formattable-R-Package
+    # sin inconsistencias
+    # dtpg04mej3 = as.data.frame(pglobales_mej2)
+    # dtpg04mej3 = cbind("Pesos Locales AHP" = rownames(dtpg04mej3),
+    #                    dtpg04mej3)
+    # rownames(dtpg04mej3) =  c()
+    # dtpg04mej3[1,1] = "Peso Total"
+    # colnames(dtpg04mej3)[2] = "Criterios/Alternativas"
+    # #str(dtpg04mej3)
+    #
+    # tb02sal = (dtpg04mej3) |>
+    #     formattable(
+    #         align = c("l",rep("r",(ncol(dtpg04mej3)-1))),
+    #         list(
+    #             area(col = -1) ~ percent,
+    #             area(row = 1,col = -1) ~ formatea_NA,
+    #             area(col = 2, row = -1) ~ color_tile("#ecf0ec","#B4C3B4"),
+    #             area(row = 2:nrow(dtpg04mej3), col = -(1:2)) ~ color_tile("#ddd9dd","#786778"),
+    #             #area(row = 2:nrow(dtpg04mej3), col = 3) ~ color_tile("#ddd9dd","#786778"),
+    #             #area(row = 2:nrow(dtpg04mej3), col = 4) ~ color_tile("#ddd9dd","#786778"),
+    #             area(col = 1) ~ formatter("span",
+    #                                       style = x ~ style("font-weight" = "bold"))
+    #         )
+    #     )
+    #csscolor(gradient(c(1,2,3,4,5), "transparent", "lightblue"))
+    #csscolor(gradient(c(1,2,3,4,5), "transparent", "lightyellow"))
+    #csscolor(gradient(c(1,2,3,4,5), "lightyellow","yellow"))
+
+    # CON INCONSISTENCIAS: REVISANDO
+    dtpg04mej3 = as.data.frame(pglobales_mej2)
+    dtpg04mej3 = cbind("Pesos Locales AHP" = rownames(dtpg04mej3),
+                       dtpg04mej3)
+    rownames(dtpg04mej3) =  c()
+    dtpg04mej3[1,1] = "Peso Total"
+    colnames(dtpg04mej3)[2] = "Criterios/Alternativas"
+    dtpg04mej3$Inconsistencia = v_incons_todos
+    #str(dtpg04mej3)
+    ## browser()
+    tb02sal = (dtpg04mej3) |>
+        formattable(
+            align = c("l",rep("r",(ncol(dtpg04mej3)-1))),
+            list(
+                area(col = -1) ~ percent,
+                area(row = 1,col = -1) ~ formatea_NA,
+                area(col = 2, row = -1) ~ color_tile("#ecf0ec","#B4C3B4"),
+                area(row = 2:nrow(dtpg04mej3), col = -c(1:2,ncol(dtpg04mej3))) ~ color_tile("#ddd9dd","#786778"),
+                #area(row = 2:nrow(dtpg04mej3), col = 3) ~ color_tile("#ddd9dd","#786778"),
+                #area(row = 2:nrow(dtpg04mej3), col = 4) ~ color_tile("#ddd9dd","#786778"),
+                area(col = 1) ~ formatter("span",
+                                          style = x ~ style("font-weight" = "bold")),
+                #area(col = ncol(dtpg04mej3)) ~ percent,
+                area(col = ncol(dtpg04mej3)) ~ formatea_inconsistencia
+                #color_tile("#fffff7","lightyellow")
+
+            )
+        )
+
+
+    # BUENO?: t1
+
+    dtpg04mej10 = as.data.frame(pglobales_mej2)
+
+    dtpg04mej11 = dtpg04mej10[,1] * dtpg04mej10[,-1]
+    #dtpg04mej11v = colSums(dtpg04mej11[-1,])
+    dtpg04mej11v = colSums(dtpg04mej11, na.rm = T)
+    dtpg04mej11[1,] = dtpg04mej11v
+
+    dtpg04mej10[,-1] = dtpg04mej11
+    dtpg04mej12 = dtpg04mej10
+
+    dtpg04mej12b = cbind("Interpretacion-Aportaciones AHP" = rownames(dtpg04mej12),
+                         dtpg04mej12)
+    rownames(dtpg04mej12b) =  c()
+    colnames(dtpg04mej12b)[2] = "Ponderaciones Criterios"
+    #str(dtpg04mej12b)
+
+    tb01sal = (dtpg04mej12b) |>
+        formattable(
+            align = c("l",rep("r",(ncol(dtpg04mej12b)-1))),
+            list(
+                area(col = -1) ~ percent,
+                area(col = 2, row = -1) ~ color_tile("#ecf0ec","#B4C3B4"),
+                #lapply(3:ncol(dtpg04mej12b), function(x) {
+                #area(row = -1, col = x) ~ color_tile("#ddd9dd","#786778")
+                #}),
+                area(col = -(1:2)) ~ color_tile("#ddd9dd","#786778"),
+                #area(row = -1, col = 3) ~ color_tile("#ddd9dd","#786778"),
+                #area(row = -1, col = 4) ~ color_tile("#ddd9dd","#786778"),
+                #area(row = 1, col = -(1:2)) ~ color_tile("#d6ebf2", "lightblue"),
+                area(col = 1) ~ formatter("span",
+                                          style = x ~ style("font-weight" = "bold"))
+            )
+        )
+
+
+    res = list(
+        tb01sal = tb01sal,
+        tb02sal = tb02sal,
+        pglobales_mej = pglobales_mej,
+        tb01 = dtpg04mej12b,
+        tb02 = dtpg04mej3
+    )
+    return(res)
+}
+
+
+
+### Multicriterio Electre ------
 
 
 multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concordancia.minimo.alpha,no.se.compensan,que.alternativas=TRUE) {
@@ -940,9 +1149,9 @@ multicriterio.metodoelectre_varlibro <- function (Mvalor, pesos.criterios,umbral
 
 
 
-###############
-## 5. Método Promethee I y II
-###############
+###
+## 5. Método Promethee I y II ------
+###
 
 ## funciones para Promethee
 
@@ -1030,7 +1239,7 @@ fpref.todas = function(cual,vaj,vah,qi=0,pi=1,si=0.5) {
 }
 
 
-##########
+###
 
 
 ##Definimos la función **índice de preferencia multicriterio** para cada par de alternativas:
@@ -1241,9 +1450,9 @@ multicriterio.metodo.promethee_ii_med = function(tabdecs.X,pesos.criterios,tab.f
 
 
 
-########
-### Método axiomático de Arrow y Raymond
-########
+###
+### Método axiomático de Arrow y Raymond -----
+###
 
 
 # Mvalor = matrix(c(8,25,20,10,75,5,
