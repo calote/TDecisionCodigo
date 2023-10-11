@@ -1,6 +1,6 @@
-library(formattable)
-library(htmltools)
-library(webshot)
+suppressWarnings(library(formattable))
+suppressWarnings(library(htmltools))
+suppressWarnings(library(webshot))
 
 ## FUNCIONES MÉTODOS MULTICRITERIOS
 

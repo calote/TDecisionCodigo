@@ -2,7 +2,7 @@ library(knitr)
 suppressWarnings(library(kableExtra))
 suppressPackageStartupMessages(library(dplyr))
 library(stringr)
-suppressPackageStartupMessages(library(factoextra))
+suppressWarnings(suppressPackageStartupMessages(library(factoextra)))
 
 
 # Definición de funciones ----------------------------

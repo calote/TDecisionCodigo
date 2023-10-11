@@ -28,6 +28,28 @@ Los scripts R asociados a cada tema son:
     
     + "teoriadecision_funciones_bayesiana.R" 
 
+# Qué paquetes o librerías R hay que instalar
+
+Para el uso de las funciones definidas en los scripts R para el tema 2: "Multicriterio", 
+hacer la siguiente instalación ejecutándolo en la consola de R-RStudio:
+
+```r
+install.packages("formattable")
+install.packages("webshot")
+webshot::install_phantomjs()
+install.packages("kableExtra")
+install.packages("factoextra")
+install.packages("diagram")
+```
+
+También puede ser necesario instalar los siguientes paquetes si no estuviesen ya instalados:
+
+```r
+install.packages("knitr")
+install.packages("tidyverse")
+```
+
+**Nota 1:** Si tiene problemas con la instalación de "factoextra", no lo intente más, pero abra el fichero: "teoriadecision_funciones_multicriterio_utiles.R" y comente la línea 5 que hace referencia a ese paquete colocando un hastag `#` al inicio de la línea.
 
 # Qué hacer si se detectan errores
 
