@@ -31,7 +31,7 @@ Los scripts R asociados a cada tema son:
 # Qué paquetes o librerías R hay que instalar
 
 Para el uso de las funciones definidas en los scripts R para el tema 2: "Multicriterio", 
-hacer la siguiente instalación ejecutándolo en la consola de R-RStudio:
+hacer la siguiente instalación ejecutándo el siguiente código en la consola de R-RStudio:
 
 ```r
 install.packages("formattable")
