@@ -11,7 +11,7 @@
 
 <meta name="author" content="Pedro Luque" />
 
-<meta name="date" content="2023-10-11" />
+<meta name="date" content="2023-10-26" />
 
 <title>Promethee Windows mejorado</title>
 
@@ -576,7 +576,7 @@ display: none;
 
 <h1 class="title toc-ignore">Promethee Windows mejorado</h1>
 <h4 class="author">Pedro Luque</h4>
-<h4 class="date">2023-10-11</h4>
+<h4 class="date">2023-10-26</h4>
 
 </div>
 
@@ -637,7 +637,8 @@ pesos.criterios01 = c(0.20,0.20,0.30,0.30)</code></pre>
 ## e4     5 -0.4936  0.0375    0.5311</code></pre>
 <p>Muestra los costos con signo positivo e identifica qué criterios son
 de maximizar y de minimizar:</p>
-<pre class="r"><code>(res = multicriterio.metodo.promethee_windows(matdecision, tab.fpref01, pesos.criterios01, fminmax = c(&quot;min&quot;,&quot;max&quot;,&quot;min&quot;,&quot;max&quot;) ))</code></pre>
+<pre class="r"><code>(res = multicriterio.metodo.promethee_windows(matdecision, tab.fpref01, pesos.criterios01, 
+                                              fminmax = c(&quot;min&quot;,&quot;max&quot;,&quot;min&quot;,&quot;max&quot;) ))</code></pre>
 <pre><code>## $Escenario
 ##                        Criterio1     Criterio2     Criterio3    Criterio4  
 ## Min/Max                &quot;min&quot;         &quot;max&quot;         &quot;min&quot;        &quot;max&quot;      

@@ -3,8 +3,8 @@ title: "Promethee Windows mejorado"
 author: "Pedro Luque"
 date: "`r Sys.Date()`"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -48,6 +48,8 @@ pesos.criterios01 = c(0.20,0.20,0.30,0.30)
 ```
 
 
+\newpage
+
 **Resolución con Promethee Windows:**
 
 Muestra los costos con signo negativo:
@@ -55,10 +57,15 @@ Muestra los costos con signo negativo:
 (res = multicriterio.metodo.promethee_windows(matdecision, tab.fpref01, pesos.criterios01))
 ```
 
+\newpage
+
 Muestra los costos con signo positivo e identifica qué criterios son de maximizar y de minimizar:
 ```{r}
-(res = multicriterio.metodo.promethee_windows(matdecision, tab.fpref01, pesos.criterios01, fminmax = c("min","max","min","max") ))
+(res = multicriterio.metodo.promethee_windows(matdecision, tab.fpref01, pesos.criterios01, 
+                                              fminmax = c("min","max","min","max") ))
 ```
+
+\newpage
 
 ## Salidas del método Promethee más elegantes
 
