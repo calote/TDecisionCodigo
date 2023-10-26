@@ -40,6 +40,7 @@ webshot::install_phantomjs()
 install.packages("kableExtra")
 install.packages("factoextra")
 install.packages("diagram")
+install.packages("qgraph")
 ```
 
 También puede ser necesario instalar los siguientes paquetes si no estuviesen ya instalados:
