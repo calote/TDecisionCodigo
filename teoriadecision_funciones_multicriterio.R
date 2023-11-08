@@ -1516,3 +1516,79 @@ multicriterio.metodoaxiomatico.ArrowRaymond = function(Mvalor) {
 
 #final = multicriterio.metodoaxiomatico.ArrowRaymond(Mvalor)
 #final
+
+
+###
+### Método axiomático de Arrow y Raymond  con pesos en los criterios-----
+###
+                              
+func_calcula_matrizclasificacion2 <- function(Mvalor, pesos.criterios) {
+  #Mvalor
+  w <- matrix(pesos.criterios, ncol = 1)
+  num.alter=nrow(Mvalor)
+  num.crit=ncol(Mvalor)
+  Mclasificacion = matrix(NA,nrow=num.alter,ncol=num.alter)
+  rownames(Mclasificacion) = colnames(Mclasificacion) = rownames(Mvalor)
+  for (i in 1:nrow(Mvalor)) {
+    for (j in 1:nrow(Mvalor)) {
+      if (i!=j) {
+        filai = Mvalor[i,]
+        filaj = Mvalor[j,]
+        mayoriquej = matrix(filai>filaj, nrow = 1) %*% w
+        igualiquej = matrix(filai==filaj, nrow = 1) %*% w
+        Mclasificacion[i,j] = mayoriquej + 0.5 * igualiquej
+      }
+    }
+  }
+  return(Mclasificacion)
+}
+
+
+multicriterio.metodoaxiomatico.ArrowRaymond.conpesos <- function(Mvalor, pesos.criterios) {
+  
+  num.alter = nrow(Mvalor)
+  salida = vector("list",num.alter-1)
+  salidatemp = list()
+  Mvalor_red = Mvalor
+  alternativas.salen = c()
+  #i=1
+  for (i in 1:(num.alter-1)) {
+    Mclasificacion_red = func_calcula_matrizclasificacion2(Mvalor_red, pesos.criterios)
+    nombres.alternativas = rownames(Mclasificacion_red)
+    max.filas = apply(Mclasificacion_red,1,max,na.rm=T)
+    inds.orden = order(max.filas)
+    salidatemp$Mclasificacion = Mclasificacion_red
+    salidatemp$max.filas = max.filas
+    salidatemp$indices.ordenados = inds.orden
+    salidatemp$alternativa.sale = nombres.alternativas[inds.orden[1]]
+    if (i<num.alter) {
+      Mvalor_red = Mvalor_red[-inds.orden[1],]
+    }
+    salida[[i]] = salidatemp
+    alternativas.salen = c(alternativas.salen,nombres.alternativas[inds.orden[1]])
+  }
+  alternativas.salen = c(alternativas.salen,nombres.alternativas[inds.orden[2]])
+  salidas = list()
+  salidas$pasos = salida
+  salidas$alternativasordenadas = alternativas.salen[length(alternativas.salen):1]
+  return(salidas)
+  
+}
+
+
+# X <- multicriterio.crea.matrizdecision(c(100, 15, 7, 40, 50,
+#                                        200, 25, 7, 60, 200,
+#                                        100, 20, 4, 25, 25, 
+#                                        200, 30, 20, 70, 350,
+#                                        250, 25, 15, 100, 500),
+#                                      numalternativas = 5,
+#                                      numcriterios = 5,
+#                                      v.nombresalt = paste("Inversión", LETTERS[1:5]),
+#                                      v.nombrescri = paste0("C", 1:5))                              
+
+# con ponderaciones                              
+# multicriterio.metodoaxiomatico.ArrowRaymond.conpesos(X, c(.1, .2, .3, .2, .2))[[2]]
+
+# ponderando a todos por igual                              
+# multicriterio.metodoaxiomatico.ArrowRaymond.conpesos(X, rep(1, 5)[[2]]                              
+                              
