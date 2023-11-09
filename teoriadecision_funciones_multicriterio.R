@@ -1252,6 +1252,7 @@ indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) {
   for (i in 1:num.alt) {
     for (h in 1:num.alt) {
       total = 0;
+      if(i!=h){
       for (j in 1:num.cri) {
         vai = tabdecs.X[i,j];
         vah = tabdecs.X[h,j];
@@ -1262,6 +1263,7 @@ indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) {
         total = total + pesos.criterios[j] * fpref.todas(cual,vai,vah,qi,pi,si)
       }
       tab.indices[i,h] = total;
+        }
     }
   }
   return(tab.indices);
