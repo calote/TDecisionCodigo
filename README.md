@@ -37,10 +37,14 @@ hacer la siguiente instalación ejecutando el siguiente código en la consola de
 install.packages("formattable")
 install.packages("webshot")
 webshot::install_phantomjs()
+install.packages("devtools")  
 install.packages("kableExtra")
+# Si hay problemas con kableExtra instalarlo con el siguiente comando
+# devtools::install_github("kupietz/kableExtra")
 install.packages("factoextra")
 install.packages("diagram")
 install.packages("qgraph")
+devtools::install_github("calote/ahp")
 ```
 
 También puede ser necesario instalar los siguientes paquetes si no estuviesen ya instalados:
