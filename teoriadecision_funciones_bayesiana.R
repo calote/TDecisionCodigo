@@ -17,12 +17,16 @@
 # Esperanzas a posteriori, para cada X_j: E(A_k|X_j)
 
 # Funciones: Sintaxis ------
-# func_estudio_arbolbayesiano_completo = function(probs_estados,probs_X_cond_estados,
-#                                                 tv,favorable=T,baselogaritmo=2)
+# func_estudio_arbolbayesiano_completo = function(probs_estados,probs_X_cond_estados,tv,
+#                                                 favorable=T,baselogaritmo=2,
+#                                                 nb_alt = NULL,nb_est = NULL,nb_X = NULL)
 
-# func_estudio_entropias = function(probs_estados,probs_X_cond_estados,baselogaritmo=2)
-# func_estudio_arbolbayesiano_benefcostes = function(probs_estados,probs_X_cond_estados,
-#                                                    tv,favorable=T)
+
+# func_estudio_entropias = function(probs_estados,probs_X_cond_estados,baselogaritmo=2,
+#                                   nb_alt = NULL,nb_est = NULL,nb_X = NULL)
+
+# func_estudio_arbolbayesiano_benefcostes = function(probs_estados,probs_X_cond_estados,tv,favorable=T,
+#                                                    nb_alt = NULL,nb_est = NULL,nb_X = NULL)
 
 # func_distribucion_conjunta = function(probs_estados,probs_X_cond_estados)
 # func_distribucion_marginal_X = function(probs_estados,probs_X_cond_estados)
@@ -63,7 +67,8 @@
 # Mejoras: -------
 ## 13-1-2021: -------
 # - Nueva función para calcular el VEIP:
-#     "func_VEIP_tv = function(tv,probs_estados,favorable=TRUE,que_alt_Ref = NULL)"
+#     "func_VEIP_tv = function(tv,probs_estados,favorable=TRUE,que_alt_Ref = NULL,
+#                         nb_alt = NULL,nb_est = NULL)"
 # - Mejoradas las funciones: "func_estudio_arbolbayesiano_benefcostes()",
 #     "func_estudio_entropias()", "func_estudio_arbolbayesiano_completo()"
 
