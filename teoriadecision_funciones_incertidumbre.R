@@ -1,14 +1,42 @@
 # fichero: teoriadecision_funciones_incertidumbre_nuevo.R ----
 ## Funciones útiles ----
 
-crea.tablaX = function(vector_matporfilas,numalternativas=3,numestados=4) {
+crea.tablaX = function(vector_matporfilas,numalternativas=NULL,numestados=NULL,nb_alternativas=NULL,nb_estados=NULL) {
+
+  if (is.null(numestados) & is.null(numalternativas)) {
+    stop('Es necesario proporcionar numalternativas o numestados');
+  }
+  if (is.null(numestados)) {
+    numestados = length(vector_matporfilas)/numalternativas;
+  }
+  if (is.null(numalternativas)) {
+    numalternativas = length(vector_matporfilas)/numestados;
+  }
 
   X = matrix(vector_matporfilas,nrow=numalternativas,ncol=numestados,byrow=TRUE)
-  colnames(X) = paste('e',1:numestados,sep='');
-  rownames(X) = paste('d',1:numalternativas,sep='');
+
+  if (!is.null(nb_alternativas)) {
+    if (length(nb_alternativas) != numalternativas) {
+      stop('El numero de nombres de alternativas no coincide con el numero de alternativas');
+    }
+    rownames(X) = nb_alternativas;
+  } else {
+    rownames(X) = paste('d',1:numalternativas,sep='');
+  }
+  if (!is.null(nb_estados)) {
+    if (length(nb_estados) != numestados) {
+      stop('El numero de nombres de estados no coincide con el numero de estados');
+    }
+    colnames(X) = nb_estados;
+  } else {
+    colnames(X) = paste('e',1:numestados,sep='');
+  }
+  #colnames(X) = paste('e',1:numestados,sep='');
+  #rownames(X) = paste('d',1:numalternativas,sep='');
   return(X);
 
 }
+
 
 # Introducimos los datos en R en forma de matriz:
 #   ```{r}
@@ -562,6 +590,22 @@ criterio.Todos = function(tablaX,alfa=0.3,favorable=TRUE) {
              paste0(names(cri04$AlternativaOptima),collapse = ","),
              paste0(names(cri05$AlternativaOptima),collapse = ","),
              paste0(names(cri06$AlternativaOptima),collapse = ","));
+  
+  contar_alternativas = c(names(cri01$AlternativaOptima),
+    names(cri02$AlternativaOptima),
+    names(cri03$AlternativaOptima),
+    names(cri04$AlternativaOptima),
+    names(cri05$AlternativaOptima),
+    names(cri06$AlternativaOptima))  
+  f1 = factor(contar_alternativas, levels = rownames(tablaX))
+  conteo = as.data.frame(table(f1))
+  ind_mejor = which.max.general(conteo[,2])
+  
+  alt_mejor = paste0(as.character(conteo[ind_mejor, 1]), collapse = ",")
+  resultado = cbind(resultado, c(conteo[,2],NA))
+  colnames(resultado)[ncol(resultado)] = "Veces Optima"
+  decopt = c(decopt, alt_mejor)
+
   resultado[nrow(resultado),] = decopt
   ## fin nuevo
 
