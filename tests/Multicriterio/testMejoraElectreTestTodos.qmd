@@ -1,0 +1,123 @@
+---
+title: "metodo_electre"
+lang: es
+format:
+  typst:
+    fig-format: png
+  html: 
+    embed-resources: true
+    code-tools: true
+---
+
+**Nota:** Se han modificado las funciones para mejorar la presentación de los resultados en tablas mediante el paquete `kableExtra`, ya que el código funcionaba con la versión 1.3.4 del paquete kableExtra, con la versión 1.4.x han cambiado algunas funciones y parámetros y el código original no funcionaba correctamente. Se ha hecho una pequeña modificación, principalmente, en lugar de usar la función `kable()` ahora se usa la función `kbl()` en las funciones `func_ELECTRE_resTDiscordancia`, `func_ELECTRE_resTConcordancia` y `func_ELECTRE_resTSuperacion`.
+
+```{r}
+fic_mult = here::here("teoriadecision_funciones_multicriterio.R")
+source(file = fic_mult)
+fic_mult_u = here::here("teoriadecision_funciones_multicriterio_utiles.R")
+source(file = fic_mult_u)
+```
+
+Creamos la matriz de decisión:
+
+```{r}
+t = multicriterio.crea.matrizdecision(
+  c(-200,-100,-200,-550,5,
+    -5, -50, 0, -30, 7,
+    -50, -5, 0, -100, 3,
+    -50, -5, 0, -150, 3), 
+  numalternativas = 4, numcriterios = 5)
+crisub = c(0.023,0.063,0.174,0.106,0.64)
+pesos = crisub
+d = c(100, 20, Inf, Inf, 2)
+
+```
+
+Resolvemos mediante el Método Electre:
+
+```{r}
+
+sol1 = multicriterio.metodoELECTRE_I(t, pesos.criterios = pesos,
+                                     nivel.concordancia.minimo.alpha = 0.7,
+                                     no.se.compensan = d,
+                                     que.alternativas = TRUE)
+```
+
+Mostramos los resultados de los tres tipos de tablas:
+```{r}
+s1 = func_ELECTRE_resTDiscordancia(sol1)
+kableExtra::save_kable(s1$KE, file = "electreTDisc.html")
+webshot::webshot("electreTDisc.html", file = "electreTDisc.png")
+## usar si falla paquete "webshot"
+## webshot2::webshot("electreTDisc.html", file = "electreTDisc.png")  
+```
+
+```{r}
+s1c = func_ELECTRE_resTConcordancia(sol1)
+kableExtra::save_kable(s1c$KE, file = "electreTConc.html")
+webshot::webshot("electreTConc.html", file = "electreTConc.png")
+```
+
+```{r}
+s1s = func_ELECTRE_resTSuperacion(sol1)
+kableExtra::save_kable(s1s$KE, file = "electreTSup.html")
+webshot::webshot("electreTSup.html", file = "electreTSup.png")
+```
+
+**Nota:** Una vez que se crean los gráficos png se pueden comentar las instrucciones `kableExtra::save_kable` y `webshot::webshot` para evitar recrear los gráficos en cada compilación del documento. Además, se podrían borrar los ficheros html generados si no se desean conservar (solo se usan para crear los png), es decir, borrar los ficheros: `electreTDisc.html`, `electreTConc.html` y `electreTSup.html`.
+
+{{< pagebreak >}}
+
+Por ejemplo, se podría usar el gráfico png de cualquier tabla, además sin mostrar el código R, como se muestra a continuación:
+
+
+```{r}
+#| echo: false
+#| out-width: "80%"
+s1 = func_ELECTRE_resTDiscordancia(sol1)
+kableExtra::save_kable(s1$KE, file = "electreTDisc.html")
+webshot::webshot("electreTDisc.html", file = "electreTDisc.png")
+```
+
+
+```{r}
+#| echo: false
+#| out-width: "80%"
+# s1 = func_ELECTRE_resTDiscordancia(sol1)
+# kableExtra::save_kable(s1$KE, file = "electreTDisc.html")
+# webshot::webshot("electreTDisc.html", file = "electreTDisc.png")
+include_graphics("electreTDisc.png")
+```
+
+O también:
+
+![](electreTDisc.png)
+
+
+Se ha usado el siguiente código markdown: 
+
+`````md
+
+```{{r}}
+#| echo: false
+#| out-width: "80%"
+s1 = func_ELECTRE_resTDiscordancia(sol1)
+kableExtra::save_kable(s1$KE, file = "electreTDisc.html")
+webshot::webshot("electreTDisc.html", file = "electreTDisc.png")
+```
+
+
+```{{r}}
+#| echo: false
+#| out-width: "80%"
+# s1 = func_ELECTRE_resTDiscordancia(sol1)
+# kableExtra::save_kable(s1$KE, file = "electreTDisc.html")
+# webshot::webshot("electreTDisc.html", file = "electreTDisc.png")
+include_graphics("electreTDisc.png")
+```
+
+O también:
+
+![](electreTDisc.png)
+
+`````

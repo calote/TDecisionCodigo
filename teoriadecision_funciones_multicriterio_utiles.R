@@ -279,7 +279,7 @@ func_ELECTRE_resTConcordancia = function(res_electre,digitos=4) {
                                    color=ifelse(msal[filas,3:ncol(msal)]>=1,"white","black"))
 
   KE_msal = msal %>%
-    kable(booktabs=T,digits = 3,escape = F,format = "html") %>%
+    kbl(booktabs=T,digits = 3,escape = F,format = "html") %>%
     kable_styling() %>%
     row_spec(0,align="c",color="blue")
   #colores = rainbow(3)
@@ -390,7 +390,7 @@ func_ELECTRE_resTDiscordancia = function(res_electre) {
                                        color=ifelse(msal[filas,3:ncol(msal)]=="1","white","black"))
 
   KE_msal = msal %>%
-    kable(booktabs=T,digits = 3,escape = F) %>%
+    kbl(booktabs=T,digits = 3,escape = F) %>%
     kable_styling() %>%
     row_spec(0,align="c",color="blue")
   #colores = rainbow(3)
@@ -497,7 +497,7 @@ func_ELECTRE_resTSuperacion = function(res_electre) {
                                        color=ifelse(msal[filas,3:ncol(msal)]=="1","white","black"))
 
   KE_msal = msal %>%
-    kable(booktabs=T,digits = 3,escape = F) %>%
+    kbl(booktabs=T,digits = 3,escape = F) %>%
     kable_styling() %>%
     row_spec(0,align="c",color="blue")
   #colores = rainbow(3)
