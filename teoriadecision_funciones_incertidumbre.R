@@ -1,6 +1,40 @@
-# fichero: teoriadecision_funciones_incertidumbre_nuevo.R ----
+# Fichero: teoriadecision_funciones_incertidumbre.R ----
+## Funciones para métodos de decisión bajo incertidumbre
+## Incluye criterios de Wald, Optimista, Hurwicz, Savage, Laplace y Punto Ideal.
+
+
 ## Funciones útiles ----
 
+#' Crear matriz de decisión
+#'
+#' Crea una matriz de decisión a partir de un vector de valores, con nombres
+#' de alternativas y estados.
+#'
+#' @param vector_matporfilas Vector numérico con los valores de la matriz
+#'   rellenable por filas.
+#' @param numalternativas Numérico. Número de alternativas (filas). Si es NULL,
+#'   se infiere de numestados.
+#' @param numestados Numérico. Número de estados (columnas). Si es NULL,
+#'   se infiere de numalternativas.
+#' @param nb_alternativas Vector de character strings opcional con los nombres
+#'   de las alternativas.
+#' @param nb_estados Vector de character strings opcional con los nombres
+#'   de los estados.
+#'
+#' @return Matriz numérica con los datos organizados, con nombres de filas
+#'   y columnas asignados.
+#'
+#' @examples
+#' # Crear matriz 4x3
+#' X <- crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0),
+#'                   numalternativas = 4, numestados = 3)
+#' X
+#'
+#' # Con nombres personalizados
+#' crea.tablaX(c(10, 20, 30, 40), numalternativas = 2,
+#'             nb_alternativas = c("d1", "d2"), nb_estados = c("e1", "e2"))
+#'
+#' @export
 crea.tablaX = function(vector_matporfilas,numalternativas=NULL,numestados=NULL,nb_alternativas=NULL,nb_estados=NULL) {
 
   if (is.null(numestados) & is.null(numalternativas)) {
@@ -31,76 +65,125 @@ crea.tablaX = function(vector_matporfilas,numalternativas=NULL,numestados=NULL,n
   } else {
     colnames(X) = paste('e',1:numestados,sep='');
   }
-  #colnames(X) = paste('e',1:numestados,sep='');
-  #rownames(X) = paste('d',1:numalternativas,sep='');
   return(X);
 
 }
 
 
-# Introducimos los datos en R en forma de matriz:
-#   ```{r}
-# X = matrix(c(5,4,6,2,3,1,-1,8,7,5,2,0),nrow=4,ncol=3,byrow=TRUE)
-# X
-# colnames(X)=c('e1','e2','e3')
-# rownames(X)=c('d1','d2','d3','d4')
-# X
-# ```
-
-
-
+#' Índices de mínimos y máximos generalizados
+#'
+#' Funciones auxiliares que devuelven todos los índices donde se alcanza
+#' el mínimo o máximo de un vector (no solo el primero).
+#'
+#' @param vector Vector numérico.
+#'
+#' @return Vector numérico con los índices donde se alcanza el extremo.
+#'
+#' @examples
+#' which.min.general(c(3, 2, 8, 2, 9, 2))  # Devuelve 2, 4, 6
+#' which.max.general(c(3, 2, 8, 2, 9, 2))  # Devuelve 5
+#'
+#' @export
 which.min.general = function(vector) {
   minimo = min(vector);
   res = which(vector == minimo);
   return(res);
-
 }
 
+#' @rdname which.min.general
+#' @export
 which.max.general = function(vector) {
   maximo = max(vector);
   res = which(vector == maximo);
   return(res);
-
 }
 
 
-##which.min.general(c(3,2,8,2,9,2))
-##which.min.general(c(3,2,8,1,9,2))
-
+#' Distancia euclídea
+#'
+#' Calcula la distancia euclídea entre dos puntos.
+#'
+#' @param pto1 Vector numérico con las coordenadas del primer punto.
+#' @param pto2 Vector numérico con las coordenadas del segundo punto.
+#'
+#' @return Valor numérico con la distancia euclídea.
+#'
+#' @examples
+#' distanciaEuclidea(c(0, 0), c(3, 4))  # Devuelve 5
+#' distanciaEuclidea(c(1, 2, 3), c(4, 5, 6))
+#'
+#' @export
 distanciaEuclidea = function(pto1,pto2) {
   return( sqrt( sum( (pto1-pto2)^2 )  ) )
 }
 
 
-
+#' Ejemplos de matrices de decisión
+#'
+#' Devuelve matrices de ejemplo predefinidas para ilustrar el uso de los
+#' criterios de decisión.
+#'
+#' @param cual Numérico. Indica qué ejemplo devolver (1, 2 o 3).
+#'
+#' @return Matriz numérica con la tabla de decisión de ejemplo.
+#'
+#' @examples
+#' criterio.tablaX.ejemplos(1)  # Ejemplo 1 (favorable)
+#' criterio.tablaX.ejemplos(2)  # Ejemplo 2 (desfavorable)
+#' criterio.tablaX.ejemplos(3)  # Ejemplo 3 (desfavorable)
+#'
+#' @export
 criterio.tablaX.ejemplos = function(cual=1) {
 
-  if (cual==2) { ## cual == 2  ## desfav.
+  if (cual==2) {
     X = crea.tablaX(c(2,12,-3,5,5,-1,0,10,-2),numalternativas = 3,numestados = 3)
-  } else if (cual==3) { ## cual == 3  ## desfav.
+  } else if (cual==3) {
     X = crea.tablaX(c(125,120,156,60,130,80),numalternativas = 3,numestados = 2)
-  } else {  ## cual == 1
+  } else {
     X = crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0),numalternativas = 4,numestados = 3)
   }
   return(X);
 
 }
 
+
 ## Funciones Métodos de Decisión bajo Incertidumbre ----
 
-## Criterio de Wald o Pesimista
+#' Criterio de Wald (Pesimista)
+#'
+#' Aplica el criterio de Wald (minimax para beneficios o maximin para costes).
+#' Selecciona la alternativa que garantiza el mejor peor caso.
+#'
+#' @param tablaX Matriz numérica de decisión donde las filas son alternativas
+#'   y las columnas estados naturales.
+#' @param favorable Lógico. Si TRUE (por defecto), se trata un problema de
+#'   beneficios. Si FALSE, de costes.
+#'
+#' @return Lista con los siguientes elementos:
+#' \describe{
+#'   \item{criterio}{Nombre del criterio: "Wald"}
+#'   \item{metodo}{Tipo de problema: "favorable" o "desfavorable"}
+#'   \item{tablaX}{Tabla de decisión original}
+#'   \item{ValorAlternativas}{Vector con el valor peor de cada alternativa}
+#'   \item{ValorOptimo}{Valor óptimo obtenido}
+#'   \item{AlternativaOptima}{Índice(s) de la(s) alternativa(s) óptima(s)}
+#' }
+#'
+#' @examples
+#' X <- crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0), 4, 3)
+#' criterio.Wald(X, favorable = TRUE)
+#'
+#' @export
 criterio.Wald = function(tablaX,favorable=TRUE) {
 
   X = tablaX;
   if (favorable) {
     AltW = apply(X,MARGIN=1,min);
-    ##AltW
     Wald = max(AltW);
     Alt_Wald = which.max.general(AltW);
     metodo = 'favorable';
   } else {
     AltW = apply(X,MARGIN=1,max);
-    ##AltW
     Wald = min(AltW);
     Alt_Wald = which.min.general(AltW);
     metodo = 'desfavorable';
@@ -115,25 +198,42 @@ criterio.Wald = function(tablaX,favorable=TRUE) {
 
   return(resultados);
 
-
 }
 
 
-
-
-
+#' Criterio Optimista (Maximax)
+#'
+#' Aplica el criterio optimista que selecciona la alternativa con el mejor
+#' mejor caso posible.
+#'
+#' @param tablaX Matriz numérica de decisión.
+#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#'
+#' @return Lista con los siguientes elementos:
+#' \describe{
+#'   \item{criterio}{Nombre del criterio: "Optimista"}
+#'   \item{metodo}{Tipo de problema}
+#'   \item{tablaX}{Tabla de decisión original}
+#'   \item{ValorAlternativas}{Vector con el mejor valor de cada alternativa}
+#'   \item{ValorOptimo}{Valor óptimo obtenido}
+#'   \item{AlternativaOptima}{Índice(s) de la(s) alternativa(s) óptima(s)}
+#' }
+#'
+#' @examples
+#' X <- crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0), 4, 3)
+#' criterio.Optimista(X, favorable = TRUE)
+#'
+#' @export
 criterio.Optimista = function(tablaX,favorable=TRUE) {
 
   X = tablaX;
   if (favorable) {
     AltM = apply(X,MARGIN=1,max);
-    ##AltM
     Maximax = max(AltM);
     Alt_Maximax = which.max.general(AltM);
     metodo = 'favorable';
   } else {
     AltM = apply(X,MARGIN=1,min);
-    ##AltM
     Maximax = min(AltM);
     Alt_Maximax = which.min.general(AltM);
     metodo = 'desfavorable';
@@ -152,10 +252,33 @@ criterio.Optimista = function(tablaX,favorable=TRUE) {
 }
 
 
-
-## factor de optimismo   (alfab * "lo mejor" Altmax en favor. y Altmin en desf.)
+#' Criterio de Hurwicz
+#'
+#' Aplica el criterio de Hurwicz con un coeficiente de optimismo alfa.
+#' Combina el mejor y peor caso de cada alternativa ponderadamente.
+#'
+#' @param tablaX Matriz numérica de decisión.
+#' @param alfa Numérico entre 0 y 1. Coeficiente de optimismo. Si alfa=1 se
+#'   obtiene el criterio optimista; si alfa=0, el pesimista.
+#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#'
+#' @return Lista con los siguientes elementos:
+#' \describe{
+#'   \item{criterio}{Nombre del criterio: "Hurwicz"}
+#'   \item{alfa}{Valor de alfa utilizado}
+#'   \item{metodo}{Tipo de problema}
+#'   \item{tablaX}{Tabla de decisión original}
+#'   \item{ValorAlternativas}{Vector con el valor Hurwicz de cada alternativa}
+#'   \item{ValorOptimo}{Valor óptimo obtenido}
+#'   \item{AlternativaOptima}{Índice(s) de la(s) alternativa(s) óptima(s)}
+#' }
+#'
+#' @examples
+#' X <- crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0), 4, 3)
+#' criterio.Hurwicz(X, alfa = 0.3, favorable = TRUE)
+#'
+#' @export
 criterio.Hurwicz = function(tablaX,alfa=0.3,favorable=TRUE) {
-  # alfa es un escalar entre 0 y 1 lo obtiene para ese único valor
   X = tablaX;
   if (favorable) {
     Altmin = apply(X,MARGIN=1,min);
@@ -183,14 +306,39 @@ criterio.Hurwicz = function(tablaX,alfa=0.3,favorable=TRUE) {
 
   return(resultados);
 
-
-
 }
 
-## factor de optimismo   (alfab * "lo mejor" Altmax en favor. y Altmin en desf.)
+
+#' Criterio de Hurwicz General
+#'
+#' Variante del criterio de Hurwicz que permite evaluar múltiples valores
+#' de alfa simultáneamente.
+#'
+#' @param tablaX Matriz numérica de decisión.
+#' @param alfa Numérico. Si alfa <= 1, se evalúa para ese único valor.
+#'   Si alfa > 1, se usa como número de puntos en el rango [0, 1].
+#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#'
+#' @return Lista con los siguientes elementos:
+#' \describe{
+#'   \item{criterio}{Nombre del criterio: "Hurwicz"}
+#'   \item{alfa}{Valor original de alfa}
+#'   \item{metodo}{Tipo de problema}
+#'   \item{tablaX}{Tabla de decisión original}
+#'   \item{ValorAlternativas}{Vector con los valores Hurwicz}
+#'   \item{ValorOptimo}{Vector de valores óptimos para cada alfa}
+#'   \item{AlternativaOptima}{Índice(s) de alternativa(s) óptima(s)}
+#' }
+#'
+#' @examples
+#' X <- crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0), 4, 3)
+#' # Un solo valor de alfa
+#' criterio.Hurwicz.General(X, alfa = 0.5, favorable = TRUE)
+#' # Múltiples valores
+#' criterio.Hurwicz.General(X, alfa = 10, favorable = TRUE)
+#'
+#' @export
 criterio.Hurwicz.General = function(tablaX,alfa=0.3,favorable=TRUE) {
-  # si alfa es un escalar entre 0 y 1 lo obtiene para ese único valor
-  # si alfa es igual a un número mayor que 1, lo usa para obtener cálculos para dividir el rango 0-1
   X = tablaX;
   if (favorable) {
     Altmin = apply(X,MARGIN=1,min);
@@ -198,7 +346,7 @@ criterio.Hurwicz.General = function(tablaX,alfa=0.3,favorable=TRUE) {
     if (alfa<=1) {
       valfa = c(alfa);
     } else {
-      valfa = seq(from=0,to=1,by=(1/alfa)); ## alfa: 100, 200,
+      valfa = seq(from=0,to=1,by=(1/alfa));
     }
     vHurwicz = rep(0,length(valfa))
     Alt_vHurwicz = rep(0,length(valfa))
@@ -216,7 +364,7 @@ criterio.Hurwicz.General = function(tablaX,alfa=0.3,favorable=TRUE) {
     if (alfa<=1) {
       valfa = c(alfa);
     } else {
-      valfa = seq(from=0,to=1,by=(1/alfa)); ## alfa: 100, 200,
+      valfa = seq(from=0,to=1,by=(1/alfa));
     }
     vHurwicz = rep(0,length(valfa))
     Alt_vHurwicz = rep(0,length(valfa))
@@ -226,7 +374,6 @@ criterio.Hurwicz.General = function(tablaX,alfa=0.3,favorable=TRUE) {
       vHurwicz[i] = min(vAltH);
       Alt_vHurwicz[i] = which.min(vAltH);
       Alt_vHurwicz_g = which.min.general(vAltH);
-
     }
     metodo = 'desfavorable';
   }
@@ -245,12 +392,24 @@ criterio.Hurwicz.General = function(tablaX,alfa=0.3,favorable=TRUE) {
 
   return(resultados);
 
-
-
 }
 
 
-
+#' Representación gráfica del criterio de Hurwicz
+#'
+#' Dibuja un gráfico que muestra cómo varía el criterio de Hurwicz para
+#' cada alternativa en función del coeficiente de optimismo alfa.
+#'
+#' @param tablaX Matriz numérica de decisión.
+#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#'
+#' @return None. Produce un gráfico como efecto secundario.
+#'
+#' @examples
+#' X <- crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0), 4, 3)
+#' \dontrun{dibuja.criterio.Hurwicz(X, favorable = TRUE)}
+#'
+#' @export
 dibuja.criterio.Hurwicz = function(tablaX,favorable=TRUE) {
   X = tablaX;
   Altmin = apply(X,MARGIN=1,min);
@@ -267,7 +426,6 @@ dibuja.criterio.Hurwicz = function(tablaX,favorable=TRUE) {
       vAltH = alfab * Altmin + (1-alfab) * Altmax;
       vHurwicz[i] = min(vAltH)
     }
-
   }
 
   x0=0;x1=1;
@@ -305,66 +463,62 @@ dibuja.criterio.Hurwicz = function(tablaX,favorable=TRUE) {
 }
 
 
-# FUNCION : esta funcion nos da los valores de alfa para los que las alternativas cambian
-
-# Entrada: Tabla, favorable (T/F)
-# Salida: Intervalo -> Alternativa (óptima para ese intervalo de alfa)
-# Autores: Ana Solis, Luca Ricardi y Paula Gutiérrez (Noviembre-2021)
-
+#' Criterio de Hurwicz con intervalos de alfa
+#'
+#' Calcula los intervalos de alfa para los cuales cada alternativa es óptima
+#' según el criterio de Hurwicz.
+#'
+#' @param tablaX Matriz numérica de decisión.
+#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#' @param mostrarGrafico Lógico. Si TRUE, muestra el gráfico de Hurwicz.
+#'
+#' @return Lista con los siguientes elementos:
+#' \describe{
+#'   \item{AltOptimas}{Vector con las alternativas óptimas encontradas}
+#'   \item{PuntosDeCorte}{Vector con los valores de alfa donde cambia la decisión}
+#'   \item{IntervalosAlfa}{Matriz con los intervalos y la alternativa óptima en cada uno}
+#' }
+#'
+#' @examples
+#' X <- crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0), 4, 3)
+#' resultado <- dibuja.criterio.Hurwicz_Intervalos(X, favorable = TRUE)
+#' resultado$IntervalosAlfa
+#'
+#' @export
 dibuja.criterio.Hurwicz_Intervalos = function(tablaX,favorable=TRUE,mostrarGrafico=TRUE) {
-    X = tablaX # renombramos la tabla
-    Altmin = apply(X,MARGIN=1,min)      # vector de minimos (por filas)
-    Altmax = apply(X,MARGIN=1,max)      # vector de maximos (por filas)
-    valfa = seq(from=0,to=1,by=0.05)    # vector de valores para alfa (entre 0 y 1)
+    X = tablaX
+    Altmin = apply(X,MARGIN=1,min)
+    Altmax = apply(X,MARGIN=1,max)
+    valfa = seq(from=0,to=1,by=0.05)
     Hurw <- data.frame(Alt_opt = rep(0,length(valfa)),vHurwicz = rep(0,length(valfa)))
 
-    #Alt_opt = rep(0,length(valfa))      # creamos el vector de decisiones (por el criterio de Hurwicz) para cada valor de alfa
-
-    alfaCorte=c()                       # vector que contiene los valores de alfa donde cambian las decisiones
+    alfaCorte=c()
     for (i in 1:length(valfa)) {
         Opt <- criterio.Hurwicz(X, alfa = valfa[i], favorable)
-        Hurw[i,] <-  rbind(Opt$AlternativaOptima[[1]],Opt$ValorOptimo) # obtenemos las alternativas para cada alfa
-        Alt=c() # Este va a ser el Vector de las alternativas optimas para todos los alfa
+        Hurw[i,] <-  rbind(Opt$AlternativaOptima[[1]],Opt$ValorOptimo)
+        Alt=c()
         for (i in 1:dim(Hurw)[1]) {
-            valrepetidos = duplicated(Hurw$Alt_opt) # Vector de TRUE/FALSE donde los FALSE son los elementos que se repiten
+            valrepetidos = duplicated(Hurw$Alt_opt)
             if (isFALSE(valrepetidos[i])){
-                Alt = c(Alt,Hurw$Alt_opt[i]) # Si es falso (si el valor se repite) lo almacenamos en el vector Alt
+                Alt = c(Alt,Hurw$Alt_opt[i])
             }
         }
     }
-    # Teniendo el vector de alternativas (Alt) buscamos los puntos de corte de las rectas asociadas a cada alternativa (beneficios)
-    # Por ejemplo, la recta que sale de la alternativa a1 y a2 seria:
-    #
-    #               a1Max *alfa +(1-alfa)*a1Min = a2Max *alfa +(1-alfa)*a2Min
-    #
-    # Pasando todo a un  miembro e igualando a 0 nos queda:
-    #
-    #               alfa * (a1Max- a2Max - a1Min + a2Min) + a1Min -a2Min = 0
-    #
-    # Buscamos ahora los valores de alfa para los que se cortan las rectas asociadas a cada decision
+
     for (i in 1:(length(Alt)-1)){
-        imax = as.numeric(Altmax[Alt[i]])      # maximo asociado a la decision i del vector Alt
-        imax1 = as.numeric(Altmax[Alt[i+1]])   # maximo asociado a la decision i+1 del vector Alt
-        imin = as.numeric(Altmin[Alt[i]])      # minimo asociado a la decision i del vector Alt
-        imin1 = as.numeric(Altmin[Alt[i+1]])   # minimo asociado a la decision i+1 del vector Alt
+        imax = as.numeric(Altmax[Alt[i]])
+        imax1 = as.numeric(Altmax[Alt[i+1]])
+        imin = as.numeric(Altmin[Alt[i]])
+        imin1 = as.numeric(Altmin[Alt[i+1]])
         if (favorable){
             pCorte = function(alfa) {alfa * (imax-imax1-imin+imin1)+imin-imin1}
-            alfaC = uniroot(pCorte, interval = c(0,1))$root[[1]] # Buscamos los 0 para cada funcion
-            alfaCorte[i] = alfaC  # Almacenamos los valores de alfa para los que las rectas se cortan en alfaCorte
+            alfaC = uniroot(pCorte, interval = c(0,1))$root[[1]]
+            alfaCorte[i] = alfaC
         } else {
-            # Para el caso de costes (alternativas a1 y a2):
-            #
-            #               a1Max *(1-alfa) +alfa*a1Min = a2Max *(1-alfa) +alfa*a2Min
-            #
-            # Pasando todo a un  miembro e igualando a 0 nos queda:
-            #
-            #               alfa * (a1Min- a2Min - a1Max + a2Max) + a1Max -a2Max = 0
-            #
             pCorte = function(alfa) {alfa * (imin-imin1-imax+imax1)+imax-imax1}
-            alfaC = uniroot(pCorte, interval = c(0,1))$root[[1]] # Buscamos los 0 para cada funcion
-            alfaCorte[i] = alfaC  # Almacenamos los valores de alfa para los que las rectas se cortan en alfaCorte
+            alfaC = uniroot(pCorte, interval = c(0,1))$root[[1]]
+            alfaCorte[i] = alfaC
         }
-
     }
 
     if (mostrarGrafico) {
@@ -375,7 +529,7 @@ dibuja.criterio.Hurwicz_Intervalos = function(tablaX,favorable=TRUE,mostrarGrafi
         y0=y0-0.1*rg;y1=y1+0.1*rg;
         plot(c(x0,x1), c(y0,y1), type = "n", xlab = "alpha", ylab = "Criterio Hurwicz");
         nn = length(Altmin);
-        colores = rainbow(nn) #aquí es donde estaba el fallo, por lo que salían todas las lineas azules.
+        colores = rainbow(nn)
         abline(v=0);
         abline(v=1);
         if (favorable) {
@@ -396,10 +550,10 @@ dibuja.criterio.Hurwicz_Intervalos = function(tablaX,favorable=TRUE,mostrarGrafi
         abline(v = alfaCorte, col="red")
 
         if (favorable) {
-            legend("bottomright",legend=rownames(X),fill=colores,inset=0.05) #leyendas añadidas
+            legend("bottomright",legend=rownames(X),fill=colores,inset=0.05)
             title("Criterio de Hurwicz (favorable - línea discontinua)")
         } else {
-            legend("topright",legend=rownames(X),fill=colores,inset=0.05) #leyendas añadidas
+            legend("topright",legend=rownames(X),fill=colores,inset=0.05)
             title("Criterio de Hurwicz (desfavorable - línea discontinua)")
         }
     }
@@ -431,10 +585,32 @@ dibuja.criterio.Hurwicz_Intervalos = function(tablaX,favorable=TRUE,mostrarGrafi
 }
 
 
-
-
-## Savage
-
+#' Criterio de Savage (Minimax de arrepentimiento)
+#'
+#' Aplica el criterio de Savage que minimiza el arrepentimiento máximo.
+#' Calcula la matriz de arrepentimientos y selecciona la alternativa con
+#' el menor arrepentimiento máximo.
+#'
+#' @param tablaX Matriz numérica de decisión.
+#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#'
+#' @return Lista con los siguientes elementos:
+#' \describe{
+#'   \item{criterio}{Nombre del criterio: "Savage"}
+#'   \item{metodo}{Tipo de problema}
+#'   \item{tablaX}{Tabla de decisión original}
+#'   \item{Mejores}{Vector con los mejores valores por estado}
+#'   \item{Pesos}{Matriz de arrepentimientos}
+#'   \item{ValorAlternativas}{Vector con el arrepentimiento máximo de cada alternativa}
+#'   \item{ValorOptimo}{Valor óptimo obtenido}
+#'   \item{AlternativaOptima}{Índice(s) de la(s) alternativa(s) óptima(s)}
+#' }
+#'
+#' @examples
+#' X <- crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0), 4, 3)
+#' criterio.Savage(X, favorable = TRUE)
+#'
+#' @export
 criterio.Savage = function(tablaX,favorable=TRUE) {
 
   X = tablaX;
@@ -443,8 +619,6 @@ criterio.Savage = function(tablaX,favorable=TRUE) {
     temp1 = rep(Mejores,dim(X)[1])
     Mmejores = matrix(temp1,nrow=dim(X)[1],ncol=dim(X)[2],byrow=TRUE);
     Pesos = abs(Mmejores-X);
-    ##print(Pesos)
-    ## Ahora criterio Wald Minimax Pesimista (desfavorable)
     AltWS= apply(Pesos,MARGIN=1,max);
     Savage = min(AltWS);
     Alt_Savage = which.min.general(AltWS);
@@ -454,7 +628,6 @@ criterio.Savage = function(tablaX,favorable=TRUE) {
     temp1 = rep(Mejores,dim(X)[1])
     Mmejores = matrix(temp1,nrow=dim(X)[1],ncol=dim(X)[2],byrow=TRUE);
     Pesos = abs(Mmejores-X);
-    ## Ahora criterio Wald Minimax (desfavorable)
     AltWS= apply(Pesos,MARGIN=1,max);
     Savage = min(AltWS);
     Alt_Savage = which.min.general(AltWS);
@@ -472,22 +645,43 @@ criterio.Savage = function(tablaX,favorable=TRUE) {
 
   return(resultados);
 
-
 }
 
 
-
+#' Criterio de Laplace (igual probabilidades)
+#'
+#' Aplica el criterio de Laplace asumiendo probabilidades iguales para todos
+#' los estados. Calcula la media de cada alternativa.
+#'
+#' @param tablaX Matriz numérica de decisión.
+#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#'
+#' @return Lista con los siguientes elementos:
+#' \describe{
+#'   \item{criterio}{Nombre del criterio: "Laplace"}
+#'   \item{metodo}{Tipo de problema}
+#'   \item{tablaX}{Tabla de decisión original}
+#'   \item{ValorAlternativas}{Vector con la media de cada alternativa}
+#'   \item{ValorOptimo}{Valor óptimo obtenido}
+#'   \item{AlternativaOptima}{Índice(s) de la(s) alternativa(s) óptima(s)}
+#' }
+#'
+#' @examples
+#' X <- crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0), 4, 3)
+#' criterio.Laplace(X, favorable = TRUE)
+#'
+#' @export
 criterio.Laplace = function(tablaX,favorable=TRUE) {
 
   X = tablaX;
   if (favorable) {
     AltL = apply(X,MARGIN=1,mean);
-    Laplace = max(AltL) # favorable
+    Laplace = max(AltL)
     Alt_Laplace = which.max.general(AltL)
     metodo = 'favorable';
   } else {
     AltL = apply(X,MARGIN=1,mean);
-    Laplace = min(AltL) # desfavorable
+    Laplace = min(AltL)
     Alt_Laplace = which.min.general(AltL)
     metodo = 'desfavorable';
   }
@@ -504,29 +698,50 @@ criterio.Laplace = function(tablaX,favorable=TRUE) {
 }
 
 
-
+#' Criterio del Punto Ideal
+#'
+#' Selecciona la alternativa más cercana al punto ideal (la mejor en cada
+#' criterio), usando distancia euclídea.
+#'
+#' @param tablaX Matriz numérica de decisión.
+#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#'
+#' @return Lista con los siguientes elementos:
+#' \describe{
+#'   \item{criterio}{Nombre del criterio: "Punto Ideal"}
+#'   \item{metodo}{Tipo de problema}
+#'   \item{tablaX}{Tabla de decisión original}
+#'   \item{Mejores}{Vector con los mejores valores por estado (punto ideal)}
+#'   \item{ValorAlternativas}{Vector con las distancias al punto ideal}
+#'   \item{ValorOptimo}{Distancia mínima al punto ideal}
+#'   \item{AlternativaOptima}{Índice(s) de la(s) alternativa(s) óptima(s)}
+#' }
+#'
+#' @examples
+#' X <- crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0), 4, 3)
+#' criterio.PuntoIdeal(X, favorable = TRUE)
+#'
+#' @export
 criterio.PuntoIdeal = function(tablaX,favorable=TRUE) {
 
   X = tablaX;
   if (favorable) {
-    MejoresPT = apply(X,MARGIN=2,max); # favorable
+    MejoresPT = apply(X,MARGIN=2,max);
     AltPT = rep(0,dim(X)[1])
     for (i in 1:dim(X)[1]) {
       AltPT[i] = distanciaEuclidea(MejoresPT,X[i,])
     }
-    ##AltPT
     names(AltPT) = rownames(tablaX)
     PuntoIdeal = min(AltPT);
     Alt_PuntoIdeal = which.min.general(AltPT);
     metodo = 'favorable';
   } else {
-    MejoresPT = apply(X,MARGIN=2,min); # desfavorable
+    MejoresPT = apply(X,MARGIN=2,min);
     AltPT = rep(0,dim(X)[1])
     names(AltPT) = rownames(tablaX)
     for (i in 1:dim(X)[1]) {
       AltPT[i] = distanciaEuclidea(MejoresPT,X[i,])
     }
-    ##AltPT
     PuntoIdeal = min(AltPT);
     Alt_PuntoIdeal = which.min.general(AltPT);
     metodo = 'desfavorable';
@@ -544,6 +759,29 @@ criterio.PuntoIdeal = function(tablaX,favorable=TRUE) {
 
 }
 
+
+#' Aplicación de todos los criterios
+#'
+#' Aplica de forma simultánea los criterios de Wald, Optimista, Hurwicz,
+#' Savage, Laplace y Punto Ideal, devolviendo una tabla resumen con los
+#' resultados de todos ellos.
+#'
+#' @param tablaX Matriz numérica de decisión.
+#' @param alfa Numérico. Coeficiente de optimismo para Hurwicz. Por defecto 0.3.
+#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#'
+#' @return DataFrame con una tabla resumen que incluye:
+#'   - Las valoraciones originales para cada estado
+#'   - Los valores de cada criterio para cada alternativa
+#'   - La alternativa óptima según cada criterio
+#'   - Una columna "Veces Óptima" con el conteo de veces que cada alternativa
+#'     es seleccionada como óptima
+#'
+#' @examples
+#' X <- criterio.tablaX.ejemplos(1)
+#' criterio.Todos(X, favorable = TRUE)
+#'
+#' @export
 criterio.Todos = function(tablaX,alfa=0.3,favorable=TRUE) {
 
   cri01 = criterio.Wald(tablaX,favorable);
@@ -580,7 +818,6 @@ criterio.Todos = function(tablaX,alfa=0.3,favorable=TRUE) {
     rownames(resultado)[numalterna+1] = 'iAlt.Opt (Desfav.)';
   }
 
-  ## nuevo
   resultado = as.data.frame(resultado)
   resultado = format(resultado,digits=4)
   decopt = c(rep('--',numestados),
@@ -590,27 +827,24 @@ criterio.Todos = function(tablaX,alfa=0.3,favorable=TRUE) {
              paste0(names(cri04$AlternativaOptima),collapse = ","),
              paste0(names(cri05$AlternativaOptima),collapse = ","),
              paste0(names(cri06$AlternativaOptima),collapse = ","));
-  
+
   contar_alternativas = c(names(cri01$AlternativaOptima),
     names(cri02$AlternativaOptima),
     names(cri03$AlternativaOptima),
     names(cri04$AlternativaOptima),
     names(cri05$AlternativaOptima),
-    names(cri06$AlternativaOptima))  
+    names(cri06$AlternativaOptima))
   f1 = factor(contar_alternativas, levels = rownames(tablaX))
   conteo = as.data.frame(table(f1))
   ind_mejor = which.max.general(conteo[,2])
-  
+
   alt_mejor = paste0(as.character(conteo[ind_mejor, 1]), collapse = ",")
   resultado = cbind(resultado, c(conteo[,2],NA))
   colnames(resultado)[ncol(resultado)] = "Veces Optima"
   decopt = c(decopt, alt_mejor)
 
   resultado[nrow(resultado),] = decopt
-  ## fin nuevo
 
   return(resultado)
 
 }
-
-
