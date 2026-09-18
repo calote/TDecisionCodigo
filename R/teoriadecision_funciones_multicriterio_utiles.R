@@ -804,13 +804,15 @@ multicriterio.metodo.promethee_plano_GAIA_med = function(tabdecs.X,pesos.criteri
     num.cri = ncol(tabdecs.X)
     tabla.M1 =  calculo_tablaM(tabdecs.X,pesos.criterios,tab.fpref)
     PCA.UNIC = stats::prcomp(tabla.M1, center = TRUE, scale. = TRUE)
-    Plano.GAIA = factoextra::fviz_pca_biplot(PCA.UNIC,
+    # factoextra/ggpubr emiten un aviso deprecado de ggplot2 (size -> linewidth)
+    # ajeno a este paquete; se silencia para no confundir al usuario.
+    Plano.GAIA = suppressWarnings(factoextra::fviz_pca_biplot(PCA.UNIC,
                                              geom =c("point", "text"),
                                              repel = TRUE,
                                              col.ind = "#FC4E07",
                                              axes = c(1, 2),
                                              pointsize = 1.5,
-                                             title = "Plano GAIA (Promethee II)")
+                                             title = "Plano GAIA (Promethee II)"))
 
     v.flujos.netos = rowSums(tabla.M1 * matrix(pesos.criterios,
                                                nrow = num.alt,
