@@ -19,7 +19,13 @@ Genera tablas kableExtra adaptativas segun el formato de salida (HTML o PDF).
 }
 \examples{
 \dontrun{
+matdecision <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+tab.fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+                        pi = c(5, 3, 2), si = c(1, 1, 1))
+res <- multicriterio.metodo.promethee_windows(
+  matdecision, tab.fpref, c(0.5, 0.3, 0.2))
 resultado <- multicriterio.metodo.promethee_windows_kableExtra(res)
+resultado$tabAcciones
 }
 
 }

@@ -17,12 +17,15 @@ calculo_tablaM(tabdecs.X, pesos.criterios, tab.fpref)
 \value{
 Matriz numerica donde cada elemento M(i,j) representa el flujo
 promedio de la alternativa i en el criterio j.
+
+X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+pesos <- c(0.5, 0.3, 0.2)
+fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+pi = c(5, 3, 2), si = c(1, 1, 1))
+M <- calculo_tablaM(X, pesos, fpref)
+M
 }
 \description{
 Calcula la matriz de decision promedio M utilizada en el plano GAIA
 del metodo Promethee.
-}
-\examples{
-# Ver ejemplos en multicriterio.metodo.promethee_plano_GAIA_med
-
 }

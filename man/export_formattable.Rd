@@ -34,7 +34,9 @@ Exporta una tabla formattable a un fichero de imagen PNG.
 }
 \examples{
 \dontrun{
-export_formattable(mi_tabla, file = "tabla.png")
+df <- data.frame(Alternativa = c("A1", "A2"), Valor = c(0.65, 0.35))
+ft <- formattable::formattable(df)
+export_formattable(ft, file = tempfile(fileext = ".png"))
 }
 
 }

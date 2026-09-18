@@ -27,10 +27,9 @@ Genera el primer bloque de informacion de Promethee Windows con la
 configuracion de preferencias.
 }
 \examples{
-\dontrun{
-tab.fpref <- data.frame(tipo=c(1,1), qi=c(0,0), pi=c(5,3), si=c(1,1))
+tab.fpref <- data.frame(tipo = c(1, 1), qi = c(0, 0),
+                        pi = c(5, 3), si = c(1, 1))
 pesos <- c(0.6, 0.4)
 multicriterio.metodo.promethee_windows_bloque01(tab.fpref, pesos)
-}
 
 }

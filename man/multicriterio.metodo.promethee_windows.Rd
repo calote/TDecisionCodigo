@@ -34,11 +34,11 @@ Aplica el metodo Promethee Windows que combina Promethee I y II con
 un formato de presentacion tipo "ventana" con estadisticas.
 }
 \examples{
-\dontrun{
+matdecision <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+tab.fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+                        pi = c(5, 3, 2), si = c(1, 1, 1))
 resultado <- multicriterio.metodo.promethee_windows(
-  matdecision, tab.fpref, pesos.criterios
-)
+  matdecision, tab.fpref, c(0.5, 0.3, 0.2))
 resultado$Acciones
-}
 
 }

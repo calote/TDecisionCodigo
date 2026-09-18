@@ -764,7 +764,9 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
 #'
 #' @examples
 #' \dontrun{
-#' export_formattable(mi_tabla, file = "tabla.png")
+#' df <- data.frame(Alternativa = c("A1", "A2"), Valor = c(0.65, 0.35))
+#' ft <- formattable::formattable(df)
+#' export_formattable(ft, file = tempfile(fileext = ".png"))
 #' }
 #'
 #' @export
@@ -812,6 +814,12 @@ export_formattable <- function(f, file, width = "100%", height = NULL,
 #'
 #' @examples
 #' \dontrun{
+#' mat_cri <- multicriterio.crea.matrizvaloraciones(c(1, 2, 1/2, 1), 2,
+#'                                                 c("Rendimiento", "Riesgo"))
+#' mat_alt1 <- multicriterio.crea.matrizvaloraciones(c(1, 3, 1/3, 1), 2,
+#'                                                  c("A", "B"))
+#' mat_alt2 <- multicriterio.crea.matrizvaloraciones(c(1, 1/2, 2, 1), 2,
+#'                                                  c("A", "B"))
 #' resultado <- multicriterio.metodoAHP.pesosglobales_formattable(
 #'   mat_cri, list(mat_alt1, mat_alt2), que.variante = 1
 #' )
@@ -900,7 +908,7 @@ multicriterio.metodoAHP.pesosglobales_formattable = function(tb.nivel01, l_tb.ni
         formattable::formattable(
             align = c("l",rep("r",(ncol(dtpg04mej3)-1))),
             list(
-                formattable::area(col = -1) ~ percent,
+                formattable::area(col = -1) ~ formattable::percent,
                 formattable::area(row = 1,col = -1) ~ formatea_NA,
                 formattable::area(col = 2, row = -1) ~ formattable::color_tile("#ecf0ec","#B4C3B4"),
                 formattable::area(row = 2:nrow(dtpg04mej3), col = -c(1:2,ncol(dtpg04mej3))) ~ formattable::color_tile("#ddd9dd","#786778"),
@@ -925,7 +933,7 @@ multicriterio.metodoAHP.pesosglobales_formattable = function(tb.nivel01, l_tb.ni
         formattable::formattable(
             align = c("l",rep("r",(ncol(dtpg04mej12b)-1))),
             list(
-                formattable::area(col = -1) ~ percent,
+                formattable::area(col = -1) ~ formattable::percent,
                 formattable::area(col = 2, row = -1) ~ formattable::color_tile("#ecf0ec","#B4C3B4"),
                 formattable::area(col = -(1:2)) ~ formattable::color_tile("#ddd9dd","#786778"),
                 formattable::area(col = 1) ~ formattable::formatter("span",
@@ -1347,8 +1355,12 @@ fpref.todas = function(cual,vaj,vah,qi=0,pi=1,si=0.5) {
 #'
 #' @return Matriz cuadrada de preferencia multicriterio.
 #'
-#' @examples
-#' # Ver ejemplos en multicriterio.metodo.promethee_i
+#' X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+#' pesos <- c(0.5, 0.3, 0.2)
+#' fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+#'                     pi = c(5, 3, 2), si = c(1, 1, 1))
+#' tab.indices <- indice.prefmulticriterio(X, pesos, fpref)
+#' tab.indices
 #'
 #' @export
 indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) {
@@ -1382,8 +1394,14 @@ indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) {
 #'
 #' @return Vector numerico con los flujos.
 #'
-#' @examples
-#' # Ver ejemplos en multicriterio.metodo.promethee_i
+#' X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+#' pesos <- c(0.5, 0.3, 0.2)
+#' fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+#'                     pi = c(5, 3, 2), si = c(1, 1, 1))
+#' tab.indices <- indice.prefmulticriterio(X, pesos, fpref)
+#' flujo.entrante.Promethee(tab.indices)
+#' flujo.saliente.Promethee(tab.indices)
+#' flujo.neto.Promethee(tab.indices)
 #'
 #' @export
 flujo.entrante.Promethee = function(tab.indices) {
@@ -1416,8 +1434,14 @@ flujo.neto.Promethee = function(tab.indices) {
 #'
 #' @return Vector numerico con los flujos medios.
 #'
-#' @examples
-#' # Ver ejemplos en multicriterio.metodo.promethee_i_med
+#' X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+#' pesos <- c(0.5, 0.3, 0.2)
+#' fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+#'                     pi = c(5, 3, 2), si = c(1, 1, 1))
+#' tab.indices <- indice.prefmulticriterio(X, pesos, fpref)
+#' flujomed.entrante.Promethee(tab.indices)
+#' flujomed.saliente.Promethee(tab.indices)
+#' flujomed.neto.Promethee(tab.indices)
 #'
 #' @export
 flujomed.entrante.Promethee = function(tab.indices) {

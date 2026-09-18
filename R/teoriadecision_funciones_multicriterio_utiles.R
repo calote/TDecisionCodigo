@@ -242,10 +242,16 @@ func_ELECTRE_malts_T = function(array1) {
 #' }
 #'
 #' @examples
-#' \dontrun{
-#' resultado <- func_ELECTRE_resMIndices(elec_p1)
-#' resultado$KE
-#' }
+#' tabdec <- matrix(c(20, 13, 15, 30,
+#'                     5, 40, 0.3, 0.5,
+#'                     0.1, 0.7, 0.9, 0,
+#'                     1.3, 4, 2.2, 1), nrow = 4, ncol = 4, byrow = TRUE)
+#' rownames(tabdec) <- paste0("A", 1:4)
+#' colnames(tabdec) <- paste0("C", 1:4)
+#' res_electre <- multicriterio.metodoELECTRE_I(tabdec, c(0.3, 0.2, 0.4, 0.1),
+#'                                             0.7, c(15, Inf, 2, Inf))
+#' resultado <- func_ELECTRE_resMIndices(res_electre)
+#' resultado$MIndices
 #'
 #' @export
 func_ELECTRE_resMIndices = function(res_electre) {
@@ -319,10 +325,16 @@ func_ELECTRE_resMIndices = function(res_electre) {
 #' }
 #'
 #' @examples
-#' \dontrun{
-#' resultado <- func_ELECTRE_resTConcordancia(elec_p1)
-#' resultado$KE
-#' }
+#' tabdec <- matrix(c(20, 13, 15, 30,
+#'                     5, 40, 0.3, 0.5,
+#'                     0.1, 0.7, 0.9, 0,
+#'                     1.3, 4, 2.2, 1), nrow = 4, ncol = 4, byrow = TRUE)
+#' rownames(tabdec) <- paste0("A", 1:4)
+#' colnames(tabdec) <- paste0("C", 1:4)
+#' res_electre <- multicriterio.metodoELECTRE_I(tabdec, c(0.3, 0.2, 0.4, 0.1),
+#'                                             0.7, c(15, Inf, 2, Inf))
+#' resultado <- func_ELECTRE_resTConcordancia(res_electre)
+#' resultado$MIndices
 #'
 #' @export
 func_ELECTRE_resTConcordancia = function(res_electre,digitos=4) {
@@ -398,10 +410,16 @@ func_ELECTRE_resTConcordancia = function(res_electre,digitos=4) {
 #' }
 #'
 #' @examples
-#' \dontrun{
-#' resultado <- func_ELECTRE_resTDiscordancia(elec_p1)
-#' resultado$KE
-#' }
+#' tabdec <- matrix(c(20, 13, 15, 30,
+#'                     5, 40, 0.3, 0.5,
+#'                     0.1, 0.7, 0.9, 0,
+#'                     1.3, 4, 2.2, 1), nrow = 4, ncol = 4, byrow = TRUE)
+#' rownames(tabdec) <- paste0("A", 1:4)
+#' colnames(tabdec) <- paste0("C", 1:4)
+#' res_electre <- multicriterio.metodoELECTRE_I(tabdec, c(0.3, 0.2, 0.4, 0.1),
+#'                                             0.7, c(15, Inf, 2, Inf))
+#' resultado <- func_ELECTRE_resTDiscordancia(res_electre)
+#' resultado$MIndices
 #'
 #' @export
 func_ELECTRE_resTDiscordancia = function(res_electre) {
@@ -531,11 +549,16 @@ func_ELECTRE_resTDiscordancia = function(res_electre) {
 #' }
 #'
 #' @examples
-#' \dontrun{
-#' resultado <- func_ELECTRE_resTSuperacion(elec_p1)
-#' resultado$KE
+#' tabdec <- matrix(c(20, 13, 15, 30,
+#'                     5, 40, 0.3, 0.5,
+#'                     0.1, 0.7, 0.9, 0,
+#'                     1.3, 4, 2.2, 1), nrow = 4, ncol = 4, byrow = TRUE)
+#' rownames(tabdec) <- paste0("A", 1:4)
+#' colnames(tabdec) <- paste0("C", 1:4)
+#' res_electre <- multicriterio.metodoELECTRE_I(tabdec, c(0.3, 0.2, 0.4, 0.1),
+#'                                             0.7, c(15, Inf, 2, Inf))
+#' resultado <- func_ELECTRE_resTSuperacion(res_electre)
 #' resultado$Nucleo
-#' }
 #'
 #' @export
 func_ELECTRE_resTSuperacion = function(res_electre) {
@@ -658,10 +681,16 @@ func_ELECTRE_resTSuperacion = function(res_electre) {
 #' }
 #'
 #' @examples
-#' \dontrun{
-#' resultado <- func_ELECTRE_Completo(elec_p1)
+#' tabdec <- matrix(c(20, 13, 15, 30,
+#'                     5, 40, 0.3, 0.5,
+#'                     0.1, 0.7, 0.9, 0,
+#'                     1.3, 4, 2.2, 1), nrow = 4, ncol = 4, byrow = TRUE)
+#' rownames(tabdec) <- paste0("A", 1:4)
+#' colnames(tabdec) <- paste0("C", 1:4)
+#' res_electre <- multicriterio.metodoELECTRE_I(tabdec, c(0.3, 0.2, 0.4, 0.1),
+#'                                             0.7, c(15, Inf, 2, Inf))
+#' resultado <- func_ELECTRE_Completo(res_electre)
 #' resultado$Nucleo
-#' }
 #'
 #' @export
 func_ELECTRE_Completo = function(res_electre) {
@@ -700,8 +729,12 @@ func_ELECTRE_Completo = function(res_electre) {
 #' @return Matriz numerica donde cada elemento M(i,j) representa el flujo
 #'   promedio de la alternativa i en el criterio j.
 #'
-#' @examples
-#' # Ver ejemplos en multicriterio.metodo.promethee_plano_GAIA_med
+#' X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+#' pesos <- c(0.5, 0.3, 0.2)
+#' fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+#'                     pi = c(5, 3, 2), si = c(1, 1, 1))
+#' M <- calculo_tablaM(X, pesos, fpref)
+#' M
 #'
 #' @export
 calculo_tablaM = function(tabdecs.X,pesos.criterios,tab.fpref) {
@@ -751,9 +784,13 @@ calculo_tablaM = function(tabdecs.X,pesos.criterios,tab.fpref) {
 #'
 #' @examples
 #' \dontrun{
-#' resultado <- multicriterio.metodo.promethee_plano_GAIA_med(
-#'   tabdec.X, pesos.criterios, tab.fpref
-#' )
+#' X <- multicriterio.crea.matrizdecision(
+#'   c(10, 20, 5, 8, 15, 12, 12, 18, 7, 9, 14, 11), 4, 3)
+#' pesos <- c(0.5, 0.3, 0.2)
+#' fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+#'                     pi = c(5, 3, 2), si = c(1, 1, 1))
+#' resultado <- multicriterio.metodo.promethee_plano_GAIA_med(X, pesos, fpref)
+#' resultado$alt.ordenadas
 #' resultado$Plano.GAIA
 #' }
 #'
@@ -840,11 +877,10 @@ multicriterio.metodo.promethee_windows_funconversion = function(cual = 1) {
 #' @return Matriz numerica con la configuracion de preferencias.
 #'
 #' @examples
-#' \dontrun{
-#' tab.fpref <- data.frame(tipo=c(1,1), qi=c(0,0), pi=c(5,3), si=c(1,1))
+#' tab.fpref <- data.frame(tipo = c(1, 1), qi = c(0, 0),
+#'                         pi = c(5, 3), si = c(1, 1))
 #' pesos <- c(0.6, 0.4)
 #' multicriterio.metodo.promethee_windows_bloque01(tab.fpref, pesos)
-#' }
 #'
 #' @export
 multicriterio.metodo.promethee_windows_bloque01 = function(tab.fpref, pesos.criterios, fminmax = NULL) {
@@ -924,12 +960,12 @@ multicriterio.metodo.promethee_windows_bloque02 = function(matdecision, fminmax 
 #' }
 #'
 #' @examples
-#' \dontrun{
+#' matdecision <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+#' tab.fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+#'                         pi = c(5, 3, 2), si = c(1, 1, 1))
 #' resultado <- multicriterio.metodo.promethee_windows(
-#'   matdecision, tab.fpref, pesos.criterios
-#' )
+#'   matdecision, tab.fpref, c(0.5, 0.3, 0.2))
 #' resultado$Acciones
-#' }
 #'
 #' @export
 multicriterio.metodo.promethee_windows = function(matdecision, tab.fpref, pesos.criterios, fminmax = NULL) {
@@ -990,7 +1026,13 @@ multicriterio.metodo.promethee_windows = function(matdecision, tab.fpref, pesos.
 #'
 #' @examples
 #' \dontrun{
+#' matdecision <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+#' tab.fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+#'                         pi = c(5, 3, 2), si = c(1, 1, 1))
+#' res <- multicriterio.metodo.promethee_windows(
+#'   matdecision, tab.fpref, c(0.5, 0.3, 0.2))
 #' resultado <- multicriterio.metodo.promethee_windows_kableExtra_html(res)
+#' resultado$tabAcciones
 #' }
 #'
 #' @export
@@ -1027,7 +1069,13 @@ multicriterio.metodo.promethee_windows_kableExtra_html = function(res_promethee_
 #'
 #' @examples
 #' \dontrun{
+#' matdecision <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+#' tab.fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+#'                         pi = c(5, 3, 2), si = c(1, 1, 1))
+#' res <- multicriterio.metodo.promethee_windows(
+#'   matdecision, tab.fpref, c(0.5, 0.3, 0.2))
 #' resultado <- multicriterio.metodo.promethee_windows_kableExtra_pdf(res)
+#' resultado$tabAcciones
 #' }
 #'
 #' @export
@@ -1062,7 +1110,13 @@ multicriterio.metodo.promethee_windows_kableExtra_pdf = function(res_promethee_w
 #'
 #' @examples
 #' \dontrun{
+#' matdecision <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+#' tab.fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+#'                         pi = c(5, 3, 2), si = c(1, 1, 1))
+#' res <- multicriterio.metodo.promethee_windows(
+#'   matdecision, tab.fpref, c(0.5, 0.3, 0.2))
 #' resultado <- multicriterio.metodo.promethee_windows_kableExtra(res)
+#' resultado$tabAcciones
 #' }
 #'
 #' @export

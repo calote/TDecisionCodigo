@@ -21,9 +21,15 @@ Lista con los siguientes elementos:
 Genera una tabla formateada con los test de discordancia de ELECTRE.
 }
 \examples{
-\dontrun{
-resultado <- func_ELECTRE_resTDiscordancia(elec_p1)
-resultado$KE
-}
+tabdec <- matrix(c(20, 13, 15, 30,
+                    5, 40, 0.3, 0.5,
+                    0.1, 0.7, 0.9, 0,
+                    1.3, 4, 2.2, 1), nrow = 4, ncol = 4, byrow = TRUE)
+rownames(tabdec) <- paste0("A", 1:4)
+colnames(tabdec) <- paste0("C", 1:4)
+res_electre <- multicriterio.metodoELECTRE_I(tabdec, c(0.3, 0.2, 0.4, 0.1),
+                                            0.7, c(15, Inf, 2, Inf))
+resultado <- func_ELECTRE_resTDiscordancia(res_electre)
+resultado$MIndices
 
 }

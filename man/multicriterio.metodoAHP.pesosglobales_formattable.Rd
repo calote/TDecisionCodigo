@@ -35,6 +35,12 @@ su visualizacion en HTML.
 }
 \examples{
 \dontrun{
+mat_cri <- multicriterio.crea.matrizvaloraciones(c(1, 2, 1/2, 1), 2,
+                                                c("Rendimiento", "Riesgo"))
+mat_alt1 <- multicriterio.crea.matrizvaloraciones(c(1, 3, 1/3, 1), 2,
+                                                 c("A", "B"))
+mat_alt2 <- multicriterio.crea.matrizvaloraciones(c(1, 1/2, 2, 1), 2,
+                                                 c("A", "B"))
 resultado <- multicriterio.metodoAHP.pesosglobales_formattable(
   mat_cri, list(mat_alt1, mat_alt2), que.variante = 1
 )
