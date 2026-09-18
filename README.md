@@ -15,8 +15,17 @@ install.packages("TDecisionCodigo")
 Install the development version from GitHub:
 
 ```r
-# install.packages("devtools")
-devtools::install_github("calote/TDecisionCodigo")
+# install.packages("remotes")
+remotes::install_github("calote/TDecisionCodigo")
+```
+
+Install from a specific branch (e.g. `feat-documentacion-funciones`):
+
+```r
+remotes::install_github("calote/TDecisionCodigo@feat-documentacion-funciones")
+# Equivalent form with the ref argument:
+# remotes::install_github("calote/TDecisionCodigo",
+#                         ref = "feat-documentacion-funciones")
 ```
 
 ## Overview
