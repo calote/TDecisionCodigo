@@ -886,10 +886,10 @@ multicriterio.metodoAHP.pesosglobales_formattable = function(tb.nivel01, l_tb.ni
     pglobales_mej2[1,-1] = NA
 
     formatea_NA = formattable::formatter("span",
-                            style = x ~ style(color = ifelse(is.na(x), "white", x)))
+                            style = x ~ formattable::style(color = ifelse(is.na(x), "white", x)))
     formatea_inconsistencia <- formattable::formatter("span",
                                          x ~ formattable::icontext(ifelse(x>=0.10,"remove","ok"),paste0(round(100*x,2),"%")),
-                                         style = x ~ style(display = "block",
+                                         style = x ~ formattable::style(display = "block",
                                                            padding = "0 4px",
                                                            `border-radius` = "4px",
                                                            color = ifelse(x>=0.10,"red","green"),
@@ -913,7 +913,7 @@ multicriterio.metodoAHP.pesosglobales_formattable = function(tb.nivel01, l_tb.ni
                 formattable::area(col = 2, row = -1) ~ formattable::color_tile("#ecf0ec","#B4C3B4"),
                 formattable::area(row = 2:nrow(dtpg04mej3), col = -c(1:2,ncol(dtpg04mej3))) ~ formattable::color_tile("#ddd9dd","#786778"),
                 formattable::area(col = 1) ~ formattable::formatter("span",
-                                          style = x ~ style("font-weight" = "bold")),
+                                          style = x ~ formattable::style("font-weight" = "bold")),
                 formattable::area(col = ncol(dtpg04mej3)) ~ formatea_inconsistencia
             )
         )
@@ -937,7 +937,7 @@ multicriterio.metodoAHP.pesosglobales_formattable = function(tb.nivel01, l_tb.ni
                 formattable::area(col = 2, row = -1) ~ formattable::color_tile("#ecf0ec","#B4C3B4"),
                 formattable::area(col = -(1:2)) ~ formattable::color_tile("#ddd9dd","#786778"),
                 formattable::area(col = 1) ~ formattable::formatter("span",
-                                          style = x ~ style("font-weight" = "bold"))
+                                          style = x ~ formattable::style("font-weight" = "bold"))
             )
         )
 
