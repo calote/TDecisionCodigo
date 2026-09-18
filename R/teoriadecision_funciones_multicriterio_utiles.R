@@ -1,23 +1,18 @@
-library(knitr)
-suppressWarnings(library(kableExtra))
-suppressPackageStartupMessages(library(dplyr))
-library(stringr)
-suppressWarnings(suppressPackageStartupMessages(library(factoextra)))
 
 
-# Funciones auxiliares para métodos multicriterio ----
+# Funciones auxiliares para metodos multicriterio ----
 
 
 #' Generar criterio aleatorio
 #'
 #' Genera un vector de valores aleatorios enteros que representa un criterio
-#' de evaluación.
+#' de evaluacion.
 #'
-#' @param nalt Numérico. Número de alternativas (valores a generar).
-#' @param Minimo Numérico. Valor mínimo del rango (por defecto 0).
-#' @param Maximo Numérico. Valor máximo del rango (por defecto 1000).
+#' @param nalt Numerico. Numero de alternativas (valores a generar).
+#' @param Minimo Numerico. Valor minimo del rango (por defecto 0).
+#' @param Maximo Numerico. Valor maximo del rango (por defecto 1000).
 #'
-#' @return Vector numérico entero con los valores del criterio.
+#' @return Vector numerico entero con los valores del criterio.
 #'
 #' @examples
 #' set.seed(123)
@@ -35,11 +30,11 @@ func_genera_Criterio = function(nalt,Minimo=0,Maximo=1000) {
 #' Convierte un vector de valores de criterio en una matriz cuadrada de
 #' valoraciones binarias (0/1).
 #'
-#' @param vc_Val Vector numérico con los valores del criterio.
-#' @param Desig Lógico. Si TRUE, usa >= (desigualdad débil). Si FALSE, usa >.
+#' @param vc_Val Vector numerico con los valores del criterio.
+#' @param Desig Logico. Si TRUE, usa >= (desigualdad debil). Si FALSE, usa >.
 #'
 #' @return Matriz cuadrada donde el elemento (i,j) vale 1 si la alternativa
-#'   i es al menos tan buena como la j según el criterio.
+#'   i es al menos tan buena como la j segun el criterio.
 #'
 #' @examples
 #' func_conv_a_01_Criterio(c(50, 30, 80))
@@ -73,10 +68,10 @@ func_conv_a_01_Criterio = function(vc_Val,Desig=TRUE) {
 #'
 #' Genera una matriz cuadrada de valoraciones a partir de un criterio aleatorio.
 #'
-#' @param nalt Numérico. Número de alternativas.
-#' @param Minimo Numérico. Valor mínimo del criterio.
-#' @param Maximo Numérico. Valor máximo del criterio.
-#' @param Desig Lógico. Si TRUE, usa >=. Si FALSE, usa >.
+#' @param nalt Numerico. Numero de alternativas.
+#' @param Minimo Numerico. Valor minimo del criterio.
+#' @param Maximo Numerico. Valor maximo del criterio.
+#' @param Desig Logico. Si TRUE, usa >=. Si FALSE, usa >.
 #'
 #' @return Matriz cuadrada de valoraciones binarias.
 #'
@@ -94,17 +89,17 @@ func_genera_Mvaloraciones = function(nalt,Minimo=0,Maximo=1000,Desig=TRUE) {
 }
 
 
-#' Generar matriz de decisión aleatoria
+#' Generar matriz de decision aleatoria
 #'
-#' Genera una matriz de decisión donde las filas son alternativas y las
+#' Genera una matriz de decision donde las filas son alternativas y las
 #' columnas son criterios, con valores aleatorios enteros.
 #'
-#' @param nalt Numérico. Número de alternativas (filas).
-#' @param ncri Numérico. Número de criterios (columnas).
-#' @param vMin Vector numérico con los valores mínimos por criterio.
-#' @param vMax Vector numérico con los valores máximos por criterio.
+#' @param nalt Numerico. Numero de alternativas (filas).
+#' @param ncri Numerico. Numero de criterios (columnas).
+#' @param vMin Vector numerico con los valores minimos por criterio.
+#' @param vMax Vector numerico con los valores maximos por criterio.
 #'
-#' @return Matriz numérica de decisión.
+#' @return Matriz numerica de decision.
 #'
 #' @examples
 #' func_genera_MatrizCriterios(5, 3)
@@ -124,38 +119,38 @@ func_genera_MatrizCriterios = function(nalt,ncri,vMin=rep(0,ncri),vMax=rep(1000,
 
 #' Convertir matriz de criterios a beneficios
 #'
-#' Convierte las columnas de coste de una matriz de decisión a beneficios
+#' Convierte las columnas de coste de una matriz de decision a beneficios
 #' invirtiendo el signo.
 #'
-#' @param MCri Matriz numérica de decisión (alternativas x criterios).
-#' @param vl_Ben Vector lógico. TRUE indica beneficio, FALSE indica coste.
+#' @param MCri Matriz numerica de decision (alternativas x criterios).
+#' @param vl_Ben Vector logico. TRUE indica beneficio, FALSE indica coste.
 #'
-#' @return Matriz numérica donde todas las columnas representan beneficios.
+#' @return Matriz numerica donde todas las columnas representan beneficios.
 #'
 #' @examples
 #' MCri <- matrix(c(10, 20, 5, 8), nrow = 2, ncol = 2)
 #' func_cambia_MatrizCriterios_SonBeneficios(MCri, c(TRUE, FALSE))
 #'
 #' @export
-func_cambia_MatrizCriterios_SonBeneficios = function(MCri,vl_Ben=rep(T,ncol(MCri))) {
+func_cambia_MatrizCriterios_SonBeneficios = function(MCri,vl_Ben=rep(TRUE,ncol(MCri))) {
     vsigno = ifelse(vl_Ben,1,-1)
-    msigno = matrix(vsigno,nrow(MCri),ncol(MCri),byrow=T)
+    msigno = matrix(vsigno,nrow(MCri),ncol(MCri),byrow=TRUE)
     MCri_sal = MCri * msigno
     return(MCri_sal)
 }
 
 
-#' Comprobar transitividad de una relación
+#' Comprobar transitividad de una relacion
 #'
-#' Verifica si la relación de preferencia representada en una matriz es
+#' Verifica si la relacion de preferencia representada en una matriz es
 #' transitiva para una terna de alternativas (i, j, k).
 #'
-#' @param A Matriz cuadrada de relación de preferencia.
-#' @param i Numérico. Índice de la primera alternativa.
-#' @param j Numérico. Índice de la segunda alternativa.
-#' @param k Numérico. Índice de la tercera alternativa.
+#' @param A Matriz cuadrada de relacion de preferencia.
+#' @param i Numerico. Indice de la primera alternativa.
+#' @param j Numerico. Indice de la segunda alternativa.
+#' @param k Numerico. Indice de la tercera alternativa.
 #'
-#' @return Lógico. TRUE si se cumple la transitividad, FALSE en caso contrario.
+#' @return Logico. TRUE si se cumple la transitividad, FALSE en caso contrario.
 #'
 #' @examples
 #' A <- matrix(c(1,1,0,0,1,1,1,0,1), nrow=3, byrow=TRUE)
@@ -182,7 +177,7 @@ func_comprueba_transitiva = function(A,i,j,k) {
 #'
 #' @param A1 Matriz cuadrada de valoraciones.
 #'
-#' @return Lógico. TRUE si toda la matriz es transitiva, FALSE si alguna
+#' @return Logico. TRUE si toda la matriz es transitiva, FALSE si alguna
 #'   terna no cumple.
 #'
 #' @examples
@@ -233,16 +228,16 @@ func_ELECTRE_malts_T = function(array1) {
 }
 
 
-#' Resultados ELECTRE: Tabla de índices
+#' Resultados ELECTRE: Tabla de indices
 #'
-#' Genera una tabla formateada con los índices de relación de ELECTRE
+#' Genera una tabla formateada con los indices de relacion de ELECTRE
 #' (I+, I=, I-).
 #'
 #' @param res_electre Lista resultado de \code{multicriterio.metodoELECTRE_I}.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
-#'   \item{MIndices}{DataFrame con los índices}
+#'   \item{MIndices}{DataFrame con los indices}
 #'   \item{KE}{Tabla kableExtra formateada}
 #' }
 #'
@@ -255,6 +250,15 @@ func_ELECTRE_malts_T = function(array1) {
 #' @export
 func_ELECTRE_resMIndices = function(res_electre) {
 
+  if (!requireNamespace("kableExtra", quietly = TRUE)) {
+    stop("Package \"kableExtra\" needed for this function. Please install it with install.packages(\"kableExtra\").", call. = FALSE)
+  }
+  if (!requireNamespace("knitr", quietly = TRUE)) {
+    stop("Package \"knitr\" needed for this function. Please install it with install.packages(\"knitr\").", call. = FALSE)
+  }
+  if (!requireNamespace("dplyr", quietly = TRUE)) {
+    stop("Package \"dplyr\" needed for this function. Please install it with install.packages(\"dplyr\").", call. = FALSE)
+  }
   mi1 = func_ELECTRE_malts_T(res_electre$Imas)
   mi2 = func_ELECTRE_malts_T(res_electre$Iigual)
   mi3 = func_ELECTRE_malts_T(res_electre$Imenos)
@@ -278,20 +282,20 @@ func_ELECTRE_resMIndices = function(res_electre) {
   msal0 = msal
 
   KE_msal = msal %>%
-    kable(booktabs=T) %>%
-    kable_styling() %>%
-    row_spec(0,align="c",color="blue")
+    knitr::kable(booktabs=TRUE) %>%
+    kableExtra::kable_styling() %>%
+    kableExtra::row_spec(0,align="c",color="blue")
   colores = gray(seq(0.5,0.9,length.out = 3),alpha=0.2)
   for (i in 1:3) {
     KE_msal = KE_msal %>%
-      row_spec(seq(i,nrow(msal),by=3),background=colores[i],align="c",bold=T)
+      kableExtra::row_spec(seq(i,nrow(msal),by=3),background=colores[i],align="c",bold=TRUE)
   }
   KE_msal = KE_msal %>%
-    column_spec(1,background = "white",width = "4em",bold = T,color="blue") %>%
-    column_spec(2,width = "4em",color="red",bold=T,border_right = T) %>%
-    column_spec(3:ncol(msal),width="10em") %>%
-    collapse_rows(columns = 1) %>%
-    footnote(general = "ELECTRE: Conjunto de Índices",general_title = "")
+    kableExtra::column_spec(1,background = "white",width = "4em",bold = TRUE,color="blue") %>%
+    kableExtra::column_spec(2,width = "4em",color="red",bold=TRUE,border_right = TRUE) %>%
+    kableExtra::column_spec(3:ncol(msal),width="10em") %>%
+    kableExtra::collapse_rows(columns = 1) %>%
+    kableExtra::footnote(general = "ELECTRE: Conjunto de Indices",general_title = "")
 
   res = list(
     MIndices = msal0,
@@ -303,14 +307,14 @@ func_ELECTRE_resMIndices = function(res_electre) {
 
 #' Resultados ELECTRE: Tabla de concordancia
 #'
-#' Genera una tabla formateada con los índices de concordancia de ELECTRE.
+#' Genera una tabla formateada con los indices de concordancia de ELECTRE.
 #'
 #' @param res_electre Lista resultado de \code{multicriterio.metodoELECTRE_I}.
-#' @param digitos Numérico. Número de decimales para redondear.
+#' @param digitos Numerico. Numero de decimales para redondear.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
-#'   \item{MIndices}{DataFrame con los índices de concordancia}
+#'   \item{MIndices}{DataFrame con los indices de concordancia}
 #'   \item{KE}{Tabla kableExtra formateada}
 #' }
 #'
@@ -323,6 +327,12 @@ func_ELECTRE_resMIndices = function(res_electre) {
 #' @export
 func_ELECTRE_resTConcordancia = function(res_electre,digitos=4) {
 
+  if (!requireNamespace("kableExtra", quietly = TRUE)) {
+    stop("Package \"kableExtra\" needed for this function. Please install it with install.packages(\"kableExtra\").", call. = FALSE)
+  }
+  if (!requireNamespace("knitr", quietly = TRUE)) {
+    stop("Package \"knitr\" needed for this function. Please install it with install.packages(\"knitr\").", call. = FALSE)
+  }
   mi1 = res_electre$ind.concordancia
   mi2 = res_electre$ind.concordancia.gorro
   mi3 = res_electre$test.concordancia
@@ -347,25 +357,25 @@ func_ELECTRE_resTConcordancia = function(res_electre,digitos=4) {
   msal0 = msal
 
   filas = seq(3,nrow(msal),by=3)
-  msal[filas,3:ncol(msal)] = cell_spec(ifelse(msal[filas,3:ncol(msal)]>=1,"T","F"),
+  msal[filas,3:ncol(msal)] = kableExtra::cell_spec(ifelse(msal[filas,3:ncol(msal)]>=1,"T","F"),
                                    background = ifelse(msal[filas,3:ncol(msal)]>=1,"blue","white"),
                                    color=ifelse(msal[filas,3:ncol(msal)]>=1,"white","black"))
 
   KE_msal = msal %>%
-    kbl(booktabs=T,digits = 3,escape = F,format = "html") %>%
-    kable_styling() %>%
-    row_spec(0,align="c",color="blue")
+    kableExtra::kbl(booktabs=TRUE,digits = 3,escape = FALSE,format = "html") %>%
+    kableExtra::kable_styling() %>%
+    kableExtra::row_spec(0,align="c",color="blue")
   colores = gray(seq(0.5,0.9,length.out = 3),alpha=0.2)
   for (i in 1:3) {
     KE_msal = KE_msal %>%
-      row_spec(seq(i,nrow(msal),by=3),background=colores[i],align="c",bold=T)
+      kableExtra::row_spec(seq(i,nrow(msal),by=3),background=colores[i],align="c",bold=TRUE)
   }
   KE_msal = KE_msal %>%
-    column_spec(1,background = "white",width = "4em",bold = T,color="blue") %>%
-    column_spec(2,width = "4em",color="red",bold=T,border_right = T) %>%
-    column_spec(3:ncol(msal),width="10em") %>%
-    collapse_rows(columns = 1) %>%
-    footnote(general = "ELECTRE: Test Concordancia",general_title = "")
+    kableExtra::column_spec(1,background = "white",width = "4em",bold = TRUE,color="blue") %>%
+    kableExtra::column_spec(2,width = "4em",color="red",bold=TRUE,border_right = TRUE) %>%
+    kableExtra::column_spec(3:ncol(msal),width="10em") %>%
+    kableExtra::collapse_rows(columns = 1) %>%
+    kableExtra::footnote(general = "ELECTRE: Test Concordancia",general_title = "")
 
   res = list(
     MIndices = msal0,
@@ -383,7 +393,7 @@ func_ELECTRE_resTConcordancia = function(res_electre,digitos=4) {
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
-#'   \item{MIndices}{DataFrame con los índices de discordancia}
+#'   \item{MIndices}{DataFrame con los indices de discordancia}
 #'   \item{KE}{Tabla kableExtra formateada}
 #' }
 #'
@@ -396,6 +406,15 @@ func_ELECTRE_resTConcordancia = function(res_electre,digitos=4) {
 #' @export
 func_ELECTRE_resTDiscordancia = function(res_electre) {
 
+  if (!requireNamespace("kableExtra", quietly = TRUE)) {
+    stop("Package \"kableExtra\" needed for this function. Please install it with install.packages(\"kableExtra\").", call. = FALSE)
+  }
+  if (!requireNamespace("knitr", quietly = TRUE)) {
+    stop("Package \"knitr\" needed for this function. Please install it with install.packages(\"knitr\").", call. = FALSE)
+  }
+  if (!requireNamespace("stringr", quietly = TRUE)) {
+    stop("Package \"stringr\" needed for this function. Please install it with install.packages(\"stringr\").", call. = FALSE)
+  }
   s1 = func_ELECTRE_resMIndices(res_electre)
   filas = seq(3,nrow(s1$MIndices),by=3)
   mf1 = s1$MIndices[filas,3:ncol(s1$MIndices)]
@@ -407,8 +426,8 @@ func_ELECTRE_resTDiscordancia = function(res_electre) {
   mf3 = matrix(TRUE,nrow(mf1),ncol(mf1))
   for (i in 1:nrow(mf1)) {
     for (j in 1:ncol(mf1)) {
-       b1 = str_trim(mf1[i,j])
-       b2l = as.integer(unlist(str_split(b1,",")))
+       b1 = stringr::str_trim(mf1[i,j])
+       b2l = as.integer(unlist(stringr::str_split(b1,",")))
        if (i==j) {
          mf2[i,j] = ""
          mf3[i,j] = TRUE
@@ -454,7 +473,7 @@ func_ELECTRE_resTDiscordancia = function(res_electre) {
       msal = rbind(msal,mf)
     }
   }
-  msal = as.data.frame(msal,stringsAsFactors = F)
+  msal = as.data.frame(msal,stringsAsFactors = FALSE)
   colnames(msal) = paste0("A",1:ncol(msal))
 
   msal$Inds = rep(c("I-","Djk","TD"),nrow(msal) %/% 3)
@@ -465,25 +484,25 @@ func_ELECTRE_resTDiscordancia = function(res_electre) {
   msal0 = msal
 
   filas = seq(3,nrow(msal),by=3)
-  msal[filas,3:ncol(msal)] = cell_spec(ifelse(msal[filas,3:ncol(msal)]=="1","T","F"),
+  msal[filas,3:ncol(msal)] = kableExtra::cell_spec(ifelse(msal[filas,3:ncol(msal)]=="1","T","F"),
                                        background = ifelse(msal[filas,3:ncol(msal)]=="1","blue","white"),
                                        color=ifelse(msal[filas,3:ncol(msal)]=="1","white","black"))
 
   KE_msal = msal %>%
-    kbl(booktabs=T,digits = 3,escape = F) %>%
-    kable_styling() %>%
-    row_spec(0,align="c",color="blue")
+    kableExtra::kbl(booktabs=TRUE,digits = 3,escape = FALSE) %>%
+    kableExtra::kable_styling() %>%
+    kableExtra::row_spec(0,align="c",color="blue")
   colores = gray(seq(0.5,0.9,length.out = 3),alpha=0.2)
   for (i in 1:3) {
     KE_msal = KE_msal %>%
-      row_spec(seq(i,nrow(msal),by=3),background=colores[i],align="c",bold=T)
+      kableExtra::row_spec(seq(i,nrow(msal),by=3),background=colores[i],align="c",bold=TRUE)
   }
   KE_msal = KE_msal %>%
-    column_spec(1,background = "white",width = "4em",bold = T,color="blue") %>%
-    column_spec(2,width = "4em",color="red",bold=T,border_right = T) %>%
-    column_spec(3:ncol(msal),width="10em") %>%
-    collapse_rows(columns = 1) %>%
-    footnote(general = paste0("ELECTRE: Test Discordancia: ",
+    kableExtra::column_spec(1,background = "white",width = "4em",bold = TRUE,color="blue") %>%
+    kableExtra::column_spec(2,width = "4em",color="red",bold=TRUE,border_right = TRUE) %>%
+    kableExtra::column_spec(3:ncol(msal),width="10em") %>%
+    kableExtra::collapse_rows(columns = 1) %>%
+    kableExtra::footnote(general = paste0("ELECTRE: Test Discordancia: ",
                               "vd=(",paste0(vd,collapse=","),")"
                               ),general_title = "")
 
@@ -496,19 +515,19 @@ func_ELECTRE_resTDiscordancia = function(res_electre) {
 }
 
 
-#' Resultados ELECTRE: Tabla de superación
+#' Resultados ELECTRE: Tabla de superacion
 #'
-#' Genera una tabla formateada con la relación de superación de ELECTRE
-#' (concordancia × discordancia).
+#' Genera una tabla formateada con la relacion de superacion de ELECTRE
+#' (concordancia x discordancia).
 #'
 #' @param res_electre Lista resultado de \code{multicriterio.metodoELECTRE_I}.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
-#'   \item{MIndices}{DataFrame con los índices de superación}
+#'   \item{MIndices}{DataFrame con los indices de superacion}
 #'   \item{KE}{Tabla kableExtra formateada}
 #'   \item{Grafo}{DataFrame con las relaciones de dominancia}
-#'   \item{Nucleo}{Índices del núcleo}
+#'   \item{Nucleo}{Indices del nucleo}
 #' }
 #'
 #' @examples
@@ -521,6 +540,12 @@ func_ELECTRE_resTDiscordancia = function(res_electre) {
 #' @export
 func_ELECTRE_resTSuperacion = function(res_electre) {
 
+  if (!requireNamespace("kableExtra", quietly = TRUE)) {
+    stop("Package \"kableExtra\" needed for this function. Please install it with install.packages(\"kableExtra\").", call. = FALSE)
+  }
+  if (!requireNamespace("knitr", quietly = TRUE)) {
+    stop("Package \"knitr\" needed for this function. Please install it with install.packages(\"knitr\").", call. = FALSE)
+  }
   alpha = res_electre$alpha
   s1 = func_ELECTRE_resTConcordancia(res_electre)
   s2 = func_ELECTRE_resTDiscordancia(res_electre)
@@ -545,7 +570,7 @@ func_ELECTRE_resTSuperacion = function(res_electre) {
       msal = rbind(msal,mf)
     }
   }
-  msal = as.data.frame(msal,stringsAsFactors = F)
+  msal = as.data.frame(msal,stringsAsFactors = FALSE)
   colnames(msal) = paste0("A",1:ncol(msal))
 
   msal$Inds = rep(c("TC","TD","RSup"),nrow(msal) %/% 3)
@@ -568,38 +593,38 @@ func_ELECTRE_resTSuperacion = function(res_electre) {
       }
     }
   }
-  df = as.data.frame(df,stringsAsFactors = F)
+  df = as.data.frame(df,stringsAsFactors = FALSE)
   colnames(df) = c("De","A")
   df = df[!is.na(df$De),]
 
   filas = seq(1,nrow(msal),by=3)
-  msal[filas,3:ncol(msal)] = cell_spec(ifelse(msal[filas,3:ncol(msal)]=="1","T","F"),
+  msal[filas,3:ncol(msal)] = kableExtra::cell_spec(ifelse(msal[filas,3:ncol(msal)]=="1","T","F"),
                                        background = ifelse(msal[filas,3:ncol(msal)]=="1","red","white"),
                                        color=ifelse(msal[filas,3:ncol(msal)]=="1","white","black"))
   filas = seq(2,nrow(msal),by=3)
-  msal[filas,3:ncol(msal)] = cell_spec(ifelse(msal[filas,3:ncol(msal)]=="1","T","F"),
+  msal[filas,3:ncol(msal)] = kableExtra::cell_spec(ifelse(msal[filas,3:ncol(msal)]=="1","T","F"),
                                        background = ifelse(msal[filas,3:ncol(msal)]=="1","red","white"),
                                        color=ifelse(msal[filas,3:ncol(msal)]=="1","white","black"))
   filas = seq(3,nrow(msal),by=3)
-  msal[filas,3:ncol(msal)] = cell_spec(ifelse(msal[filas,3:ncol(msal)]=="1","T","F"),
+  msal[filas,3:ncol(msal)] = kableExtra::cell_spec(ifelse(msal[filas,3:ncol(msal)]=="1","T","F"),
                                        background = ifelse(msal[filas,3:ncol(msal)]=="1","blue","white"),
                                        color=ifelse(msal[filas,3:ncol(msal)]=="1","white","black"))
 
   KE_msal = msal %>%
-    kbl(booktabs=T,digits = 3,escape = F) %>%
-    kable_styling() %>%
-    row_spec(0,align="c",color="blue")
+    kableExtra::kbl(booktabs=TRUE,digits = 3,escape = FALSE) %>%
+    kableExtra::kable_styling() %>%
+    kableExtra::row_spec(0,align="c",color="blue")
   colores = gray(seq(0.5,0.9,length.out = 3),alpha=0.2)
   for (i in 1:3) {
     KE_msal = KE_msal %>%
-      row_spec(seq(i,nrow(msal),by=3),background=colores[i],align="c",bold=T)
+      kableExtra::row_spec(seq(i,nrow(msal),by=3),background=colores[i],align="c",bold=TRUE)
   }
   KE_msal = KE_msal %>%
-    column_spec(1,background = "white",width = "4em",bold = T,color="blue") %>%
-    column_spec(2,width = "4em",color="red",bold=T,border_right = T) %>%
-    column_spec(3:ncol(msal),width="10em") %>%
-    collapse_rows(columns = 1) %>%
-    footnote(general = paste0("ELECTRE: Relación Superación: ",
+    kableExtra::column_spec(1,background = "white",width = "4em",bold = TRUE,color="blue") %>%
+    kableExtra::column_spec(2,width = "4em",color="red",bold=TRUE,border_right = TRUE) %>%
+    kableExtra::column_spec(3:ncol(msal),width="10em") %>%
+    kableExtra::collapse_rows(columns = 1) %>%
+    kableExtra::footnote(general = paste0("ELECTRE: Relacion Superacion: ",
                               "alpha = ",alpha,", ",
                               "vd=(",paste0(vd,collapse=","),")"
     ),general_title = "")
@@ -617,19 +642,19 @@ func_ELECTRE_resTSuperacion = function(res_electre) {
 
 #' Resultados ELECTRE completos
 #'
-#' Genera todos los resultados de ELECTRE de forma completa: índices,
-#' concordancia, discordancia y superación.
+#' Genera todos los resultados de ELECTRE de forma completa: indices,
+#' concordancia, discordancia y superacion.
 #'
 #' @param res_electre Lista resultado de \code{multicriterio.metodoELECTRE_I}.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
-#'   \item{MIndices}{Índices de relación}
+#'   \item{MIndices}{Indices de relacion}
 #'   \item{TConcordancia}{Tabla de concordancia}
 #'   \item{TDiscordancia}{Tabla de discordancia}
-#'   \item{TSuperacion}{Tabla de superación}
+#'   \item{TSuperacion}{Tabla de superacion}
 #'   \item{Grafo}{Relaciones de dominancia}
-#'   \item{Nucleo}{Núcleo aproximado}
+#'   \item{Nucleo}{Nucleo aproximado}
 #' }
 #'
 #' @examples
@@ -663,16 +688,16 @@ func_ELECTRE_Completo = function(res_electre) {
 
 ## Funciones para Promethee ----
 
-#' Cálculo de la tabla M para Promethee GAIA
+#' Calculo de la tabla M para Promethee GAIA
 #'
-#' Calcula la matriz de decisión promedio M utilizada en el plano GAIA
-#' del método Promethee.
+#' Calcula la matriz de decision promedio M utilizada en el plano GAIA
+#' del metodo Promethee.
 #'
-#' @param tabdecs.X Matriz numérica de decisión (alternativas x criterios).
-#' @param pesos.criterios Vector numérico con los pesos de los criterios.
-#' @param tab.fpref Matriz de configuración de funciones de preferencia.
+#' @param tabdecs.X Matriz numerica de decision (alternativas x criterios).
+#' @param pesos.criterios Vector numerico con los pesos de los criterios.
+#' @param tab.fpref Matriz de configuracion de funciones de preferencia.
 #'
-#' @return Matriz numérica donde cada elemento M(i,j) representa el flujo
+#' @return Matriz numerica donde cada elemento M(i,j) representa el flujo
 #'   promedio de la alternativa i en el criterio j.
 #'
 #' @examples
@@ -707,12 +732,12 @@ calculo_tablaM = function(tabdecs.X,pesos.criterios,tab.fpref) {
 
 #' Promethee GAIA
 #'
-#' Aplica el método Promethee con análisis GAIA (proyección PCA) para
+#' Aplica el metodo Promethee con analisis GAIA (proyeccion PCA) para
 #' visualizar las alternativas en un plano bidimensional.
 #'
-#' @param tabdecs.X Matriz numérica de decisión.
-#' @param pesos.criterios Vector numérico con los pesos de los criterios.
-#' @param tab.fpref Matriz de configuración de funciones de preferencia.
+#' @param tabdecs.X Matriz numerica de decision.
+#' @param pesos.criterios Vector numerico con los pesos de los criterios.
+#' @param tab.fpref Matriz de configuracion de funciones de preferencia.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
@@ -735,10 +760,13 @@ calculo_tablaM = function(tabdecs.X,pesos.criterios,tab.fpref) {
 #' @export
 multicriterio.metodo.promethee_plano_GAIA_med = function(tabdecs.X,pesos.criterios,tab.fpref) {
 
+  if (!requireNamespace("factoextra", quietly = TRUE)) {
+    stop("Package \"factoextra\" needed for this function. Please install it with install.packages(\"factoextra\").", call. = FALSE)
+  }
     num.alt = nrow(tabdecs.X)
     num.cri = ncol(tabdecs.X)
-    tabla.M1 =  calculo_tablaM(tabdec.X,pesos.criterios,tab.fpref)
-    PCA.UNIC = prcomp(tabla.M1, center = TRUE, scale. = TRUE)
+    tabla.M1 =  calculo_tablaM(tabdecs.X,pesos.criterios,tab.fpref)
+    PCA.UNIC = stats::prcomp(tabla.M1, center = TRUE, scale. = TRUE)
     Plano.GAIA = factoextra::fviz_pca_biplot(PCA.UNIC,
                                              geom =c("point", "text"),
                                              repel = TRUE,
@@ -773,13 +801,13 @@ multicriterio.metodo.promethee_plano_GAIA_med = function(tabdecs.X,pesos.criteri
 
 ## Promethee Windows ----
 
-#' Nombre de función de preferencia Promethee
+#' Nombre de funcion de preferencia Promethee
 #'
-#' Devuelve el nombre descriptivo de la función de preferencia según su código.
+#' Devuelve el nombre descriptivo de la funcion de preferencia segun su codigo.
 #'
-#' @param cual Numérico. Código de la función (1-6).
+#' @param cual Numerico. Codigo de la funcion (1-6).
 #'
-#' @return Character string con el nombre de la función.
+#' @return Character string con el nombre de la funcion.
 #'
 #' @examples
 #' multicriterio.metodo.promethee_windows_funconversion(1)
@@ -801,15 +829,15 @@ multicriterio.metodo.promethee_windows_funconversion = function(cual = 1) {
 
 #' Bloque 01 de Promethee Windows
 #'
-#' Genera el primer bloque de información de Promethee Windows con la
-#' configuración de preferencias.
+#' Genera el primer bloque de informacion de Promethee Windows con la
+#' configuracion de preferencias.
 #'
-#' @param tab.fpref Matriz de configuración de funciones de preferencia.
-#' @param pesos.criterios Vector numérico con los pesos de los criterios.
+#' @param tab.fpref Matriz de configuracion de funciones de preferencia.
+#' @param pesos.criterios Vector numerico con los pesos de los criterios.
 #' @param fminmax Vector de character strings opcional con "min" o "max"
 #'   para cada criterio.
 #'
-#' @return Matriz numérica con la configuración de preferencias.
+#' @return Matriz numerica con la configuracion de preferencias.
 #'
 #' @examples
 #' \dontrun{
@@ -846,13 +874,13 @@ multicriterio.metodo.promethee_windows_bloque01 = function(tab.fpref, pesos.crit
 
 #' Bloque 02 de Promethee Windows
 #'
-#' Genera el segundo bloque de información con estadísticas descriptivas
-#' de la matriz de decisión.
+#' Genera el segundo bloque de informacion con estadisticas descriptivas
+#' de la matriz de decision.
 #'
-#' @param matdecision Matriz numérica de decisión.
+#' @param matdecision Matriz numerica de decision.
 #' @param fminmax Vector de character strings opcional con "min" o "max".
 #'
-#' @return Matriz numérica con estadísticas (mínimo, máximo, media, desviación).
+#' @return Matriz numerica con estadisticas (minimo, maximo, media, desviacion).
 #'
 #' @examples
 #' multicriterio.metodo.promethee_windows_bloque02(
@@ -880,18 +908,18 @@ multicriterio.metodo.promethee_windows_bloque02 = function(matdecision, fminmax 
 
 #' Promethee Windows
 #'
-#' Aplica el método Promethee Windows que combina Promethee I y II con
-#' un formato de presentación tipo "ventana" con estadísticas.
+#' Aplica el metodo Promethee Windows que combina Promethee I y II con
+#' un formato de presentacion tipo "ventana" con estadisticas.
 #'
-#' @param matdecision Matriz numérica de decisión.
-#' @param tab.fpref Matriz de configuración de funciones de preferencia.
-#' @param pesos.criterios Vector numérico con los pesos de los criterios.
+#' @param matdecision Matriz numerica de decision.
+#' @param tab.fpref Matriz de configuracion de funciones de preferencia.
+#' @param pesos.criterios Vector numerico con los pesos de los criterios.
 #' @param fminmax Vector de character strings opcional con "min" o "max"
 #'   para cada criterio.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
-#'   \item{Escenario}{Matriz con la configuración, estadísticas y datos}
+#'   \item{Escenario}{Matriz con la configuracion, estadisticas y datos}
 #'   \item{Acciones}{DataFrame con los resultados de Promethee (Phi, Phi+, Phi-)}
 #' }
 #'
@@ -906,6 +934,9 @@ multicriterio.metodo.promethee_windows_bloque02 = function(matdecision, fminmax 
 #' @export
 multicriterio.metodo.promethee_windows = function(matdecision, tab.fpref, pesos.criterios, fminmax = NULL) {
 
+  if (!requireNamespace("dplyr", quietly = TRUE)) {
+    stop("Package \"dplyr\" needed for this function. Please install it with install.packages(\"dplyr\").", call. = FALSE)
+  }
     res01_i = multicriterio.metodo.promethee_i_med(
         tabdecs.X = matdecision,
         pesos.criterios = pesos.criterios,
@@ -922,7 +953,7 @@ multicriterio.metodo.promethee_windows = function(matdecision, tab.fpref, pesos.
                         Phi.mas = res01_i$vflujos.ent,
                         Phi.menos = res01_i$vflujos.sal)
     df_res2 = round(df_res,4) %>%
-        arrange(desc(Phi))
+        dplyr::arrange(dplyr::desc(Phi))
 
     df_res2 = cbind("Rango" = rank(-df_res2$Phi, ties.method = "first"),
                     df_res2)
@@ -965,14 +996,20 @@ multicriterio.metodo.promethee_windows = function(matdecision, tab.fpref, pesos.
 #' @export
 multicriterio.metodo.promethee_windows_kableExtra_html = function(res_promethee_windows) {
 
-    tab01 = kbl(res_promethee_windows$Escenario) |>
-        kable_paper("striped", full_width = F) |>
-        pack_rows("Preferencias",1,6) |>
-        pack_rows("Estadísticas",7,10) |>
-        pack_rows("Evaluaciones",11,nrow(res_promethee_windows$Escenario))
+  if (!requireNamespace("kableExtra", quietly = TRUE)) {
+    stop("Package \"kableExtra\" needed for this function. Please install it with install.packages(\"kableExtra\").", call. = FALSE)
+  }
+  if (!requireNamespace("knitr", quietly = TRUE)) {
+    stop("Package \"knitr\" needed for this function. Please install it with install.packages(\"knitr\").", call. = FALSE)
+  }
+    tab01 = kableExtra::kbl(res_promethee_windows$Escenario) |>
+        kableExtra::kable_paper("striped", full_width = FALSE) |>
+        kableExtra::pack_rows("Preferencias",1,6) |>
+        kableExtra::pack_rows("Estadisticas",7,10) |>
+        kableExtra::pack_rows("Evaluaciones",11,nrow(res_promethee_windows$Escenario))
 
-    tab02 = kbl(res_promethee_windows$Acciones) |>
-        kable_paper("striped", full_width = F)
+    tab02 = kableExtra::kbl(res_promethee_windows$Acciones) |>
+        kableExtra::kable_paper("striped", full_width = FALSE)
 
     res = list(tabEscenario = tab01,
                tabAcciones = tab02)
@@ -996,12 +1033,18 @@ multicriterio.metodo.promethee_windows_kableExtra_html = function(res_promethee_
 #' @export
 multicriterio.metodo.promethee_windows_kableExtra_pdf = function(res_promethee_windows) {
 
-    tab01 = kbl(res_promethee_windows$Escenario, booktabs = T) |>
-        pack_rows("Preferencias",1,6) |>
-        pack_rows("Estadísticas",7,10) |>
-        pack_rows("Evaluaciones",11,nrow(res_promethee_windows$Escenario))
+  if (!requireNamespace("kableExtra", quietly = TRUE)) {
+    stop("Package \"kableExtra\" needed for this function. Please install it with install.packages(\"kableExtra\").", call. = FALSE)
+  }
+  if (!requireNamespace("knitr", quietly = TRUE)) {
+    stop("Package \"knitr\" needed for this function. Please install it with install.packages(\"knitr\").", call. = FALSE)
+  }
+    tab01 = kableExtra::kbl(res_promethee_windows$Escenario, booktabs = TRUE) |>
+        kableExtra::pack_rows("Preferencias",1,6) |>
+        kableExtra::pack_rows("Estadisticas",7,10) |>
+        kableExtra::pack_rows("Evaluaciones",11,nrow(res_promethee_windows$Escenario))
 
-    tab02 = kbl(res_promethee_windows$Acciones, booktabs = T)
+    tab02 = kableExtra::kbl(res_promethee_windows$Acciones, booktabs = TRUE)
 
     res = list(tabEscenario = tab01,
                tabAcciones = tab02)
@@ -1010,7 +1053,7 @@ multicriterio.metodo.promethee_windows_kableExtra_pdf = function(res_promethee_w
 
 #' Promethee Windows - Tablas adaptativas
 #'
-#' Genera tablas kableExtra adaptativas según el formato de salida (HTML o PDF).
+#' Genera tablas kableExtra adaptativas segun el formato de salida (HTML o PDF).
 #'
 #' @param res_promethee_windows Lista resultado de
 #'   \code{multicriterio.metodo.promethee_windows}.
@@ -1025,6 +1068,9 @@ multicriterio.metodo.promethee_windows_kableExtra_pdf = function(res_promethee_w
 #' @export
 multicriterio.metodo.promethee_windows_kableExtra = function(res_promethee_windows) {
 
+  if (!requireNamespace("knitr", quietly = TRUE)) {
+    stop("Package \"knitr\" needed for this function. Please install it with install.packages(\"knitr\").", call. = FALSE)
+  }
     es_html = knitr::is_html_output()
     if (es_html) {
         res = multicriterio.metodo.promethee_windows_kableExtra_html(res_promethee_windows)

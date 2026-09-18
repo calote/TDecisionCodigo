@@ -1,26 +1,26 @@
 #
-# PROBLEMAS DE ÁRBOLES DE DECISIÓN BAYESIANOS EN AMBIENTE DE RIESGO ------
+# PROBLEMAS DE ARBOLES DE DECISION BAYESIANOS EN AMBIENTE DE RIESGO ------
 #
 
-## Funciones para el análisis de árboles de decisión bayesianos
-## Incluye cálculos de probabilidades conjuntas, marginales y condicionadas,
-## valoraciones esperadas a priori y a posteriori, entropía e información del canal.
+## Funciones para el analisis de arboles de decision bayesianos
+## Incluye calculos de probabilidades conjuntas, marginales y condicionadas,
+## valoraciones esperadas a priori y a posteriori, entropia e informacion del canal.
 
 
 # Funciones: Definiciones  ------------
 
-#' Distribución de probabilidad conjunta
+#' Distribucion de probabilidad conjunta
 #'
-#' Calcula la distribución de probabilidad conjunta de los estados naturales
+#' Calcula la distribucion de probabilidad conjunta de los estados naturales
 #' y las modalidades de la variable observadora X.
 #'
-#' @param probs_estados Vector numérico con las probabilidades a priori de cada
+#' @param probs_estados Vector numerico con las probabilidades a priori de cada
 #'   estado natural. Debe sumar 1.
-#' @param probs_X_cond_estados Matriz numérica donde cada fila representa la
-#'   distribución condicional de las modalidades de X dado un estado natural.
+#' @param probs_X_cond_estados Matriz numerica donde cada fila representa la
+#'   distribucion condicional de las modalidades de X dado un estado natural.
 #'   Las filas deben sumar 1.
 #'
-#' @return Matriz numérica de dimensión (n_estados x n_modalidades_X) con las
+#' @return Matriz numerica de dimension (n_estados x n_modalidades_X) con las
 #'   probabilidades conjuntas P(E_i, X_j).
 #'
 #' @examples
@@ -38,17 +38,17 @@ func_distribucion_conjunta = function(probs_estados,probs_X_cond_estados) {
 }
 
 
-#' Distribución marginal de la variable X
+#' Distribucion marginal de la variable X
 #'
-#' Calcula la distribución marginal de las modalidades de la variable X
+#' Calcula la distribucion marginal de las modalidades de la variable X
 #' a partir de las probabilidades de los estados y las distribuciones condicionales.
 #'
-#' @param probs_estados Vector numérico con las probabilidades a priori de cada
+#' @param probs_estados Vector numerico con las probabilidades a priori de cada
 #'   estado natural.
-#' @param probs_X_cond_estados Matriz numérica con las distribuciones condicionales
+#' @param probs_X_cond_estados Matriz numerica con las distribuciones condicionales
 #'   de X dado cada estado.
 #'
-#' @return Vector numérico con las probabilidades marginales de cada modalidad
+#' @return Vector numerico con las probabilidades marginales de cada modalidad
 #'   de X (P(X_j)).
 #'
 #' @examples
@@ -62,17 +62,17 @@ func_distribucion_marginal_X = function(probs_estados,probs_X_cond_estados) {
 }
 
 
-#' Distribución condicionada de los estados dado X
+#' Distribucion condicionada de los estados dado X
 #'
 #' Calcula las probabilidades a posteriori de cada estado natural condicionadas
 #' a cada modalidad de la variable observadora X.
 #'
-#' @param probs_estados Vector numérico con las probabilidades a priori de cada
+#' @param probs_estados Vector numerico con las probabilidades a priori de cada
 #'   estado natural.
-#' @param probs_X_cond_estados Matriz numérica con las distribuciones condicionales
+#' @param probs_X_cond_estados Matriz numerica con las distribuciones condicionales
 #'   de X dado cada estado.
 #'
-#' @return Matriz numérica de dimensión (n_estados x n_modalidades_X) con las
+#' @return Matriz numerica de dimension (n_estados x n_modalidades_X) con las
 #'   probabilidades condicionadas P(E_i | X_j).
 #'
 #' @examples
@@ -90,18 +90,18 @@ func_distribucion_E_cond_X = function(probs_estados,probs_X_cond_estados) {
 }
 
 
-#' Valoración esperada a priori
+#' Valoracion esperada a priori
 #'
-#' Calcula la valoración esperada de cada alternativa de decisión a priori,
+#' Calcula la valoracion esperada de cada alternativa de decision a priori,
 #' ponderando las valoraciones por las probabilidades de los estados naturales.
 #'
-#' @param tabla_valoraciones Matriz numérica donde las filas representan las
+#' @param tabla_valoraciones Matriz numerica donde las filas representan las
 #'   alternativas y las columnas los estados naturales. Cada elemento es la
-#'   valoración de la alternativa i ante el estado j.
-#' @param probs_estados Vector numérico con las probabilidades a priori de cada
+#'   valoracion de la alternativa i ante el estado j.
+#' @param probs_estados Vector numerico con las probabilidades a priori de cada
 #'   estado natural.
 #'
-#' @return Vector numérico con las valoraciones esperadas de cada alternativa.
+#' @return Vector numerico con las valoraciones esperadas de cada alternativa.
 #'
 #' @examples
 #' TV <- matrix(c(100, 50, -30, 80, 60, 10), nrow = 2, byrow = TRUE)
@@ -115,17 +115,17 @@ func_valoracion_esperada = function(tabla_valoraciones,probs_estados) {
 }
 
 
-#' Valoración esperada a posteriori
+#' Valoracion esperada a posteriori
 #'
 #' Calcula las valoraciones esperadas de cada alternativa para cada modalidad
 #' de la variable X, usando las probabilidades condicionadas a posteriori.
 #'
-#' @param tabla_valoraciones Matriz numérica con las valoraciones de las
+#' @param tabla_valoraciones Matriz numerica con las valoraciones de las
 #'   alternativas ante cada estado.
-#' @param probs_estados Vector numérico con las probabilidades a priori.
-#' @param probs_X_cond_estados Matriz numérica con las distribuciones condicionales.
+#' @param probs_estados Vector numerico con las probabilidades a priori.
+#' @param probs_X_cond_estados Matriz numerica con las distribuciones condicionales.
 #'
-#' @return Matriz numérica donde cada columna contiene las valoraciones esperadas
+#' @return Matriz numerica donde cada columna contiene las valoraciones esperadas
 #'   a posteriori para una modalidad de X.
 #'
 #' @examples
@@ -142,22 +142,22 @@ func_valoracion_esperada_a_posteriori = function(tabla_valoraciones,probs_estado
 }
 
 
-#' Mejor valoración esperada entre alternativas
+#' Mejor valoracion esperada entre alternativas
 #'
-#' Devuelve la mejor valoración esperada entre todas las alternativas.
+#' Devuelve la mejor valoracion esperada entre todas las alternativas.
 #'
-#' @param valoracion_esperada Vector numérico con las valoraciones esperadas.
-#' @param favorable Lógico. Si TRUE (por defecto), se maximiza (problema de
+#' @param valoracion_esperada Vector numerico con las valoraciones esperadas.
+#' @param favorable Logico. Si TRUE (por defecto), se maximiza (problema de
 #'   beneficios). Si FALSE, se minimiza (problema de costes).
 #'
-#' @return Valor numérico con la mejor valoración esperada.
+#' @return Valor numerico con la mejor valoracion esperada.
 #'
 #' @examples
 #' ve <- c(A1 = 65, A2 = 70, A3 = 55)
 #' func_mejor_valoracion_esperada_alternativa(ve, favorable = TRUE)
 #'
 #' @export
-func_mejor_valoracion_esperada_alternativa = function(valoracion_esperada,favorable=T) {
+func_mejor_valoracion_esperada_alternativa = function(valoracion_esperada,favorable=TRUE) {
   if (favorable) {
     return( max(valoracion_esperada) )
   } else {
@@ -168,11 +168,11 @@ func_mejor_valoracion_esperada_alternativa = function(valoracion_esperada,favora
 
 #' Nombre de la mejor alternativa
 #'
-#' Devuelve el nombre de la alternativa con la mejor valoración esperada.
+#' Devuelve el nombre de la alternativa con la mejor valoracion esperada.
 #'
-#' @param valoracion_esperada Vector numérico con las valoraciones esperadas,
+#' @param valoracion_esperada Vector numerico con las valoraciones esperadas,
 #'   con nombres que identifican las alternativas.
-#' @param favorable Lógico. Si TRUE, se busca la máxima. Si FALSE, la mínima.
+#' @param favorable Logico. Si TRUE, se busca la maxima. Si FALSE, la minima.
 #'
 #' @return Character string con el nombre de la mejor alternativa.
 #'
@@ -181,7 +181,7 @@ func_mejor_valoracion_esperada_alternativa = function(valoracion_esperada,favora
 #' func_mejor_alternativa(ve, favorable = TRUE)
 #'
 #' @export
-func_mejor_alternativa = function(valoracion_esperada,favorable=T) {
+func_mejor_alternativa = function(valoracion_esperada,favorable=TRUE) {
   if (favorable) {
     alt = which.max(valoracion_esperada)
     return(names(valoracion_esperada)[alt])
@@ -195,20 +195,20 @@ func_mejor_alternativa = function(valoracion_esperada,favorable=T) {
 #' Nombres de las mejores alternativas (empate)
 #'
 #' Devuelve los nombres de todas las alternativas que empatan en la mejor
-#' valoración esperada.
+#' valoracion esperada.
 #'
-#' @param valoracion_esperada Vector numérico con las valoraciones esperadas.
-#' @param favorable Lógico. Si TRUE, busca las máximas. Si FALSE, las mínimas.
+#' @param valoracion_esperada Vector numerico con las valoraciones esperadas.
+#' @param favorable Logico. Si TRUE, busca las maximas. Si FALSE, las minimas.
 #'
 #' @return Vector de character strings con los nombres de las alternativas
-#'   óptimas (puede contener más de uno si hay empate).
+#'   optimas (puede contener mas de uno si hay empate).
 #'
 #' @examples
 #' ve <- c(A1 = 70, A2 = 70, A3 = 55)
 #' func_mejor_alternativa_multiple(ve, favorable = TRUE)
 #'
 #' @export
-func_mejor_alternativa_multiple = function(valoracion_esperada,favorable=T) {
+func_mejor_alternativa_multiple = function(valoracion_esperada,favorable=TRUE) {
   if (favorable) {
     alt = which(valoracion_esperada==max(valoracion_esperada))
     return(names(valoracion_esperada)[alt])
@@ -219,16 +219,16 @@ func_mejor_alternativa_multiple = function(valoracion_esperada,favorable=T) {
 }
 
 
-#' Mejor valoración esperada a priori
+#' Mejor valoracion esperada a priori
 #'
-#' Calcula la mejor valoración esperada entre todas las alternativas a priori.
+#' Calcula la mejor valoracion esperada entre todas las alternativas a priori.
 #'
-#' @param tabla_valoraciones Matriz numérica con las valoraciones de alternativas
+#' @param tabla_valoraciones Matriz numerica con las valoraciones de alternativas
 #'   ante cada estado.
-#' @param probs_estados Vector numérico con las probabilidades de los estados.
-#' @param favorable Lógico. Si TRUE, se maximiza. Si FALSE, se minimiza.
+#' @param probs_estados Vector numerico con las probabilidades de los estados.
+#' @param favorable Logico. Si TRUE, se maximiza. Si FALSE, se minimiza.
 #'
-#' @return Valor numérico con la mejor valoración esperada a priori.
+#' @return Valor numerico con la mejor valoracion esperada a priori.
 #'
 #' @examples
 #' TV <- matrix(c(100, 50, -30, 80, 60, 10), nrow = 2, byrow = TRUE)
@@ -236,7 +236,7 @@ func_mejor_alternativa_multiple = function(valoracion_esperada,favorable=T) {
 #' func_valoracion_mejor_alternativa_apriori(TV, probs_E, favorable = TRUE)
 #'
 #' @export
-func_valoracion_mejor_alternativa_apriori = function(tabla_valoraciones,probs_estados,favorable=T) {
+func_valoracion_mejor_alternativa_apriori = function(tabla_valoraciones,probs_estados,favorable=TRUE) {
   val_esperadas_apriori = func_valoracion_esperada(tabla_valoraciones,probs_estados)
   return( func_mejor_valoracion_esperada_alternativa(val_esperadas_apriori,favorable) )
 }
@@ -244,12 +244,12 @@ func_valoracion_mejor_alternativa_apriori = function(tabla_valoraciones,probs_es
 
 #' Mejor alternativa a priori
 #'
-#' Devuelve el nombre de la alternativa con la mejor valoración esperada a priori.
+#' Devuelve el nombre de la alternativa con la mejor valoracion esperada a priori.
 #'
-#' @param tabla_valoraciones Matriz numérica con las valoraciones de alternativas
+#' @param tabla_valoraciones Matriz numerica con las valoraciones de alternativas
 #'   ante cada estado.
-#' @param probs_estados Vector numérico con las probabilidades de los estados.
-#' @param favorable Lógico. Si TRUE, se maximiza. Si FALSE, se minimiza.
+#' @param probs_estados Vector numerico con las probabilidades de los estados.
+#' @param favorable Logico. Si TRUE, se maximiza. Si FALSE, se minimiza.
 #'
 #' @return Character string con el nombre de la mejor alternativa a priori.
 #'
@@ -260,23 +260,23 @@ func_valoracion_mejor_alternativa_apriori = function(tabla_valoraciones,probs_es
 #' func_mejor_alternativa_apriori(TV, probs_E, favorable = TRUE)
 #'
 #' @export
-func_mejor_alternativa_apriori = function(tabla_valoraciones,probs_estados,favorable=T) {
+func_mejor_alternativa_apriori = function(tabla_valoraciones,probs_estados,favorable=TRUE) {
   val_esperadas_apriori = func_valoracion_esperada(tabla_valoraciones,probs_estados)
   names(val_esperadas_apriori) = rownames(tabla_valoraciones)
   return( func_mejor_alternativa(val_esperadas_apriori,favorable) )
 }
 
 
-#' Mejores alternativas a priori (múltiples)
+#' Mejores alternativas a priori (multiples)
 #'
 #' Devuelve los nombres de todas las alternativas que empatan en la mejor
-#' valoración esperada a priori.
+#' valoracion esperada a priori.
 #'
-#' @param tabla_valoraciones Matriz numérica con las valoraciones de alternativas.
-#' @param probs_estados Vector numérico con las probabilidades de los estados.
-#' @param favorable Lógico. Si TRUE, se maximiza. Si FALSE, se minimiza.
+#' @param tabla_valoraciones Matriz numerica con las valoraciones de alternativas.
+#' @param probs_estados Vector numerico con las probabilidades de los estados.
+#' @param favorable Logico. Si TRUE, se maximiza. Si FALSE, se minimiza.
 #'
-#' @return Vector de character strings con los nombres de las alternativas óptimas.
+#' @return Vector de character strings con los nombres de las alternativas optimas.
 #'
 #' @examples
 #' TV <- matrix(c(100, 50, 100, 80, 60, 10), nrow = 2, byrow = TRUE)
@@ -285,7 +285,7 @@ func_mejor_alternativa_apriori = function(tabla_valoraciones,probs_estados,favor
 #' func_mejor_alternativa_apriori_multiple(TV, probs_E, favorable = TRUE)
 #'
 #' @export
-func_mejor_alternativa_apriori_multiple = function(tabla_valoraciones,probs_estados,favorable=T) {
+func_mejor_alternativa_apriori_multiple = function(tabla_valoraciones,probs_estados,favorable=TRUE) {
   val_esperadas_apriori = func_valoracion_esperada(tabla_valoraciones,probs_estados)
   names(val_esperadas_apriori) = rownames(tabla_valoraciones)
   return( func_mejor_alternativa_multiple(val_esperadas_apriori,favorable) )
@@ -294,15 +294,15 @@ func_mejor_alternativa_apriori_multiple = function(tabla_valoraciones,probs_esta
 
 #' Mejores valoraciones esperadas a posteriori
 #'
-#' Para cada modalidad de la variable X, devuelve la mejor valoración esperada
+#' Para cada modalidad de la variable X, devuelve la mejor valoracion esperada
 #' entre todas las alternativas usando las probabilidades a posteriori.
 #'
-#' @param tabla_valoraciones Matriz numérica con las valoraciones de alternativas.
-#' @param probs_estados Vector numérico con las probabilidades a priori.
-#' @param probs_X_cond_estados Matriz numérica con las distribuciones condicionales.
-#' @param favorable Lógico. Si TRUE, se maximiza. Si FALSE, se minimiza.
+#' @param tabla_valoraciones Matriz numerica con las valoraciones de alternativas.
+#' @param probs_estados Vector numerico con las probabilidades a priori.
+#' @param probs_X_cond_estados Matriz numerica con las distribuciones condicionales.
+#' @param favorable Logico. Si TRUE, se maximiza. Si FALSE, se minimiza.
 #'
-#' @return Vector numérico con la mejor valoración esperada a posteriori para
+#' @return Vector numerico con la mejor valoracion esperada a posteriori para
 #'   cada modalidad de X.
 #'
 #' @examples
@@ -313,7 +313,7 @@ func_mejor_alternativa_apriori_multiple = function(tabla_valoraciones,probs_esta
 #'
 #' @export
 func_valoracion_mejor_esperada_a_posteriori = function(tabla_valoraciones,probs_estados,
-                                            probs_X_cond_estados,favorable=T) {
+                                            probs_X_cond_estados,favorable=TRUE) {
   mat_val_esperadas_aposteriori = func_valoracion_esperada_a_posteriori(tabla_valoraciones,
                                             probs_estados,probs_X_cond_estados)
   return( apply(mat_val_esperadas_aposteriori,2,
@@ -324,12 +324,12 @@ func_valoracion_mejor_esperada_a_posteriori = function(tabla_valoraciones,probs_
 #' Mejores alternativas a posteriori
 #'
 #' Para cada modalidad de la variable X, devuelve el nombre de la alternativa
-#' con la mejor valoración esperada a posteriori.
+#' con la mejor valoracion esperada a posteriori.
 #'
-#' @param tabla_valoraciones Matriz numérica con las valoraciones de alternativas.
-#' @param probs_estados Vector numérico con las probabilidades a priori.
-#' @param probs_X_cond_estados Matriz numérica con las distribuciones condicionales.
-#' @param favorable Lógico. Si TRUE, se maximiza. Si FALSE, se minimiza.
+#' @param tabla_valoraciones Matriz numerica con las valoraciones de alternativas.
+#' @param probs_estados Vector numerico con las probabilidades a priori.
+#' @param probs_X_cond_estados Matriz numerica con las distribuciones condicionales.
+#' @param favorable Logico. Si TRUE, se maximiza. Si FALSE, se minimiza.
 #'
 #' @return Vector de character strings con el nombre de la mejor alternativa
 #'   para cada modalidad de X.
@@ -343,7 +343,7 @@ func_valoracion_mejor_esperada_a_posteriori = function(tabla_valoraciones,probs_
 #'
 #' @export
 func_mejor_alternativa_a_posteriori = function(tabla_valoraciones,probs_estados,probs_X_cond_estados,
-                                               favorable=T) {
+                                               favorable=TRUE) {
   mat_val_esperadas_aposteriori = func_valoracion_esperada_a_posteriori(tabla_valoraciones,
                                                                 probs_estados,probs_X_cond_estados)
   rownames(mat_val_esperadas_aposteriori) = rownames(tabla_valoraciones)
@@ -351,17 +351,17 @@ func_mejor_alternativa_a_posteriori = function(tabla_valoraciones,probs_estados,
 }
 
 
-#' Resultado Esperado con Información Perfecta (REII)
+#' Resultado Esperado con Informacion Perfecta (REII)
 #'
-#' Calcula el resultado esperado cuando se dispone de información perfecta
+#' Calcula el resultado esperado cuando se dispone de informacion perfecta
 #' sobre el estado de la naturaleza antes de decidir.
 #'
-#' @param tabla_valoraciones Matriz numérica con las valoraciones de alternativas.
-#' @param probs_estados Vector numérico con las probabilidades a priori.
-#' @param probs_X_cond_estados Matriz numérica con las distribuciones condicionales.
-#' @param favorable Lógico. Si TRUE, se maximiza. Si FALSE, se minimiza.
+#' @param tabla_valoraciones Matriz numerica con las valoraciones de alternativas.
+#' @param probs_estados Vector numerico con las probabilidades a priori.
+#' @param probs_X_cond_estados Matriz numerica con las distribuciones condicionales.
+#' @param favorable Logico. Si TRUE, se maximiza. Si FALSE, se minimiza.
 #'
-#' @return Valor numérico con el REII.
+#' @return Valor numerico con el REII.
 #'
 #' @examples
 #' TV <- matrix(c(100, 50, -30, 80, 60, 10), nrow = 2, byrow = TRUE)
@@ -370,7 +370,7 @@ func_mejor_alternativa_a_posteriori = function(tabla_valoraciones,probs_estados,
 #' func_REII(TV, probs_E, probs_XdE, favorable = TRUE)
 #'
 #' @export
-func_REII = function(tabla_valoraciones,probs_estados,probs_X_cond_estados,favorable=T) {
+func_REII = function(tabla_valoraciones,probs_estados,probs_X_cond_estados,favorable=TRUE) {
   marginal_X = func_distribucion_marginal_X(probs_estados,probs_X_cond_estados);
   val_mejor_aposteriori = func_valoracion_mejor_esperada_a_posteriori(tabla_valoraciones,probs_estados,
                                                                 probs_X_cond_estados,favorable);
@@ -380,14 +380,14 @@ func_REII = function(tabla_valoraciones,probs_estados,probs_X_cond_estados,favor
 
 #' Resultado Esperado con Riesgo (RER)
 #'
-#' Calcula el resultado esperado bajo incertidumbre (sin información adicional).
-#' Es la mejor valoración esperada a priori.
+#' Calcula el resultado esperado bajo incertidumbre (sin informacion adicional).
+#' Es la mejor valoracion esperada a priori.
 #'
-#' @param tabla_valoraciones Matriz numérica con las valoraciones de alternativas.
-#' @param probs_estados Vector numérico con las probabilidades de los estados.
-#' @param favorable Lógico. Si TRUE, se maximiza. Si FALSE, se minimiza.
+#' @param tabla_valoraciones Matriz numerica con las valoraciones de alternativas.
+#' @param probs_estados Vector numerico con las probabilidades de los estados.
+#' @param favorable Logico. Si TRUE, se maximiza. Si FALSE, se minimiza.
 #'
-#' @return Valor numérico con el RER.
+#' @return Valor numerico con el RER.
 #'
 #' @examples
 #' TV <- matrix(c(100, 50, -30, 80, 60, 10), nrow = 2, byrow = TRUE)
@@ -395,23 +395,23 @@ func_REII = function(tabla_valoraciones,probs_estados,probs_X_cond_estados,favor
 #' func_RER(TV, probs_E, favorable = TRUE)
 #'
 #' @export
-func_RER = function(tabla_valoraciones,probs_estados,favorable=T) {
+func_RER = function(tabla_valoraciones,probs_estados,favorable=TRUE) {
   val_esperadas_apriori = func_valoracion_esperada(tabla_valoraciones,probs_estados);
   return( func_mejor_valoracion_esperada_alternativa(val_esperadas_apriori,favorable) );
 }
 
 
-#' Valor Esperado de la Información Adicional (VEX)
+#' Valor Esperado de la Informacion Adicional (VEX)
 #'
-#' Calcula el valor esperado máximo que el decisor estaría dispuesto a pagar
-#' por obtener información adicional X antes de decidir.
+#' Calcula el valor esperado maximo que el decisor estaria dispuesto a pagar
+#' por obtener informacion adicional X antes de decidir.
 #'
-#' @param tabla_valoraciones Matriz numérico con las valoraciones de alternativas.
-#' @param probs_estados Vector numérico con las probabilidades a priori.
-#' @param probs_X_cond_estados Matriz numérica con las distribuciones condicionales.
-#' @param favorable Lógico. Si TRUE, se maximiza. Si FALSE, se minimiza.
+#' @param tabla_valoraciones Matriz numerico con las valoraciones de alternativas.
+#' @param probs_estados Vector numerico con las probabilidades a priori.
+#' @param probs_X_cond_estados Matriz numerica con las distribuciones condicionales.
+#' @param favorable Logico. Si TRUE, se maximiza. Si FALSE, se minimiza.
 #'
-#' @return Valor numérico con el VEX (REII - RER).
+#' @return Valor numerico con el VEX (REII - RER).
 #'
 #' @examples
 #' TV <- matrix(c(100, 50, -30, 80, 60, 10), nrow = 2, byrow = TRUE)
@@ -420,30 +420,30 @@ func_RER = function(tabla_valoraciones,probs_estados,favorable=T) {
 #' func_VEX(TV, probs_E, probs_XdE, favorable = TRUE)
 #'
 #' @export
-func_VEX = function(tabla_valoraciones,probs_estados,probs_X_cond_estados,favorable=T) {
+func_VEX = function(tabla_valoraciones,probs_estados,probs_X_cond_estados,favorable=TRUE) {
   REII = func_REII(tabla_valoraciones,probs_estados,probs_X_cond_estados,favorable);
   RER = func_RER(tabla_valoraciones,probs_estados,favorable);
   return( REII - RER )
 }
 
 
-#' Entropía de una distribución
+#' Entropia de una distribucion
 #'
-#' Calcula la entropía de Shannon de una distribución de probabilidad unidimensional.
+#' Calcula la entropia de Shannon de una distribucion de probabilidad unidimensional.
 #'
-#' @param probs Vector numérico con las probabilidades de la distribución.
-#'   Los valores nulos se ignoran automáticamente.
-#' @param baselogaritmo Numérico. Base del logaritmo para el cálculo de la
-#'   entropía. Por defecto 2 (bits).
+#' @param probs Vector numerico con las probabilidades de la distribucion.
+#'   Los valores nulos se ignoran automaticamente.
+#' @param baselogaritmo Numerico. Base del logaritmo para el calculo de la
+#'   entropia. Por defecto 2 (bits).
 #'
-#' @return Valor numérico con la entropía de la distribución.
+#' @return Valor numerico con la entropia de la distribucion.
 #'
 #' @examples
-#' # Entropía máxima: distribución uniforme
+#' # Entropia maxima: distribucion uniforme
 #' func_entropia(c(0.5, 0.5))
-#' # Entropía mínima: distribución degenerada
+#' # Entropia minima: distribucion degenerada
 #' func_entropia(c(1, 0))
-#' # Entropía en nats (base e)
+#' # Entropia en nats (base e)
 #' func_entropia(c(0.5, 0.5), baselogaritmo = exp(1))
 #'
 #' @export
@@ -453,16 +453,16 @@ func_entropia = function(probs,baselogaritmo=2) {
 }
 
 
-#' Entropías condicionadas de los estados dado X
+#' Entropias condicionadas de los estados dado X
 #'
-#' Calcula la entropía de la distribución de estados para cada modalidad
+#' Calcula la entropia de la distribucion de estados para cada modalidad
 #' de la variable X.
 #'
-#' @param probs_estados Vector numérico con las probabilidades a priori.
-#' @param probs_X_cond_estados Matriz numérica con las distribuciones condicionales.
-#' @param baselogaritmo Numérico. Base del logaritmo. Por defecto 2.
+#' @param probs_estados Vector numerico con las probabilidades a priori.
+#' @param probs_X_cond_estados Matriz numerica con las distribuciones condicionales.
+#' @param baselogaritmo Numerico. Base del logaritmo. Por defecto 2.
 #'
-#' @return Vector numérico con las entropías condicionadas para cada modalidad
+#' @return Vector numerico con las entropias condicionadas para cada modalidad
 #'   de X.
 #'
 #' @examples
@@ -477,16 +477,16 @@ func_entropias_estados_cond_X = function(probs_estados,probs_X_cond_estados,base
 }
 
 
-#' Entropía a posteriori
+#' Entropia a posteriori
 #'
-#' Calcula la entropía condicional promedio de la distribución de estados
+#' Calcula la entropia condicional promedio de la distribucion de estados
 #' dado X, promediada sobre las modalidades de X.
 #'
-#' @param probs_estados Vector numérico con las probabilidades a priori.
-#' @param probs_X_cond_estados Matriz numérica con las distribuciones condicionales.
-#' @param baselogaritmo Numérico. Base del logaritmo. Por defecto 2.
+#' @param probs_estados Vector numerico con las probabilidades a priori.
+#' @param probs_X_cond_estados Matriz numerica con las distribuciones condicionales.
+#' @param baselogaritmo Numerico. Base del logaritmo. Por defecto 2.
 #'
-#' @return Valor numérico con la entropía a posteriori.
+#' @return Valor numerico con la entropia a posteriori.
 #'
 #' @examples
 #' probs_E <- c(0.3, 0.5, 0.2)
@@ -502,16 +502,16 @@ func_entropia_aposteriori = function(probs_estados,probs_X_cond_estados,baseloga
 }
 
 
-#' Información del canal
+#' Informacion del canal
 #'
-#' Calcula la información mutua (reducción de entropía) que proporciona la
-#' variable X sobre la distribución de los estados naturales.
+#' Calcula la informacion mutua (reduccion de entropia) que proporciona la
+#' variable X sobre la distribucion de los estados naturales.
 #'
-#' @param probs_estados Vector numérico con las probabilidades a priori.
-#' @param probs_X_cond_estados Matriz numérica con las distribuciones condicionales.
-#' @param baselogaritmo Numérico. Base del logaritmo. Por defecto 2.
+#' @param probs_estados Vector numerico con las probabilidades a priori.
+#' @param probs_X_cond_estados Matriz numerica con las distribuciones condicionales.
+#' @param baselogaritmo Numerico. Base del logaritmo. Por defecto 2.
 #'
-#' @return Valor numérico con la información del canal (H(E) - H(E|X)).
+#' @return Valor numerico con la informacion del canal (H(E) - H(E|X)).
 #'
 #' @examples
 #' probs_E <- c(0.3, 0.5, 0.2)
@@ -528,14 +528,14 @@ func_informacion_canal = function(probs_estados,probs_X_cond_estados,baselogarit
 
 #' Coeficiente de redundancia del canal
 #'
-#' Calcula el coeficiente de redundancia normalizado, que mide la fracción
-#' de entropía a priori que es eliminada por la información de X.
+#' Calcula el coeficiente de redundancia normalizado, que mide la fraccion
+#' de entropia a priori que es eliminada por la informacion de X.
 #'
-#' @param probs_estados Vector numérico con las probabilidades a priori.
-#' @param probs_X_cond_estados Matriz numérica con las distribuciones condicionales.
-#' @param baselogaritmo Numérico. Base del logaritmo. Por defecto 2.
+#' @param probs_estados Vector numerico con las probabilidades a priori.
+#' @param probs_X_cond_estados Matriz numerica con las distribuciones condicionales.
+#' @param baselogaritmo Numerico. Base del logaritmo. Por defecto 2.
 #'
-#' @return Valor numérico entre 0 y 1 con el coeficiente de redundancia.
+#' @return Valor numerico entre 0 y 1 con el coeficiente de redundancia.
 #'
 #' @examples
 #' probs_E <- c(0.3, 0.5, 0.2)
@@ -550,15 +550,15 @@ func_coeficiente_redundancia_canal = function(probs_estados,probs_X_cond_estados
 }
 
 
-#' Estudio completo de entropías
+#' Estudio completo de entropias
 #'
-#' Realiza un análisis completo de entropías incluyendo entropía a priori,
-#' entropías a posteriori, entropía a posteriori promedio, información del canal
+#' Realiza un analisis completo de entropias incluyendo entropia a priori,
+#' entropias a posteriori, entropia a posteriori promedio, informacion del canal
 #' y coeficiente de redundancia.
 #'
-#' @param probs_estados Vector numérico con las probabilidades a priori.
-#' @param probs_X_cond_estados Matriz numérica con las distribuciones condicionales.
-#' @param baselogaritmo Numérico. Base del logaritmo. Por defecto 2.
+#' @param probs_estados Vector numerico con las probabilidades a priori.
+#' @param probs_X_cond_estados Matriz numerica con las distribuciones condicionales.
+#' @param baselogaritmo Numerico. Base del logaritmo. Por defecto 2.
 #' @param nb_alt Vector de character strings opcional con los nombres de las
 #'   alternativas.
 #' @param nb_est Vector de character strings opcional con los nombres de los
@@ -568,11 +568,11 @@ func_coeficiente_redundancia_canal = function(probs_estados,probs_X_cond_estados
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
-#'   \item{marginal_X}{Distribución marginal de X}
-#'   \item{entropia_apriori}{Entropía a priori de los estados}
-#'   \item{entropias_aposteriori}{Entropías condicionadas para cada X_j}
-#'   \item{entropia_aposteriori}{Entropía a posteriori promedio}
-#'   \item{informacion_canal}{Información mutua I(E;X)}
+#'   \item{marginal_X}{Distribucion marginal de X}
+#'   \item{entropia_apriori}{Entropia a priori de los estados}
+#'   \item{entropias_aposteriori}{Entropias condicionadas para cada X_j}
+#'   \item{entropia_aposteriori}{Entropia a posteriori promedio}
+#'   \item{informacion_canal}{Informacion mutua I(E;X)}
 #'   \item{coeficiente_redundancia}{Coeficiente normalizado}
 #'   \item{coeficiente_redundancia_porc}{Coeficiente en porcentaje}
 #' }
@@ -623,19 +623,19 @@ func_estudio_entropias = function(probs_estados,probs_X_cond_estados,baselogarit
 }
 
 
-#' Estudio de árbol bayesiano con beneficios/costes
+#' Estudio de arbol bayesiano con beneficios/costes
 #'
-#' Realiza un análisis completo de un problema de decisión bayesiano
-#' incluyendo distribuciones probabilísticas, valoraciones esperadas
-#' a priori y a posteriori, y medidas de valor de la información.
+#' Realiza un analisis completo de un problema de decision bayesiano
+#' incluyendo distribuciones probabilisticas, valoraciones esperadas
+#' a priori y a posteriori, y medidas de valor de la informacion.
 #'
-#' @param probs_estados Vector numérico con las probabilidades a priori de los
+#' @param probs_estados Vector numerico con las probabilidades a priori de los
 #'   estados naturales.
-#' @param probs_X_cond_estados Matriz numérica con las distribuciones condicionales
+#' @param probs_X_cond_estados Matriz numerica con las distribuciones condicionales
 #'   de las modalidades de X dado cada estado.
-#' @param tv Matriz numérica de valoraciones donde las filas son alternativas
+#' @param tv Matriz numerica de valoraciones donde las filas son alternativas
 #'   y las columnas estados.
-#' @param favorable Lógico. Si TRUE, se trata un problema de beneficios
+#' @param favorable Logico. Si TRUE, se trata un problema de beneficios
 #'   (se maximiza). Si FALSE, de costes (se minimiza).
 #' @param nb_alt Vector de character strings opcional con los nombres de las
 #'   alternativas.
@@ -646,18 +646,18 @@ func_estudio_entropias = function(probs_estados,probs_X_cond_estados,baselogarit
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
-#'   \item{probs_conjunta}{Distribución conjunta P(E_i, X_j)}
-#'   \item{probs_marginal_X}{Distribución marginal P(X_j)}
+#'   \item{probs_conjunta}{Distribucion conjunta P(E_i, X_j)}
+#'   \item{probs_marginal_X}{Distribucion marginal P(X_j)}
 #'   \item{probs_E_cond_X}{Distribuciones condicionadas P(E_i | X_j)}
 #'   \item{val_esperadas_apriori}{Valoraciones esperadas a priori}
-#'   \item{mejor_val_alt_apriori}{Mejor valoración a priori}
+#'   \item{mejor_val_alt_apriori}{Mejor valoracion a priori}
 #'   \item{mejor_alts_apriori}{Mejores alternativas a priori}
 #'   \item{mat_val_esperadas_aposteriori}{Matriz de valoraciones a posteriori}
 #'   \item{mejor_val_alt_aposteriori}{Vector de mejores valoraciones a posteriori}
 #'   \item{mejor_alt_aposteriori}{Vector de mejores alternativas a posteriori}
-#'   \item{valor_REII}{Resultado Esperado con Información Perfecta}
+#'   \item{valor_REII}{Resultado Esperado con Informacion Perfecta}
 #'   \item{valor_RER}{Resultado Esperado con Riesgo}
-#'   \item{valor_VEX}{Valor Esperado de la Información Adicional}
+#'   \item{valor_VEX}{Valor Esperado de la Informacion Adicional}
 #'   \item{valor_VEX_Xi}{Desglose del VEX por cada modalidad de X}
 #' }
 #'
@@ -670,7 +670,7 @@ func_estudio_entropias = function(probs_estados,probs_X_cond_estados,baselogarit
 #' resultado$valor_VEX
 #'
 #' @export
-func_estudio_arbolbayesiano_benefcostes = function(probs_estados,probs_X_cond_estados,tv,favorable=T,
+func_estudio_arbolbayesiano_benefcostes = function(probs_estados,probs_X_cond_estados,tv,favorable=TRUE,
                                                    nb_alt = NULL,nb_est = NULL,nb_X = NULL) {
 
   if (is.null(nb_est))
@@ -723,9 +723,9 @@ func_estudio_arbolbayesiano_benefcostes = function(probs_estados,probs_X_cond_es
     valor_VEX_Xi$VEXi[i] = vxi[[3]]
   }
   if (length(mejor_alts_apriori)>1) {
-      warning("Soluciones múltiples en estudio a priori! ",
+      warning("Soluciones multiples en estudio a priori! ",
               paste(mejor_alts_apriori,", "),
-              " no sería correcto el cálculo de valor_VEX_Xi" )
+              " no seria correcto el calculo de valor_VEX_Xi" )
   }
   valor_VEX_Xi = as.matrix.data.frame(valor_VEX_Xi)
 
@@ -748,16 +748,16 @@ return(resultados)
 }
 
 
-#' Estudio completo de árbol bayesiano
+#' Estudio completo de arbol bayesiano
 #'
-#' Realiza un análisis completo de un árbol de decisión bayesiano que incluye
-#' tanto el estudio de beneficios/costes como el análisis de entropías.
+#' Realiza un analisis completo de un arbol de decision bayesiano que incluye
+#' tanto el estudio de beneficios/costes como el analisis de entropias.
 #'
-#' @param probs_estados Vector numérico con las probabilidades a priori.
-#' @param probs_X_cond_estados Matriz numérica con las distribuciones condicionales.
-#' @param tv Matriz numérica de valoraciones.
-#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
-#' @param baselogaritmo Numérico. Base del logaritmo para entropías. Por defecto 2.
+#' @param probs_estados Vector numerico con las probabilidades a priori.
+#' @param probs_X_cond_estados Matriz numerica con las distribuciones condicionales.
+#' @param tv Matriz numerica de valoraciones.
+#' @param favorable Logico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#' @param baselogaritmo Numerico. Base del logaritmo para entropias. Por defecto 2.
 #' @param nb_alt Vector de character strings opcional con nombres de alternativas.
 #' @param nb_est Vector de character strings opcional con nombres de estados.
 #' @param nb_X Vector de character strings opcional con nombres de modalidades de X.
@@ -777,7 +777,7 @@ return(resultados)
 #' names(resultado)
 #'
 #' @export
-func_estudio_arbolbayesiano_completo = function(probs_estados,probs_X_cond_estados,tv,favorable=T,baselogaritmo=2,
+func_estudio_arbolbayesiano_completo = function(probs_estados,probs_X_cond_estados,tv,favorable=TRUE,baselogaritmo=2,
                                                 nb_alt = NULL,nb_est = NULL,nb_X = NULL) {
 
   resultados = list()
@@ -788,16 +788,16 @@ func_estudio_arbolbayesiano_completo = function(probs_estados,probs_X_cond_estad
 }
 
 
-#' Valor Esperado de Información Perfecta con tabla de valoraciones
+#' Valor Esperado de Informacion Perfecta con tabla de valoraciones
 #'
-#' Calcula el REIP (Resultado Esperado con Información Perfecta) y el VEIP
-#' (Valor Esperado de Información Perfecta) a partir de una tabla de
+#' Calcula el REIP (Resultado Esperado con Informacion Perfecta) y el VEIP
+#' (Valor Esperado de Informacion Perfecta) a partir de una tabla de
 #' valoraciones y probabilidades.
 #'
-#' @param tv Matriz numérica de valoraciones donde las filas son alternativas
+#' @param tv Matriz numerica de valoraciones donde las filas son alternativas
 #'   y las columnas estados.
-#' @param probs_estados Vector numérico con las probabilidades de los estados.
-#' @param favorable Lógico. Si TRUE, se maximiza. Si FALSE, se minimiza.
+#' @param probs_estados Vector numerico con las probabilidades de los estados.
+#' @param favorable Logico. Si TRUE, se maximiza. Si FALSE, se minimiza.
 #' @param que_alt_Ref Character string opcional con el nombre de la alternativa
 #'   de referencia. Si es NULL, se usa la mejor alternativa a priori.
 #' @param nb_alt Vector de character strings opcional con nombres de alternativas.
@@ -806,8 +806,8 @@ func_estudio_arbolbayesiano_completo = function(probs_estados,probs_X_cond_estad
 #' @return Lista con los siguientes elementos:
 #' \describe{
 #'   \item{REMA}{Resultado Esperado de la Mejor Alternativa a priori}
-#'   \item{REIP}{Resultado Esperado con Información Perfecta}
-#'   \item{VEIP}{Valor Esperado de Información Perfecta (REIP - REMA)}
+#'   \item{REIP}{Resultado Esperado con Informacion Perfecta}
+#'   \item{VEIP}{Valor Esperado de Informacion Perfecta (REIP - REMA)}
 #' }
 #'
 #' @examples

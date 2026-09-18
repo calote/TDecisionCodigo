@@ -1,8 +1,7 @@
-library(diagram)
 
-#' Diagrama de la estructura jerárquica AHP
+#' Diagrama de la estructura jerarquica AHP
 #'
-#' Genera un diagrama visual de la estructura jerárquica del método AHP
+#' Genera un diagrama visual de la estructura jerarquica del metodo AHP
 #' mostrando los criterios, alternativas y sus pesos asociados.
 #'
 #' @param Xmatriznivel1 Matriz cuadrada de comparaciones de criterios (nivel 1).
@@ -25,11 +24,14 @@ library(diagram)
 #' @export
 multicriterio.metodoahp.diagrama = function(Xmatriznivel1,Xmatriznivel2) {
 
+  if (!requireNamespace("diagram", quietly = TRUE)) {
+    stop("Package \"diagram\" needed for this function. Please install it with install.packages(\"diagram\").", call. = FALSE)
+  }
   resultados = multicriterio.metodoAHP.variante3.completo(Xmatriznivel1,Xmatriznivel2)
   num.criterios = nrow(Xmatriznivel1)
   num.alternativas = dim(Xmatriznivel2)[1]
   num.nodos = 1+num.criterios+num.alternativas
-  M = matrix(data=0,nrow=num.nodos,ncol=num.nodos,byrow=T)
+  M = matrix(data=0,nrow=num.nodos,ncol=num.nodos,byrow=TRUE)
   nombres.nodos = c("Objetivo",rownames(Xmatriznivel1),rownames(Xmatriznivel2[,,1]))
   pesos.loc.nivel1 = resultados$pesos.nivel1$valoraciones.ahp
   pesos.loc.nivel2 = resultados$l.pesos.nivel2[[1]]$valoraciones.ahp
@@ -43,9 +45,9 @@ multicriterio.metodoahp.diagrama = function(Xmatriznivel1,Xmatriznivel2) {
     nn = 1+num.criterios+i
     M[nn,nn] = round(pesos.globales[i],4)
   }
-  dp =plotmat(M, pos = c(1,num.criterios,num.alternativas), name = nombres.nodos, lwd = 1, box.lwd = 2,
+  dp =diagram::plotmat(M, pos = c(1,num.criterios,num.alternativas), name = nombres.nodos, lwd = 1, box.lwd = 2,
               curve = 0, cex.txt = 0.8, box.size = 0.1, box.type = "square",
-              box.prop = 0.25, main = "Estructura Jerárquica (AHP)",
+              box.prop = 0.25, main = "Estructura Jerarquica (AHP)",
               arr.pos = 0.65, arr.lcol = c("red"), arr.col = c("blue"),
               segment.from = 0, segment.to = 1,arr.len=0.2,
               box.cex = 1, arr.type="triangle",dtext=0.1,relsize=1,

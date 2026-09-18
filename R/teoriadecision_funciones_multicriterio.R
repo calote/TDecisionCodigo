@@ -1,26 +1,23 @@
-suppressWarnings(library(formattable))
-suppressWarnings(library(htmltools))
-suppressWarnings(library(webshot))
 
-## FUNCIONES MÉTODOS MULTICRITERIOS
+## FUNCIONES METODOS MULTICRITERIOS
 
 ## Nota: mayor utilidad (mayor valor) mejor
 
 
-#### Funciones de creación de matrices ----
+#### Funciones de creacion de matrices ----
 
 #' Crear matriz de valoraciones (diagonal completa)
 #'
 #' Crea una matriz cuadrada de valoraciones donde cada elemento indica la
-#' relación de preferencia entre alternativas.
+#' relacion de preferencia entre alternativas.
 #'
-#' @param vector_matporfilas Vector numérico con los valores de la matriz
+#' @param vector_matporfilas Vector numerico con los valores de la matriz
 #'   rellenable por filas.
-#' @param numalternativas Numérico. Número de alternativas (filas y columnas).
+#' @param numalternativas Numerico. Numero de alternativas (filas y columnas).
 #' @param v.nombres.alternativas Vector de character strings opcional con los
 #'   nombres de las alternativas.
 #'
-#' @return Matriz cuadrada numérica con las valoraciones y nombres asignados.
+#' @return Matriz cuadrada numerica con las valoraciones y nombres asignados.
 #'
 #' @examples
 #' multicriterio.crea.matrizvaloraciones(c(1,2,1/2,1), 2, c("Rendimiento","Riesgo"))
@@ -44,17 +41,17 @@ multicriterio.crea.matrizvaloraciones = function(vector_matporfilas,numalternati
 
 #' Crear matriz de valoraciones (solo diagonal superior)
 #'
-#' Crea una matriz cuadrada de valoraciones a partir únicamente de los
+#' Crea una matriz cuadrada de valoraciones a partir unicamente de los
 #' valores de la diagonal superior. Los valores inferiores se calculan
 #' como el inverso.
 #'
-#' @param vector_valoraciones_diagsup Vector numérico con los valores de la
+#' @param vector_valoraciones_diagsup Vector numerico con los valores de la
 #'   diagonal superior (sin incluir la diagonal de unos).
-#' @param numalternativas Numérico. Número de alternativas.
+#' @param numalternativas Numerico. Numero de alternativas.
 #' @param v.nombres.alternativas Vector de character strings opcional con los
 #'   nombres de las alternativas.
 #'
-#' @return Matriz cuadrada numérica completa con las valoraciones.
+#' @return Matriz cuadrada numerica completa con las valoraciones.
 #'
 #' @examples
 #' v_val <- c(5, 3, 7, 3, 3, 6, 9, 1, 3, 1)
@@ -81,19 +78,19 @@ multicriterio.crea.matrizvaloraciones_mej = function(vector_valoraciones_diagsup
 }
 
 
-#' Crear matriz de decisión
+#' Crear matriz de decision
 #'
-#' Crea una matriz de decisión donde las filas son alternativas y las
+#' Crea una matriz de decision donde las filas son alternativas y las
 #' columnas son criterios.
 #'
-#' @param vector_matporfilas Vector numérico con los valores de la matriz
+#' @param vector_matporfilas Vector numerico con los valores de la matriz
 #'   rellenable por filas.
-#' @param numalternativas Numérico. Número de alternativas (filas).
-#' @param numcriterios Numérico. Número de criterios (columnas).
+#' @param numalternativas Numerico. Numero de alternativas (filas).
+#' @param numcriterios Numerico. Numero de criterios (columnas).
 #' @param v.nombresalt Vector de character strings opcional con nombres de alternativas.
 #' @param v.nombrescri Vector de character strings opcional con nombres de criterios.
 #'
-#' @return Matriz numérica con los datos de decisión.
+#' @return Matriz numerica con los datos de decision.
 #'
 #' @examples
 #' multicriterio.crea.matrizdecision(c(100,15,7,40,50,200), 2, 3)
@@ -118,16 +115,16 @@ multicriterio.crea.matrizdecision = function(vector_matporfilas,numalternativas=
 }
 
 
-## Métodos de construcción de funciones de valor o utilidad ------
+## Metodos de construccion de funciones de valor o utilidad ------
 
-#' Construcción de función de utilidad maximales
+#' Construccion de funcion de utilidad maximales
 #'
-#' Construye una función de utilidad a partir de una matriz de valoraciones
-#' usando el método de maximales (no borrosos).
+#' Construye una funcion de utilidad a partir de una matriz de valoraciones
+#' usando el metodo de maximales (no borrosos).
 #'
 #' @param Xmatrizvaloraciones Matriz cuadrada de valoraciones entre alternativas.
 #'
-#' @return Vector numérico con los valores de utilidad de cada alternativa,
+#' @return Vector numerico con los valores de utilidad de cada alternativa,
 #'   ordenados de mayor a menor.
 #'
 #' @examples
@@ -170,14 +167,14 @@ multicriterio.constfuncutilidad.maximales = function(Xmatrizvaloraciones) {
 }
 
 
-#' Construcción de función de utilidad con estructura borrosa
+#' Construccion de funcion de utilidad con estructura borrosa
 #'
-#' Construye una función de utilidad a partir de una matriz de valoraciones
-#' usando el método de flujo neto (estructura borrosa).
+#' Construye una funcion de utilidad a partir de una matriz de valoraciones
+#' usando el metodo de flujo neto (estructura borrosa).
 #'
 #' @param Xmatrizvaloraciones Matriz cuadrada de valoraciones entre alternativas.
 #'
-#' @return Vector numérico con los flujos netos de cada alternativa (valores
+#' @return Vector numerico con los flujos netos de cada alternativa (valores
 #'   de utilidad).
 #'
 #' @examples
@@ -195,16 +192,16 @@ multicriterio.constfuncutilidad.estructuraborrosa = function(Xmatrizvaloraciones
 }
 
 
-## Homogeneización tabla decisión ------
+## Homogeneizacion tabla decision ------
 
-#' Homogeneización por método Nadir
+#' Homogeneizacion por metodo Nadir
 #'
-#' Normaliza una matriz de decisión usando el método de escalado min-max
-#' (Nadir), transformando todos los valores al rango [0, 1].
+#' Normaliza una matriz de decision usando el metodo de escalado min-max
+#' (Nadir), transformando todos los valores al rango `[0, 1]`.
 #'
-#' @param Xmatrizdecision Matriz numérica de decisión (alternativas x criterios).
+#' @param Xmatrizdecision Matriz numerica de decision (alternativas x criterios).
 #'
-#' @return Matriz numérica homogeneizada con valores en [0, 1].
+#' @return Matriz numerica homogeneizada con valores en `[0, 1]`.
 #'
 #' @examples
 #' Xmat <- multicriterio.crea.matrizdecision(c(100,15,7,40,50,200), 2, 3)
@@ -217,25 +214,25 @@ multicriterio.homogeneizacion.nadir = function(Xmatrizdecision) {
   (vcol.min = apply(X,2,min))
   numfilas = nrow(X)
   numcolus = ncol(X)
-  (m.vcol.min = matrix(vcol.min,numfilas,numcolus,byrow=T))
-  (m.vcol.max = matrix(vcol.max,numfilas,numcolus,byrow=T))
+  (m.vcol.min = matrix(vcol.min,numfilas,numcolus,byrow=TRUE))
+  (m.vcol.max = matrix(vcol.max,numfilas,numcolus,byrow=TRUE))
   Nueva.X = (X-m.vcol.min)/(m.vcol.max - m.vcol.min)
   return(Nueva.X)
 }
 
 
-#' Homogeneización por método Promethee
+#' Homogeneizacion por metodo Promethee
 #'
-#' Normaliza una matriz de decisión usando las funciones de preferencia
-#' del método Promethee.
+#' Normaliza una matriz de decision usando las funciones de preferencia
+#' del metodo Promethee.
 #'
-#' @param Xmatrizdecision Matriz numérica de decisión.
-#' @param v.delta.min Vector numérico con los valores de indiferencia (q)
+#' @param Xmatrizdecision Matriz numerica de decision.
+#' @param v.delta.min Vector numerico con los valores de indiferencia (q)
 #'   para cada criterio.
-#' @param v.delta.max Vector numérico con los valores de preferencia (p)
+#' @param v.delta.max Vector numerico con los valores de preferencia (p)
 #'   para cada criterio.
 #'
-#' @return Matriz numérica homogeneizada con flujos netos por criterio.
+#' @return Matriz numerica homogeneizada con flujos netos por criterio.
 #'
 #' @examples
 #' Xmat <- multicriterio.crea.matrizdecision(c(100,15,7,40,50,200), 2, 3)
@@ -256,7 +253,7 @@ multicriterio.homogeneizacion.promethee = function(Xmatrizdecision,v.delta.min,v
 }
 
 
-## Funciones auxiliares para homogeneización Promethee ----
+## Funciones auxiliares para homogeneizacion Promethee ----
 
 #' @noRd
 func_matriz.relacion.borrosa = function(vcolumna,delta.min,delta.max) {
@@ -285,16 +282,16 @@ func_calculo.flujo.neto = function(X.matriz) {
 }
 
 
-## 3. Método AHP -----
+## 3. Metodo AHP -----
 
 #' Chequeo de matriz de comparaciones AHP
 #'
 #' Verifica si una matriz de comparaciones por pares cumple la propiedad
 #' de reciprocidad (a_ij = 1/a_ji).
 #'
-#' @param Xmatrizvaloraciones Matriz cuadrada numérica de comparaciones por pares.
+#' @param Xmatrizvaloraciones Matriz cuadrada numerica de comparaciones por pares.
 #'
-#' @return Lógico. TRUE si la matriz cumple la reciprocidad, FALSE en caso contrario.
+#' @return Logico. TRUE si la matriz cumple la reciprocidad, FALSE en caso contrario.
 #'
 #' @examples
 #' C <- multicriterio.crea.matrizvaloraciones(c(1,2,1/2,1), 2, c("A","B"))
@@ -327,7 +324,7 @@ if (recip == 1) {
 
 #' AHP - Variante 1: Autovector del mayor autovalor
 #'
-#' Calcula las valoraciones AHP usando el método del autovector asociado
+#' Calcula las valoraciones AHP usando el metodo del autovector asociado
 #' al mayor autovalor de la matriz de comparaciones.
 #'
 #' @param Xmatrizvaloraciones Matriz cuadrada de comparaciones por pares.
@@ -337,7 +334,7 @@ if (recip == 1) {
 #'   \item{Xmat}{Matriz de comparaciones original}
 #'   \item{autovalor}{Mayor autovalor (lambda)}
 #'   \item{suma.autovector}{Suma del autovector}
-#'   \item{normaeuclidea.autovector}{Norma euclídea del autovector}
+#'   \item{normaeuclidea.autovector}{Norma euclidea del autovector}
 #'   \item{valoraciones.ahp}{Vector de prioridades relativas (valoraciones finales)}
 #'   \item{valoraciones.ahp.ordenadas}{Valoraciones ordenadas de mayor a menor}
 #'   \item{CI.coef.inconsistencia}{Coeficiente de inconsistencia CI}
@@ -357,7 +354,7 @@ multicriterio.metodoAHP.variante1.autovectormayorautovalor = function(Xmatrizval
 
   C.valora = Xmatrizvaloraciones
 
-  autovalores.C = eigen(C.valora,symmetric=F)
+  autovalores.C = eigen(C.valora,symmetric=FALSE)
   autova.C = Re(autovalores.C$values[Im(autovalores.C$values)==0])
   autovec.C = Re(autovalores.C$vectors[,Im(autovalores.C$values)==0])
   icual = which.max(autova.C)
@@ -393,7 +390,7 @@ multicriterio.metodoAHP.variante1.autovectormayorautovalor = function(Xmatrizval
    salida$suma.autovector = sum(autovector.v)
    salida$normaeuclidea.autovector = sqrt(sum(autovector.v^2))
    salida$valoraciones.ahp = valoraciones.finales.ahp
-   salida$valoraciones.ahp.ordenadas = sort(valoraciones.finales.ahp,decreasing = T)
+   salida$valoraciones.ahp.ordenadas = sort(valoraciones.finales.ahp,decreasing = TRUE)
    salida$CI.coef.inconsistencia = CI.coef.inconsistencia
    salida$RI.coef.inconsistencia = RI.coef.inconsistencia
    salida$consistencia = texto
@@ -402,13 +399,13 @@ multicriterio.metodoAHP.variante1.autovectormayorautovalor = function(Xmatrizval
 }
 
 
-#' Función auxiliar: media geométrica
+#' Funcion auxiliar: media geometrica
 #'
-#' Calcula la media geométrica de un vector numérico.
+#' Calcula la media geometrica de un vector numerico.
 #'
-#' @param vector Vector numérico positivo.
+#' @param vector Vector numerico positivo.
 #'
-#' @return Valor numérico con la media geométrica.
+#' @return Valor numerico con la media geometrica.
 #'
 #' @examples
 #' func_media.geometrica(c(2, 4, 8))
@@ -419,18 +416,18 @@ func_media.geometrica = function(vector) {
 }
 
 
-#' AHP - Variante 2: Media geométrica
+#' AHP - Variante 2: Media geometrica
 #'
-#' Calcula las valoraciones AHP usando el método de la media geométrica
-#' (mínimos cuadrados de logaritmos).
+#' Calcula las valoraciones AHP usando el metodo de la media geometrica
+#' (minimos cuadrados de logaritmos).
 #'
 #' @param Xmatrizvaloraciones Matriz cuadrada de comparaciones por pares.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
 #'   \item{Xmat}{Matriz de comparaciones original}
-#'   \item{mediasgeometricas}{Medias geométricas por fila}
-#'   \item{suma.mediasgeometricas}{Suma de las medias geométricas}
+#'   \item{mediasgeometricas}{Medias geometricas por fila}
+#'   \item{suma.mediasgeometricas}{Suma de las medias geometricas}
 #'   \item{valoraciones.ahp}{Vector de prioridades relativas}
 #'   \item{valoraciones.ahp.ordenadas}{Valoraciones ordenadas}
 #'   \item{tablaresumen}{Tabla resumen}
@@ -459,17 +456,17 @@ multicriterio.metodoAHP.variante2.mediageometrica = function(Xmatrizvaloraciones
   salida$mediasgeometricas = mgeoms
   salida$suma.mediasgeometricas = sum(mgeoms)
   salida$valoraciones.ahp = valoraciones.finales.ahp
-  salida$valoraciones.ahp.ordenadas = sort(valoraciones.finales.ahp,decreasing = T)
+  salida$valoraciones.ahp.ordenadas = sort(valoraciones.finales.ahp,decreasing = TRUE)
   salida$tablaresumen = tablaresumen
   return(salida)
 
 }
 
 
-#' AHP - Variante 3: Sintetización básica
+#' AHP - Variante 3: Sintetizacion basica
 #'
-#' Calcula las valoraciones AHP usando el método de sintetización básico
-#' (normalización por columnas y media por filas).
+#' Calcula las valoraciones AHP usando el metodo de sintetizacion basico
+#' (normalizacion por columnas y media por filas).
 #'
 #' @param Xmatrizvaloraciones Matriz cuadrada de comparaciones por pares.
 #'
@@ -496,7 +493,7 @@ multicriterio.metodoAHP.variante3.basico = function(Xmatrizvaloraciones) {
 
   (suma.columnas = colSums(C.valora));
   (m.suma.columnas = matrix(suma.columnas,length(suma.columnas),
-                            length(suma.columnas),byrow=T))
+                            length(suma.columnas),byrow=TRUE))
   (C.valora.normalizada = C.valora/m.suma.columnas)
   (prioridades.relativas = rowMeans(C.valora.normalizada))
 
@@ -509,7 +506,7 @@ multicriterio.metodoAHP.variante3.basico = function(Xmatrizvaloraciones) {
   salida$sumacolumnas = suma.columnas
   salida$Xmat.normalizada = C.valora.normalizada
   salida$valoraciones.ahp = prioridades.relativas
-  salida$valoraciones.ahp.ordenadas = sort(prioridades.relativas,decreasing = T)
+  salida$valoraciones.ahp.ordenadas = sort(prioridades.relativas,decreasing = TRUE)
   salida$tablaresumen = tablaresumen
   return(salida)
 
@@ -521,11 +518,11 @@ multicriterio.metodoAHP.variante3.basico = function(Xmatrizvaloraciones) {
 #' Calcula los pesos globales de las alternativas combinando los pesos de
 #' criterios con las valoraciones locales de cada alternativa.
 #'
-#' @param pesos.criterios Vector numérico con las prioridades de los criterios.
-#' @param matriz.pesos.locales Matriz numérica donde las filas son los pesos
+#' @param pesos.criterios Vector numerico con las prioridades de los criterios.
+#' @param matriz.pesos.locales Matriz numerica donde las filas son los pesos
 #'   locales de las alternativas para cada criterio.
 #'
-#' @return Vector numérico con los pesos globales de cada alternativa.
+#' @return Vector numerico con los pesos globales de cada alternativa.
 #'
 #' @examples
 #' pesos_cri <- c(0.6, 0.4)
@@ -543,12 +540,12 @@ multicriterio.metodoAHP.pesosglobales = function(pesos.criterios,matriz.pesos.lo
 #' AHP - Pesos globales en tabla
 #'
 #' Calcula los pesos globales y los presenta en formato de tabla para
-#' su visualización.
+#' su visualizacion.
 #'
-#' @param pesos.criterios Vector numérico con las prioridades de los criterios.
-#' @param matriz.pesos.locales Matriz numérica con los pesos locales.
+#' @param pesos.criterios Vector numerico con las prioridades de los criterios.
+#' @param matriz.pesos.locales Matriz numerica con los pesos locales.
 #'
-#' @return Matriz numérica con los pesos locales, ponderación de criterios
+#' @return Matriz numerica con los pesos locales, ponderacion de criterios
 #'   y ponderadores globales.
 #'
 #' @examples
@@ -573,16 +570,16 @@ multicriterio.metodoAHP.pesosglobales_entabla = function(pesos.criterios,
 #' AHP - Coeficiente de inconsistencia
 #'
 #' Calcula el coeficiente de inconsistencia de una matriz de comparaciones
-#' por pares según el método AHP.
+#' por pares segun el metodo AHP.
 #'
 #' @param Xmatrizvaloraciones Matriz cuadrada de comparaciones por pares.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
 #'   \item{lambda}{Mayor autovalor}
-#'   \item{m}{Dimensión de la matriz}
+#'   \item{m}{Dimension de la matriz}
 #'   \item{CI.coef.inconsistencia}{Coeficiente de inconsistencia}
-#'   \item{CA.aleatorio}{Coeficiente aleatorio para la dimensión m}
+#'   \item{CA.aleatorio}{Coeficiente aleatorio para la dimension m}
 #'   \item{RI.coef.inconsistencia}{Coeficiente relativo de inconsistencia}
 #'   \item{mensaje}{Mensaje sobre la consistencia aceptable}
 #' }
@@ -595,7 +592,7 @@ multicriterio.metodoAHP.pesosglobales_entabla = function(pesos.criterios,
 #' @export
 multicriterio.metodoAHP.coef.inconsistencia = function(Xmatrizvaloraciones) {
   C.valora = Xmatrizvaloraciones
-  autovalores.C = eigen(C.valora,symmetric=F);
+  autovalores.C = eigen(C.valora,symmetric=FALSE);
   autova.C = Re(autovalores.C$values[Im(autovalores.C$values)==0]);
   icual = which.max(autova.C);
   lambda = autova.C[icual];
@@ -633,12 +630,12 @@ multicriterio.metodoAHP.coef.inconsistencia = function(Xmatrizvaloraciones) {
 #' @return Lista con los siguientes elementos:
 #' \describe{
 #'   \item{lambda}{Mayor autovalor}
-#'   \item{m}{Dimensión de la matriz}
+#'   \item{m}{Dimension de la matriz}
 #'   \item{CI.coef.inconsistencia}{Coeficiente de inconsistencia}
 #'   \item{CA.aleatorio}{Coeficiente aleatorio}
 #'   \item{RI.coef.inconsistencia}{Coeficiente relativo}
 #'   \item{mensaje}{Mensaje sobre la consistencia}
-#'   \item{tablaresumen}{Tabla resumen con cálculos detallados}
+#'   \item{tablaresumen}{Tabla resumen con calculos detallados}
 #' }
 #'
 #' @examples
@@ -653,7 +650,7 @@ multicriterio.metodoAHP.variante3.basico.coef.inconsistencia = function(Xmatrizv
 
   (suma.columnas = colSums(C.valora));
   (m.suma.columnas = matrix(suma.columnas,length(suma.columnas),
-                            length(suma.columnas),byrow=T))
+                            length(suma.columnas),byrow=TRUE))
   (C.valora.normalizada = C.valora/m.suma.columnas)
   (prioridades.relativas = rowMeans(C.valora.normalizada))
 
@@ -690,9 +687,9 @@ multicriterio.metodoAHP.variante3.basico.coef.inconsistencia = function(Xmatrizv
 }
 
 
-#' AHP - Método completo multinivel
+#' AHP - Metodo completo multinivel
 #'
-#' Aplica el método AHP completo con dos niveles de jerarquía: criterios
+#' Aplica el metodo AHP completo con dos niveles de jerarquia: criterios
 #' y alternativas para cada criterio.
 #'
 #' @param Xmatriznivel1 Matriz cuadrada de comparaciones de criterios (nivel 1).
@@ -761,7 +758,7 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
 #' @param width Character string. Ancho del widget HTML.
 #' @param height Altura del widget HTML.
 #' @param background Character string. Color de fondo.
-#' @param delay Numérico. Retraso en segundos para la captura.
+#' @param delay Numerico. Retraso en segundos para la captura.
 #'
 #' @return None. Crea un fichero PNG como efecto secundario.
 #'
@@ -774,6 +771,15 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
 export_formattable <- function(f, file, width = "100%", height = NULL,
                                background = "white", delay = 0.2)
 {
+  if (!requireNamespace("formattable", quietly = TRUE)) {
+    stop("Package \"formattable\" needed for this function. Please install it with install.packages(\"formattable\").", call. = FALSE)
+  }
+  if (!requireNamespace("htmltools", quietly = TRUE)) {
+    stop("Package \"htmltools\" needed for this function. Please install it with install.packages(\"htmltools\").", call. = FALSE)
+  }
+  if (!requireNamespace("webshot", quietly = TRUE)) {
+    stop("Package \"webshot\" needed for this function. Please install it with install.packages(\"webshot\").", call. = FALSE)
+  }
     w <- formattable::as.htmlwidget(f, width = width, height = height)
     path <- htmltools::html_print(w, background = background, viewer = NULL)
     url <- paste0("file:///", gsub("\\\\", "/", normalizePath(path)))
@@ -787,20 +793,20 @@ export_formattable <- function(f, file, width = "100%", height = NULL,
 #' AHP - Pesos globales con formattable
 #'
 #' Calcula los pesos globales AHP y genera tablas formattable para
-#' su visualización en HTML.
+#' su visualizacion en HTML.
 #'
 #' @param tb.nivel01 Matriz de comparaciones de criterios (nivel 1).
 #' @param l_tb.nivel02 Lista de matrices de comparaciones de alternativas
 #'   para cada criterio.
-#' @param que.variante Numérico. Variante AHP a usar (1=autovector, 2=geométrica,
-#'   3=básica). Por defecto 1.
+#' @param que.variante Numerico. Variante AHP a usar (1=autovector, 2=geometrica,
+#'   3=basica). Por defecto 1.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
-#'   \item{tb01sal}{Tabla formattable de interpretación/aportaciones}
+#'   \item{tb01sal}{Tabla formattable de interpretacion/aportaciones}
 #'   \item{tb02sal}{Tabla formattable de pesos globales con inconsistencias}
 #'   \item{pglobales_mej}{Matriz de pesos globales mejorada}
-#'   \item{tb01}{DataFrame de interpretación}
+#'   \item{tb01}{DataFrame de interpretacion}
 #'   \item{tb02}{DataFrame de pesos con inconsistencias}
 #' }
 #'
@@ -816,6 +822,15 @@ export_formattable <- function(f, file, width = "100%", height = NULL,
 multicriterio.metodoAHP.pesosglobales_formattable = function(tb.nivel01, l_tb.nivel02,
                                                              que.variante = 1) {
 
+  if (!requireNamespace("formattable", quietly = TRUE)) {
+    stop("Package \"formattable\" needed for this function. Please install it with install.packages(\"formattable\").", call. = FALSE)
+  }
+  if (!requireNamespace("kableExtra", quietly = TRUE)) {
+    stop("Package \"kableExtra\" needed for this function. Please install it with install.packages(\"kableExtra\").", call. = FALSE)
+  }
+  if (!requireNamespace("knitr", quietly = TRUE)) {
+    stop("Package \"knitr\" needed for this function. Please install it with install.packages(\"knitr\").", call. = FALSE)
+  }
     if (que.variante == 1) {
         pesos.nivel01 = multicriterio.metodoAHP.variante1.autovectormayorautovalor(tb.nivel01)
         l_pesos.nivel02 = lapply(1:length(l_tb.nivel02),
@@ -862,15 +877,15 @@ multicriterio.metodoAHP.pesosglobales_formattable = function(tb.nivel01, l_tb.ni
     pglobales_mej2 = pglobales_mej
     pglobales_mej2[1,-1] = NA
 
-    formatea_NA = formatter("span",
+    formatea_NA = formattable::formatter("span",
                             style = x ~ style(color = ifelse(is.na(x), "white", x)))
-    formatea_inconsistencia <- formatter("span",
-                                         x ~ icontext(ifelse(x>=0.10,"remove","ok"),paste0(round(100*x,2),"%")),
+    formatea_inconsistencia <- formattable::formatter("span",
+                                         x ~ formattable::icontext(ifelse(x>=0.10,"remove","ok"),paste0(round(100*x,2),"%")),
                                          style = x ~ style(display = "block",
                                                            padding = "0 4px",
                                                            `border-radius` = "4px",
                                                            color = ifelse(x>=0.10,"red","green"),
-                                                           background = ifelse(x>=0.10, "yellow",csscolor(gradient(as.numeric(x),"lightyellow","#ffff70"))))
+                                                           background = ifelse(x>=0.10, "yellow",formattable::csscolor(formattable::gradient(as.numeric(x),"lightyellow","#ffff70"))))
     )
 
     dtpg04mej3 = as.data.frame(pglobales_mej2)
@@ -882,22 +897,22 @@ multicriterio.metodoAHP.pesosglobales_formattable = function(tb.nivel01, l_tb.ni
     dtpg04mej3$Inconsistencia = v_incons_todos
 
     tb02sal = (dtpg04mej3) |>
-        formattable(
+        formattable::formattable(
             align = c("l",rep("r",(ncol(dtpg04mej3)-1))),
             list(
-                area(col = -1) ~ percent,
-                area(row = 1,col = -1) ~ formatea_NA,
-                area(col = 2, row = -1) ~ color_tile("#ecf0ec","#B4C3B4"),
-                area(row = 2:nrow(dtpg04mej3), col = -c(1:2,ncol(dtpg04mej3))) ~ color_tile("#ddd9dd","#786778"),
-                area(col = 1) ~ formatter("span",
+                formattable::area(col = -1) ~ percent,
+                formattable::area(row = 1,col = -1) ~ formatea_NA,
+                formattable::area(col = 2, row = -1) ~ formattable::color_tile("#ecf0ec","#B4C3B4"),
+                formattable::area(row = 2:nrow(dtpg04mej3), col = -c(1:2,ncol(dtpg04mej3))) ~ formattable::color_tile("#ddd9dd","#786778"),
+                formattable::area(col = 1) ~ formattable::formatter("span",
                                           style = x ~ style("font-weight" = "bold")),
-                area(col = ncol(dtpg04mej3)) ~ formatea_inconsistencia
+                formattable::area(col = ncol(dtpg04mej3)) ~ formatea_inconsistencia
             )
         )
 
     dtpg04mej10 = as.data.frame(pglobales_mej2)
     dtpg04mej11 = dtpg04mej10[,1] * dtpg04mej10[,-1]
-    dtpg04mej11v = colSums(dtpg04mej11, na.rm = T)
+    dtpg04mej11v = colSums(dtpg04mej11, na.rm = TRUE)
     dtpg04mej11[1,] = dtpg04mej11v
     dtpg04mej10[,-1] = dtpg04mej11
     dtpg04mej12 = dtpg04mej10
@@ -907,13 +922,13 @@ multicriterio.metodoAHP.pesosglobales_formattable = function(tb.nivel01, l_tb.ni
     colnames(dtpg04mej12b)[2] = "Ponderaciones Criterios"
 
     tb01sal = (dtpg04mej12b) |>
-        formattable(
+        formattable::formattable(
             align = c("l",rep("r",(ncol(dtpg04mej12b)-1))),
             list(
-                area(col = -1) ~ percent,
-                area(col = 2, row = -1) ~ color_tile("#ecf0ec","#B4C3B4"),
-                area(col = -(1:2)) ~ color_tile("#ddd9dd","#786778"),
-                area(col = 1) ~ formatter("span",
+                formattable::area(col = -1) ~ percent,
+                formattable::area(col = 2, row = -1) ~ formattable::color_tile("#ecf0ec","#B4C3B4"),
+                formattable::area(col = -(1:2)) ~ formattable::color_tile("#ddd9dd","#786778"),
+                formattable::area(col = 1) ~ formattable::formatter("span",
                                           style = x ~ style("font-weight" = "bold"))
             )
         )
@@ -931,37 +946,42 @@ multicriterio.metodoAHP.pesosglobales_formattable = function(tb.nivel01, l_tb.ni
 
 ## Multicriterio ELECTRE ----
 
-#' Método ELECTRE I
+#' Metodo ELECTRE I
 #'
-#' Aplica el método ELECTRE I para identificar el núcleo (alternativas no
-#' dominadas) de un problema de decisión multicriterio.
+#' Aplica el metodo ELECTRE I para identificar el nucleo (alternativas no
+#' dominadas) de un problema de decision multicriterio.
 #'
-#' @param tabdecs.X Matriz numérica de decisión (alternativas x criterios).
-#' @param pesos.criterios Vector numérico con los pesos de los criterios.
-#' @param nivel.concordancia.minimo.alpha Numérico. Umbral mínimo de concordancia.
-#' @param no.se.compensan Vector numérico con los umbrales de discordancia
+#' @param tabdecs.X Matriz numerica de decision (alternativas x criterios).
+#' @param pesos.criterios Vector numerico con los pesos de los criterios.
+#' @param nivel.concordancia.minimo.alpha Numerico. Umbral minimo de concordancia.
+#' @param no.se.compensan Vector numerico con los umbrales de discordancia
 #'   para cada criterio.
-#' @param que.alternativas Vector numérico o lógico para filtrar alternativas.
+#' @param que.alternativas Vector numerico o logico para filtrar alternativas.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
 #'   \item{datos}{Matriz original con pesos y umbrales}
-#'   \item{alpha}{Nivel de concordancia mínimo}
+#'   \item{alpha}{Nivel de concordancia minimo}
 #'   \item{Imas}{Array de relaciones de preferencia positiva}
 #'   \item{Iigual}{Array de relaciones de indiferencia}
 #'   \item{Imenos}{Array de relaciones de preferencia negativa}
-#'   \item{ind.concordancia}{Matriz de índices de concordancia}
+#'   \item{ind.concordancia}{Matriz de indices de concordancia}
 #'   \item{ind.concordancia.gorro}{Matriz de cocientes de concordancia}
 #'   \item{test.concordancia}{Matriz de test de concordancia}
 #'   \item{test.discordancia}{Matriz de test de discordancia}
-#'   \item{relacion.dominante}{Relación de dominancia agregada}
-#'   \item{nucleo_aprox}{Índices del núcleo aproximado}
+#'   \item{relacion.dominante}{Relacion de dominancia agregada}
+#'   \item{nucleo_aprox}{Indices del nucleo aproximado}
 #' }
 #'
 #' @examples
-#' tabdec <- matrix(c(20,13,15,30,5,40,0.3,0.5,0.1,0.7,0.9,0), nrow=4, ncol=6, byrow=TRUE)
+#' tabdec <- matrix(c(20, 13, 15, 30,
+#'                     5, 40, 0.3, 0.5,
+#'                     0.1, 0.7, 0.9, 0,
+#'                     1.3, 4, 2.2, 1), nrow = 4, ncol = 4, byrow = TRUE)
+#' rownames(tabdec) <- paste0("A", 1:4)
+#' colnames(tabdec) <- paste0("C", 1:4)
 #' pesos <- c(0.3, 0.2, 0.4, 0.1)
-#' multicriterio.metodoELECTRE_I(tabdec, pesos, 0.7, c(15,Inf,2,Inf))
+#' multicriterio.metodoELECTRE_I(tabdec, pesos, 0.7, c(15, Inf, 2, Inf))
 #'
 #' @export
 multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concordancia.minimo.alpha,no.se.compensan,que.alternativas=TRUE) {
@@ -974,9 +994,9 @@ multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concord
 
   num.alt = dim(tabdec.X)[1];
   num.cri = dim(tabdec.X)[2];
-  Imas = array(F,dim=c(num.alt,num.alt,num.cri));
-  Iigual = array(F,dim=c(num.alt,num.alt,num.cri));
-  Imenos = array(F,dim=c(num.alt,num.alt,num.cri));
+  Imas = array(FALSE,dim=c(num.alt,num.alt,num.cri));
+  Iigual = array(FALSE,dim=c(num.alt,num.alt,num.cri));
+  Imenos = array(FALSE,dim=c(num.alt,num.alt,num.cri));
   rownames(Imas)=rownames(tabdec.X);colnames(Imas)=rownames(tabdec.X);
   rownames(Iigual)=rownames(tabdec.X);colnames(Iigual)=rownames(tabdec.X);
   rownames(Imenos)=rownames(tabdec.X);colnames(Imenos)=rownames(tabdec.X);
@@ -1014,7 +1034,7 @@ multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concord
     }
   }
 
-  test.concordancia = array(F,dim=c(num.alt,num.alt));
+  test.concordancia = array(FALSE,dim=c(num.alt,num.alt));
   for (j in 1:num.alt) {
     for (k in 1:num.alt) {
       if (!is.nan(ind.concordancia.gorro[j,k])) {
@@ -1024,7 +1044,7 @@ multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concord
       }
     }
   }
-  test.discordancia = array(F,dim=c(num.alt,num.alt));
+  test.discordancia = array(FALSE,dim=c(num.alt,num.alt));
   for (j in 1:num.alt) {
     for (k in 1:num.alt) {
       suma1 = 0;
@@ -1046,7 +1066,7 @@ multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concord
   rownames(test.discordancia)=rownames(tabdec.X);colnames(test.discordancia)=rownames(tabdec.X);
   rownames(relacion.dominante2)=rownames(tabdec.X);colnames(relacion.dominante2)=rownames(tabdec.X);
 
-  suma = apply(relacion.dominante2,2,sum,na.rm=T)
+  suma = apply(relacion.dominante2,2,sum,na.rm=TRUE)
   nucleo = which(suma==0)
 
   resultado = list();
@@ -1066,20 +1086,20 @@ multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concord
 }
 
 
-#' Método ELECTRE I (variante del libro de Córdoba)
+#' Metodo ELECTRE I (variante del libro de Cordoba)
 #'
-#' Implementación alternativa del método ELECTRE I según la metodología
-#' descrita en "Metodología para la toma de decisiones" de Miguel Córdoba Bueno.
+#' Implementacion alternativa del metodo ELECTRE I segun la metodologia
+#' descrita en "Metodologia para la toma de decisiones" de Miguel Cordoba Bueno.
 #'
-#' @param Mvalor Matriz numérica de valoración (alternativas x criterios).
+#' @param Mvalor Matriz numerica de valoracion (alternativas x criterios).
 #'   Los criterios de coste deben estar en negativo.
-#' @param pesos.criterios Vector numérico con los pesos de los criterios.
-#' @param umbral.c Numérico o NA. Umbral de concordancia. Si es NA, se usa la media.
-#' @param umbral.d Numérico o NA. Umbral de discordancia. Si es NA, se usa la media.
+#' @param pesos.criterios Vector numerico con los pesos de los criterios.
+#' @param umbral.c Numerico o NA. Umbral de concordancia. Si es NA, se usa la media.
+#' @param umbral.d Numerico o NA. Umbral de discordancia. Si es NA, se usa la media.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
-#'   \item{Mvalor}{Matriz de valoración original}
+#'   \item{Mvalor}{Matriz de valoracion original}
 #'   \item{pesos.criterios}{Pesos utilizados}
 #'   \item{umbral.c.medio}{Umbral de concordancia medio}
 #'   \item{umbral.d.medio}{Umbral de discordancia medio}
@@ -1089,8 +1109,8 @@ multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concord
 #'   \item{Minddiscor}{Matriz de discordancia}
 #'   \item{Mindconcor_conc}{Matriz de concordancia test}
 #'   \item{Minddiscor_disc}{Matriz de discordancia test}
-#'   \item{Minddominancia_agregada}{Relación de dominancia agregada}
-#'   \item{nucleo_aprox}{Índices del núcleo aproximado}
+#'   \item{Minddominancia_agregada}{Relacion de dominancia agregada}
+#'   \item{nucleo_aprox}{Indices del nucleo aproximado}
 #' }
 #'
 #' @examples
@@ -1145,8 +1165,8 @@ multicriterio.metodoelectre_varlibro <- function (Mvalor, pesos.criterios,umbral
   }
   rownames(Minddiscor) = colnames(Minddiscor) = rownames(Mvalor)
 
-  umbral.c.medio = mean(Mindconcor,na.rm=T)
-  umbral.d.medio = mean(Minddiscor,na.rm=T)
+  umbral.c.medio = mean(Mindconcor,na.rm=TRUE)
+  umbral.d.medio = mean(Minddiscor,na.rm=TRUE)
 
   if (is.na(umbral.c)) {
     umbral.c.temp = umbral.c.medio
@@ -1161,7 +1181,7 @@ multicriterio.metodoelectre_varlibro <- function (Mvalor, pesos.criterios,umbral
   Mindconcor_conc = (Mindconcor>=umbral.c.temp) * 1.0
   Minddiscor_disc = (Minddiscor<=umbral.d.temp) * 1.0
   Minddominancia_agregada = Mindconcor_conc * Minddiscor_disc
-  suma = apply(Minddominancia_agregada,2,sum,na.rm=T)
+  suma = apply(Minddominancia_agregada,2,sum,na.rm=TRUE)
   nucleo = which(suma==0)
 
   salida = list()
@@ -1181,20 +1201,20 @@ multicriterio.metodoelectre_varlibro <- function (Mvalor, pesos.criterios,umbral
 }
 
 
-## Método Promethee ----
+## Metodo Promethee ----
 
 #' Funciones de preferencia para Promethee
 #'
 #' Funciones auxiliares que definen las funciones de preferencia utilizadas
-#' en el método Promethee.
+#' en el metodo Promethee.
 #'
-#' @param vaj Numérico. Valor de la alternativa a.
-#' @param vah Numérico. Valor de la alternativa h.
-#' @param qi Numérico. Umbral de indiferencia.
-#' @param pi Numérico. Umbral de preferencia.
-#' @param si Numérico. Parámetro de la función gaussiana.
+#' @param vaj Numerico. Valor de la alternativa a.
+#' @param vah Numerico. Valor de la alternativa h.
+#' @param qi Numerico. Umbral de indiferencia.
+#' @param pi Numerico. Umbral de preferencia.
+#' @param si Numerico. Parametro de la funcion gaussiana.
 #'
-#' @return Valor numérico de la preferencia (entre 0 y 1).
+#' @return Valor numerico de la preferencia (entre 0 y 1).
 #'
 #' @examples
 #' fpref.criterio_usual(10, 5)
@@ -1278,19 +1298,19 @@ fpref.criterio_gaussiano = function(vaj,vah,qi,pi,si) {
   return(res);
 }
 
-#' Función de preferencia selector
+#' Funcion de preferencia selector
 #'
-#' Selecciona y aplica la función de preferencia adecuada según el tipo indicado.
+#' Selecciona y aplica la funcion de preferencia adecuada segun el tipo indicado.
 #'
-#' @param cual Numérico. Tipo de función (1=Usual, 2=U-shape, 3=V-shape,
+#' @param cual Numerico. Tipo de funcion (1=Usual, 2=U-shape, 3=V-shape,
 #'   4=Level, 5=Linear, 6=Gaussian).
-#' @param vaj Numérico. Valor de la alternativa a.
-#' @param vah Numérico. Valor de la alternativa h.
-#' @param qi Numérico. Umbral de indiferencia. Por defecto 0.
-#' @param pi Numérico. Umbral de preferencia. Por defecto 1.
-#' @param si Numérico. Parámetro gaussiano. Por defecto 0.5.
+#' @param vaj Numerico. Valor de la alternativa a.
+#' @param vah Numerico. Valor de la alternativa h.
+#' @param qi Numerico. Umbral de indiferencia. Por defecto 0.
+#' @param pi Numerico. Umbral de preferencia. Por defecto 1.
+#' @param si Numerico. Parametro gaussiano. Por defecto 0.5.
 #'
-#' @return Valor numérico de la preferencia.
+#' @return Valor numerico de la preferencia.
 #'
 #' @examples
 #' fpref.todas(1, 10, 5)  # Usual
@@ -1315,15 +1335,15 @@ fpref.todas = function(cual,vaj,vah,qi=0,pi=1,si=0.5) {
 }
 
 
-#' Índice de preferencia multicriterio
+#' Indice de preferencia multicriterio
 #'
 #' Calcula la matriz de preferencia agregada multicriterio para todos los
 #' pares de alternativas.
 #'
-#' @param tabdecs.X Matriz numérica de decisión (alternativas x criterios).
-#' @param pesos.criterios Vector numérico con los pesos de los criterios.
-#' @param tab.fpref Matriz de configuración de funciones de preferencia.
-#'   Columnas: tipo función, qi, pi, si.
+#' @param tabdecs.X Matriz numerica de decision (alternativas x criterios).
+#' @param pesos.criterios Vector numerico con los pesos de los criterios.
+#' @param tab.fpref Matriz de configuracion de funciones de preferencia.
+#'   Columnas: tipo funcion, qi, pi, si.
 #'
 #' @return Matriz cuadrada de preferencia multicriterio.
 #'
@@ -1358,9 +1378,9 @@ indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) {
 #'
 #' Funciones para calcular flujos entrantes, salientes y netos en Promethee.
 #'
-#' @param tab.indices Matriz de índices de preferencia multicriterio.
+#' @param tab.indices Matriz de indices de preferencia multicriterio.
 #'
-#' @return Vector numérico con los flujos.
+#' @return Vector numerico con los flujos.
 #'
 #' @examples
 #' # Ver ejemplos en multicriterio.metodo.promethee_i
@@ -1392,9 +1412,9 @@ flujo.neto.Promethee = function(tab.indices) {
 #'
 #' Funciones para calcular flujos medios (promediados) en Promethee.
 #'
-#' @param tab.indices Matriz de índices de preferencia multicriterio.
+#' @param tab.indices Matriz de indices de preferencia multicriterio.
 #'
-#' @return Vector numérico con los flujos medios.
+#' @return Vector numerico con los flujos medios.
 #'
 #' @examples
 #' # Ver ejemplos en multicriterio.metodo.promethee_i_med
@@ -1422,21 +1442,21 @@ flujomed.neto.Promethee = function(tab.indices) {
 }
 
 
-#' Método Promethee I
+#' Metodo Promethee I
 #'
-#' Aplica el método Promethee I que establece una relación de preferencia
+#' Aplica el metodo Promethee I que establece una relacion de preferencia
 #' parcial entre alternativas basada en flujos entrantes y salientes.
 #'
-#' @param tabdecs.X Matriz numérica de decisión (alternativas x criterios).
-#' @param pesos.criterios Vector numérico con los pesos de los criterios.
-#' @param tab.fpref Matriz de configuración de funciones de preferencia.
+#' @param tabdecs.X Matriz numerica de decision (alternativas x criterios).
+#' @param pesos.criterios Vector numerico con los pesos de los criterios.
+#' @param tab.fpref Matriz de configuracion de funciones de preferencia.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
-#'   \item{tabla.indices}{Matriz de índices de preferencia multicriterio}
+#'   \item{tabla.indices}{Matriz de indices de preferencia multicriterio}
 #'   \item{vflujos.ent}{Vector de flujos entrantes}
 #'   \item{vflujos.sal}{Vector de flujos salientes}
-#'   \item{tablarelacionsupera}{Matriz de relación superación}
+#'   \item{tablarelacionsupera}{Matriz de relacion superacion}
 #' }
 #'
 #' @examples
@@ -1482,20 +1502,20 @@ multicriterio.metodo.promethee_i = function(tabdecs.X,pesos.criterios,tab.fpref)
 }
 
 
-#' Método Promethee II
+#' Metodo Promethee II
 #'
-#' Aplica el método Promethee II que establece una clasificación completa
+#' Aplica el metodo Promethee II que establece una clasificacion completa
 #' de alternativas basada en flujos netos.
 #'
-#' @param tabdecs.X Matriz numérica de decisión (alternativas x criterios).
-#' @param pesos.criterios Vector numérico con los pesos de los criterios.
-#' @param tab.fpref Matriz de configuración de funciones de preferencia.
+#' @param tabdecs.X Matriz numerica de decision (alternativas x criterios).
+#' @param pesos.criterios Vector numerico con los pesos de los criterios.
+#' @param tab.fpref Matriz de configuracion de funciones de preferencia.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
-#'   \item{tabla.indices}{Matriz de índices de preferencia multicriterio}
+#'   \item{tabla.indices}{Matriz de indices de preferencia multicriterio}
 #'   \item{vflujos.netos}{Vector de flujos netos}
-#'   \item{tablarelacionsupera}{Matriz de relación superación}
+#'   \item{tablarelacionsupera}{Matriz de relacion superacion}
 #' }
 #'
 #' @examples
@@ -1534,15 +1554,15 @@ multicriterio.metodo.promethee_ii = function(tabdecs.X,pesos.criterios,tab.fpref
 }
 
 
-#' Método Promethee I con flujos medios
+#' Metodo Promethee I con flujos medios
 #'
 #' Variante de Promethee I que utiliza flujos medios en lugar de sumas.
 #'
-#' @param tabdecs.X Matriz numérica de decisión.
-#' @param pesos.criterios Vector numérico con los pesos de los criterios.
-#' @param tab.fpref Matriz de configuración de funciones de preferencia.
+#' @param tabdecs.X Matriz numerica de decision.
+#' @param pesos.criterios Vector numerico con los pesos de los criterios.
+#' @param tab.fpref Matriz de configuracion de funciones de preferencia.
 #'
-#' @return Lista con tabla de índices, flujos medios y relación superación.
+#' @return Lista con tabla de indices, flujos medios y relacion superacion.
 #'
 #' @examples
 #' X <- multicriterio.crea.matrizdecision(c(10,20,5,8,15,12), 2, 3)
@@ -1584,15 +1604,15 @@ multicriterio.metodo.promethee_i_med = function(tabdecs.X,pesos.criterios,tab.fp
 }
 
 
-#' Método Promethee II con flujos medios
+#' Metodo Promethee II con flujos medios
 #'
 #' Variante de Promethee II que utiliza flujos medios en lugar de sumas.
 #'
-#' @param tabdecs.X Matriz numérica de decisión.
-#' @param pesos.criterios Vector numérico con los pesos de los criterios.
-#' @param tab.fpref Matriz de configuración de funciones de preferencia.
+#' @param tabdecs.X Matriz numerica de decision.
+#' @param pesos.criterios Vector numerico con los pesos de los criterios.
+#' @param tab.fpref Matriz de configuracion de funciones de preferencia.
 #'
-#' @return Lista con tabla de índices, flujos netos medios y relación superación.
+#' @return Lista con tabla de indices, flujos netos medios y relacion superacion.
 #'
 #' @examples
 #' X <- multicriterio.crea.matrizdecision(c(10,20,5,8,15,12), 2, 3)
@@ -1627,17 +1647,17 @@ multicriterio.metodo.promethee_ii_med = function(tabdecs.X,pesos.criterios,tab.f
 }
 
 
-## Método axiomático de Arrow y Raymond ----
+## Metodo axiomatico de Arrow y Raymond ----
 
-#' Matriz de clasificación (Arrow-Raymond)
+#' Matriz de clasificacion (Arrow-Raymond)
 #'
-#' Calcula la matriz de clasificación para el método axiomático de
+#' Calcula la matriz de clasificacion para el metodo axiomatico de
 #' Arrow y Raymond.
 #'
-#' @param Mvalor Matriz numérica de valoración (alternativas x criterios).
+#' @param Mvalor Matriz numerica de valoracion (alternativas x criterios).
 #'
-#' @return Matriz cuadrada de clasificación donde cada elemento indica
-#'   cuántas veces la alternativa i es mejor o igual que la j.
+#' @return Matriz cuadrada de clasificacion donde cada elemento indica
+#'   cuantas veces la alternativa i es mejor o igual que la j.
 #'
 #' @examples
 #' Mvalor <- matrix(c(8,25,20,10,75,5), nrow=2, ncol=3, byrow=TRUE)
@@ -1664,12 +1684,12 @@ func_calcula_matrizclasificacion = function(Mvalor) {
 }
 
 
-#' Método axiomático de Arrow y Raymond
+#' Metodo axiomatico de Arrow y Raymond
 #'
-#' Aplica el método axiomático de Arrow y Raymond para obtener una
-#' clasificación completa de alternativas.
+#' Aplica el metodo axiomatico de Arrow y Raymond para obtener una
+#' clasificacion completa de alternativas.
 #'
-#' @param Mvalor Matriz numérica de valoración (alternativas x criterios).
+#' @param Mvalor Matriz numerica de valoracion (alternativas x criterios).
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
@@ -1679,7 +1699,9 @@ func_calcula_matrizclasificacion = function(Mvalor) {
 #' }
 #'
 #' @examples
-#' Mvalor <- matrix(c(8,25,20,10,75,5,12,35,17,25,100,7), nrow=2, ncol=3, byrow=TRUE)
+#' Mvalor <- matrix(c(8, 25, 20, 10, 75, 5,
+#'                    12, 35, 17, 25, 100, 7), nrow = 2, ncol = 6, byrow = TRUE)
+#' rownames(Mvalor) <- c("A1", "A2")
 #' resultado <- multicriterio.metodoaxiomatico.ArrowRaymond(Mvalor)
 #' resultado$alternativasordenadas
 #'
@@ -1694,7 +1716,7 @@ multicriterio.metodoaxiomatico.ArrowRaymond = function(Mvalor) {
   for (i in 1:(num.alter-1)) {
      Mclasificacion_red = func_calcula_matrizclasificacion(Mvalor_red)
      nombres.alternativas = rownames(Mclasificacion_red)
-     max.filas = apply(Mclasificacion_red,1,max,na.rm=T)
+     max.filas = apply(Mclasificacion_red,1,max,na.rm=TRUE)
      inds.orden = order(max.filas)
      salidatemp$Mclasificacion = Mclasificacion_red
      salidatemp$max.filas = max.filas

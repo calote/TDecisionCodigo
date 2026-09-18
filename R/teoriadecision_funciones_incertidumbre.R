@@ -1,27 +1,27 @@
 # Fichero: teoriadecision_funciones_incertidumbre.R ----
-## Funciones para métodos de decisión bajo incertidumbre
+## Funciones para metodos de decision bajo incertidumbre
 ## Incluye criterios de Wald, Optimista, Hurwicz, Savage, Laplace y Punto Ideal.
 
 
-## Funciones útiles ----
+## Funciones utiles ----
 
-#' Crear matriz de decisión
+#' Crear matriz de decision
 #'
-#' Crea una matriz de decisión a partir de un vector de valores, con nombres
+#' Crea una matriz de decision a partir de un vector de valores, con nombres
 #' de alternativas y estados.
 #'
-#' @param vector_matporfilas Vector numérico con los valores de la matriz
+#' @param vector_matporfilas Vector numerico con los valores de la matriz
 #'   rellenable por filas.
-#' @param numalternativas Numérico. Número de alternativas (filas). Si es NULL,
+#' @param numalternativas Numerico. Numero de alternativas (filas). Si es NULL,
 #'   se infiere de numestados.
-#' @param numestados Numérico. Número de estados (columnas). Si es NULL,
+#' @param numestados Numerico. Numero de estados (columnas). Si es NULL,
 #'   se infiere de numalternativas.
 #' @param nb_alternativas Vector de character strings opcional con los nombres
 #'   de las alternativas.
 #' @param nb_estados Vector de character strings opcional con los nombres
 #'   de los estados.
 #'
-#' @return Matriz numérica con los datos organizados, con nombres de filas
+#' @return Matriz numerica con los datos organizados, con nombres de filas
 #'   y columnas asignados.
 #'
 #' @examples
@@ -70,14 +70,14 @@ crea.tablaX = function(vector_matporfilas,numalternativas=NULL,numestados=NULL,n
 }
 
 
-#' Índices de mínimos y máximos generalizados
+#' Indices de minimos y maximos generalizados
 #'
-#' Funciones auxiliares que devuelven todos los índices donde se alcanza
-#' el mínimo o máximo de un vector (no solo el primero).
+#' Funciones auxiliares que devuelven todos los indices donde se alcanza
+#' el minimo o maximo de un vector (no solo el primero).
 #'
-#' @param vector Vector numérico.
+#' @param vector Vector numerico.
 #'
-#' @return Vector numérico con los índices donde se alcanza el extremo.
+#' @return Vector numerico con los indices donde se alcanza el extremo.
 #'
 #' @examples
 #' which.min.general(c(3, 2, 8, 2, 9, 2))  # Devuelve 2, 4, 6
@@ -99,14 +99,14 @@ which.max.general = function(vector) {
 }
 
 
-#' Distancia euclídea
+#' Distancia euclidea
 #'
-#' Calcula la distancia euclídea entre dos puntos.
+#' Calcula la distancia euclidea entre dos puntos.
 #'
-#' @param pto1 Vector numérico con las coordenadas del primer punto.
-#' @param pto2 Vector numérico con las coordenadas del segundo punto.
+#' @param pto1 Vector numerico con las coordenadas del primer punto.
+#' @param pto2 Vector numerico con las coordenadas del segundo punto.
 #'
-#' @return Valor numérico con la distancia euclídea.
+#' @return Valor numerico con la distancia euclidea.
 #'
 #' @examples
 #' distanciaEuclidea(c(0, 0), c(3, 4))  # Devuelve 5
@@ -118,14 +118,14 @@ distanciaEuclidea = function(pto1,pto2) {
 }
 
 
-#' Ejemplos de matrices de decisión
+#' Ejemplos de matrices de decision
 #'
 #' Devuelve matrices de ejemplo predefinidas para ilustrar el uso de los
-#' criterios de decisión.
+#' criterios de decision.
 #'
-#' @param cual Numérico. Indica qué ejemplo devolver (1, 2 o 3).
+#' @param cual Numerico. Indica que ejemplo devolver (1, 2 o 3).
 #'
-#' @return Matriz numérica con la tabla de decisión de ejemplo.
+#' @return Matriz numerica con la tabla de decision de ejemplo.
 #'
 #' @examples
 #' criterio.tablaX.ejemplos(1)  # Ejemplo 1 (favorable)
@@ -147,26 +147,26 @@ criterio.tablaX.ejemplos = function(cual=1) {
 }
 
 
-## Funciones Métodos de Decisión bajo Incertidumbre ----
+## Funciones Metodos de Decision bajo Incertidumbre ----
 
 #' Criterio de Wald (Pesimista)
 #'
 #' Aplica el criterio de Wald (minimax para beneficios o maximin para costes).
 #' Selecciona la alternativa que garantiza el mejor peor caso.
 #'
-#' @param tablaX Matriz numérica de decisión donde las filas son alternativas
+#' @param tablaX Matriz numerica de decision donde las filas son alternativas
 #'   y las columnas estados naturales.
-#' @param favorable Lógico. Si TRUE (por defecto), se trata un problema de
+#' @param favorable Logico. Si TRUE (por defecto), se trata un problema de
 #'   beneficios. Si FALSE, de costes.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
 #'   \item{criterio}{Nombre del criterio: "Wald"}
 #'   \item{metodo}{Tipo de problema: "favorable" o "desfavorable"}
-#'   \item{tablaX}{Tabla de decisión original}
+#'   \item{tablaX}{Tabla de decision original}
 #'   \item{ValorAlternativas}{Vector con el valor peor de cada alternativa}
-#'   \item{ValorOptimo}{Valor óptimo obtenido}
-#'   \item{AlternativaOptima}{Índice(s) de la(s) alternativa(s) óptima(s)}
+#'   \item{ValorOptimo}{Valor optimo obtenido}
+#'   \item{AlternativaOptima}{Indice(s) de la(s) alternativa(s) optima(s)}
 #' }
 #'
 #' @examples
@@ -206,17 +206,17 @@ criterio.Wald = function(tablaX,favorable=TRUE) {
 #' Aplica el criterio optimista que selecciona la alternativa con el mejor
 #' mejor caso posible.
 #'
-#' @param tablaX Matriz numérica de decisión.
-#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#' @param tablaX Matriz numerica de decision.
+#' @param favorable Logico. Si TRUE, problema de beneficios. Si FALSE, de costes.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
 #'   \item{criterio}{Nombre del criterio: "Optimista"}
 #'   \item{metodo}{Tipo de problema}
-#'   \item{tablaX}{Tabla de decisión original}
+#'   \item{tablaX}{Tabla de decision original}
 #'   \item{ValorAlternativas}{Vector con el mejor valor de cada alternativa}
-#'   \item{ValorOptimo}{Valor óptimo obtenido}
-#'   \item{AlternativaOptima}{Índice(s) de la(s) alternativa(s) óptima(s)}
+#'   \item{ValorOptimo}{Valor optimo obtenido}
+#'   \item{AlternativaOptima}{Indice(s) de la(s) alternativa(s) optima(s)}
 #' }
 #'
 #' @examples
@@ -257,20 +257,20 @@ criterio.Optimista = function(tablaX,favorable=TRUE) {
 #' Aplica el criterio de Hurwicz con un coeficiente de optimismo alfa.
 #' Combina el mejor y peor caso de cada alternativa ponderadamente.
 #'
-#' @param tablaX Matriz numérica de decisión.
-#' @param alfa Numérico entre 0 y 1. Coeficiente de optimismo. Si alfa=1 se
+#' @param tablaX Matriz numerica de decision.
+#' @param alfa Numerico entre 0 y 1. Coeficiente de optimismo. Si alfa=1 se
 #'   obtiene el criterio optimista; si alfa=0, el pesimista.
-#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#' @param favorable Logico. Si TRUE, problema de beneficios. Si FALSE, de costes.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
 #'   \item{criterio}{Nombre del criterio: "Hurwicz"}
 #'   \item{alfa}{Valor de alfa utilizado}
 #'   \item{metodo}{Tipo de problema}
-#'   \item{tablaX}{Tabla de decisión original}
+#'   \item{tablaX}{Tabla de decision original}
 #'   \item{ValorAlternativas}{Vector con el valor Hurwicz de cada alternativa}
-#'   \item{ValorOptimo}{Valor óptimo obtenido}
-#'   \item{AlternativaOptima}{Índice(s) de la(s) alternativa(s) óptima(s)}
+#'   \item{ValorOptimo}{Valor optimo obtenido}
+#'   \item{AlternativaOptima}{Indice(s) de la(s) alternativa(s) optima(s)}
 #' }
 #'
 #' @examples
@@ -311,30 +311,30 @@ criterio.Hurwicz = function(tablaX,alfa=0.3,favorable=TRUE) {
 
 #' Criterio de Hurwicz General
 #'
-#' Variante del criterio de Hurwicz que permite evaluar múltiples valores
-#' de alfa simultáneamente.
+#' Variante del criterio de Hurwicz que permite evaluar multiples valores
+#' de alfa simultaneamente.
 #'
-#' @param tablaX Matriz numérica de decisión.
-#' @param alfa Numérico. Si alfa <= 1, se evalúa para ese único valor.
-#'   Si alfa > 1, se usa como número de puntos en el rango [0, 1].
-#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#' @param tablaX Matriz numerica de decision.
+#' @param alfa Numerico. Si alfa <= 1, se evalua para ese unico valor.
+#'   Si alfa > 1, se usa como numero de puntos en el rango `[0, 1]`.
+#' @param favorable Logico. Si TRUE, problema de beneficios. Si FALSE, de costes.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
 #'   \item{criterio}{Nombre del criterio: "Hurwicz"}
 #'   \item{alfa}{Valor original de alfa}
 #'   \item{metodo}{Tipo de problema}
-#'   \item{tablaX}{Tabla de decisión original}
+#'   \item{tablaX}{Tabla de decision original}
 #'   \item{ValorAlternativas}{Vector con los valores Hurwicz}
-#'   \item{ValorOptimo}{Vector de valores óptimos para cada alfa}
-#'   \item{AlternativaOptima}{Índice(s) de alternativa(s) óptima(s)}
+#'   \item{ValorOptimo}{Vector de valores optimos para cada alfa}
+#'   \item{AlternativaOptima}{Indice(s) de alternativa(s) optima(s)}
 #' }
 #'
 #' @examples
 #' X <- crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0), 4, 3)
 #' # Un solo valor de alfa
 #' criterio.Hurwicz.General(X, alfa = 0.5, favorable = TRUE)
-#' # Múltiples valores
+#' # Multiples valores
 #' criterio.Hurwicz.General(X, alfa = 10, favorable = TRUE)
 #'
 #' @export
@@ -395,15 +395,15 @@ criterio.Hurwicz.General = function(tablaX,alfa=0.3,favorable=TRUE) {
 }
 
 
-#' Representación gráfica del criterio de Hurwicz
+#' Representacion grafica del criterio de Hurwicz
 #'
-#' Dibuja un gráfico que muestra cómo varía el criterio de Hurwicz para
-#' cada alternativa en función del coeficiente de optimismo alfa.
+#' Dibuja un grafico que muestra como varia el criterio de Hurwicz para
+#' cada alternativa en funcion del coeficiente de optimismo alfa.
 #'
-#' @param tablaX Matriz numérica de decisión.
-#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#' @param tablaX Matriz numerica de decision.
+#' @param favorable Logico. Si TRUE, problema de beneficios. Si FALSE, de costes.
 #'
-#' @return None. Produce un gráfico como efecto secundario.
+#' @return None. Produce un grafico como efecto secundario.
 #'
 #' @examples
 #' X <- crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0), 4, 3)
@@ -454,10 +454,10 @@ dibuja.criterio.Hurwicz = function(tablaX,favorable=TRUE) {
   lines(valfa,vHurwicz,col=rainbow(nn+1)[nn+1],lty=3,lwd=3)
   if (favorable) {
     legend("bottomright",legend=rownames(X),fill=colores,inset=0.05)
-    title("Criterio de Hurwicz (favorable - línea discontinua)")
+    title("Criterio de Hurwicz (favorable - linea discontinua)")
   } else {
     legend("topright",legend=rownames(X),fill=colores,inset=0.05)
-    title("Criterio de Hurwicz (desfavorable - línea discontinua)")
+    title("Criterio de Hurwicz (desfavorable - linea discontinua)")
   }
 
 }
@@ -465,23 +465,24 @@ dibuja.criterio.Hurwicz = function(tablaX,favorable=TRUE) {
 
 #' Criterio de Hurwicz con intervalos de alfa
 #'
-#' Calcula los intervalos de alfa para los cuales cada alternativa es óptima
-#' según el criterio de Hurwicz.
+#' Calcula los intervalos de alfa para los cuales cada alternativa es optima
+#' segun el criterio de Hurwicz.
 #'
-#' @param tablaX Matriz numérica de decisión.
-#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
-#' @param mostrarGrafico Lógico. Si TRUE, muestra el gráfico de Hurwicz.
+#' @param tablaX Matriz numerica de decision.
+#' @param favorable Logico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#' @param mostrarGrafico Logico. Si TRUE, muestra el grafico de Hurwicz.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
-#'   \item{AltOptimas}{Vector con las alternativas óptimas encontradas}
-#'   \item{PuntosDeCorte}{Vector con los valores de alfa donde cambia la decisión}
-#'   \item{IntervalosAlfa}{Matriz con los intervalos y la alternativa óptima en cada uno}
+#'   \item{AltOptimas}{Vector con las alternativas optimas encontradas}
+#'   \item{PuntosDeCorte}{Vector con los valores de alfa donde cambia la decision}
+#'   \item{IntervalosAlfa}{Matriz con los intervalos y la alternativa optima en cada uno}
 #' }
 #'
 #' @examples
 #' X <- crea.tablaX(c(5,4,6,2,3,1,-1,8,7,5,2,0), 4, 3)
-#' resultado <- dibuja.criterio.Hurwicz_Intervalos(X, favorable = TRUE)
+#' resultado <- dibuja.criterio.Hurwicz_Intervalos(X, favorable = TRUE,
+#'                                                 mostrarGrafico = FALSE)
 #' resultado$IntervalosAlfa
 #'
 #' @export
@@ -551,10 +552,10 @@ dibuja.criterio.Hurwicz_Intervalos = function(tablaX,favorable=TRUE,mostrarGrafi
 
         if (favorable) {
             legend("bottomright",legend=rownames(X),fill=colores,inset=0.05)
-            title("Criterio de Hurwicz (favorable - línea discontinua)")
+            title("Criterio de Hurwicz (favorable - linea discontinua)")
         } else {
             legend("topright",legend=rownames(X),fill=colores,inset=0.05)
-            title("Criterio de Hurwicz (desfavorable - línea discontinua)")
+            title("Criterio de Hurwicz (desfavorable - linea discontinua)")
         }
     }
 
@@ -587,23 +588,23 @@ dibuja.criterio.Hurwicz_Intervalos = function(tablaX,favorable=TRUE,mostrarGrafi
 
 #' Criterio de Savage (Minimax de arrepentimiento)
 #'
-#' Aplica el criterio de Savage que minimiza el arrepentimiento máximo.
+#' Aplica el criterio de Savage que minimiza el arrepentimiento maximo.
 #' Calcula la matriz de arrepentimientos y selecciona la alternativa con
-#' el menor arrepentimiento máximo.
+#' el menor arrepentimiento maximo.
 #'
-#' @param tablaX Matriz numérica de decisión.
-#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#' @param tablaX Matriz numerica de decision.
+#' @param favorable Logico. Si TRUE, problema de beneficios. Si FALSE, de costes.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
 #'   \item{criterio}{Nombre del criterio: "Savage"}
 #'   \item{metodo}{Tipo de problema}
-#'   \item{tablaX}{Tabla de decisión original}
+#'   \item{tablaX}{Tabla de decision original}
 #'   \item{Mejores}{Vector con los mejores valores por estado}
 #'   \item{Pesos}{Matriz de arrepentimientos}
-#'   \item{ValorAlternativas}{Vector con el arrepentimiento máximo de cada alternativa}
-#'   \item{ValorOptimo}{Valor óptimo obtenido}
-#'   \item{AlternativaOptima}{Índice(s) de la(s) alternativa(s) óptima(s)}
+#'   \item{ValorAlternativas}{Vector con el arrepentimiento maximo de cada alternativa}
+#'   \item{ValorOptimo}{Valor optimo obtenido}
+#'   \item{AlternativaOptima}{Indice(s) de la(s) alternativa(s) optima(s)}
 #' }
 #'
 #' @examples
@@ -653,17 +654,17 @@ criterio.Savage = function(tablaX,favorable=TRUE) {
 #' Aplica el criterio de Laplace asumiendo probabilidades iguales para todos
 #' los estados. Calcula la media de cada alternativa.
 #'
-#' @param tablaX Matriz numérica de decisión.
-#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#' @param tablaX Matriz numerica de decision.
+#' @param favorable Logico. Si TRUE, problema de beneficios. Si FALSE, de costes.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
 #'   \item{criterio}{Nombre del criterio: "Laplace"}
 #'   \item{metodo}{Tipo de problema}
-#'   \item{tablaX}{Tabla de decisión original}
+#'   \item{tablaX}{Tabla de decision original}
 #'   \item{ValorAlternativas}{Vector con la media de cada alternativa}
-#'   \item{ValorOptimo}{Valor óptimo obtenido}
-#'   \item{AlternativaOptima}{Índice(s) de la(s) alternativa(s) óptima(s)}
+#'   \item{ValorOptimo}{Valor optimo obtenido}
+#'   \item{AlternativaOptima}{Indice(s) de la(s) alternativa(s) optima(s)}
 #' }
 #'
 #' @examples
@@ -700,21 +701,21 @@ criterio.Laplace = function(tablaX,favorable=TRUE) {
 
 #' Criterio del Punto Ideal
 #'
-#' Selecciona la alternativa más cercana al punto ideal (la mejor en cada
-#' criterio), usando distancia euclídea.
+#' Selecciona la alternativa mas cercana al punto ideal (la mejor en cada
+#' criterio), usando distancia euclidea.
 #'
-#' @param tablaX Matriz numérica de decisión.
-#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#' @param tablaX Matriz numerica de decision.
+#' @param favorable Logico. Si TRUE, problema de beneficios. Si FALSE, de costes.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
 #'   \item{criterio}{Nombre del criterio: "Punto Ideal"}
 #'   \item{metodo}{Tipo de problema}
-#'   \item{tablaX}{Tabla de decisión original}
+#'   \item{tablaX}{Tabla de decision original}
 #'   \item{Mejores}{Vector con los mejores valores por estado (punto ideal)}
 #'   \item{ValorAlternativas}{Vector con las distancias al punto ideal}
-#'   \item{ValorOptimo}{Distancia mínima al punto ideal}
-#'   \item{AlternativaOptima}{Índice(s) de la(s) alternativa(s) óptima(s)}
+#'   \item{ValorOptimo}{Distancia minima al punto ideal}
+#'   \item{AlternativaOptima}{Indice(s) de la(s) alternativa(s) optima(s)}
 #' }
 #'
 #' @examples
@@ -760,22 +761,22 @@ criterio.PuntoIdeal = function(tablaX,favorable=TRUE) {
 }
 
 
-#' Aplicación de todos los criterios
+#' Aplicacion de todos los criterios
 #'
-#' Aplica de forma simultánea los criterios de Wald, Optimista, Hurwicz,
+#' Aplica de forma simultanea los criterios de Wald, Optimista, Hurwicz,
 #' Savage, Laplace y Punto Ideal, devolviendo una tabla resumen con los
 #' resultados de todos ellos.
 #'
-#' @param tablaX Matriz numérica de decisión.
-#' @param alfa Numérico. Coeficiente de optimismo para Hurwicz. Por defecto 0.3.
-#' @param favorable Lógico. Si TRUE, problema de beneficios. Si FALSE, de costes.
+#' @param tablaX Matriz numerica de decision.
+#' @param alfa Numerico. Coeficiente de optimismo para Hurwicz. Por defecto 0.3.
+#' @param favorable Logico. Si TRUE, problema de beneficios. Si FALSE, de costes.
 #'
 #' @return DataFrame con una tabla resumen que incluye:
 #'   - Las valoraciones originales para cada estado
 #'   - Los valores de cada criterio para cada alternativa
-#'   - La alternativa óptima según cada criterio
-#'   - Una columna "Veces Óptima" con el conteo de veces que cada alternativa
-#'     es seleccionada como óptima
+#'   - La alternativa optima segun cada criterio
+#'   - Una columna "Veces Optima" con el conteo de veces que cada alternativa
+#'     es seleccionada como optima
 #'
 #' @examples
 #' X <- criterio.tablaX.ejemplos(1)
