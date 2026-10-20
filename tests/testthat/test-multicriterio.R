@@ -148,3 +148,73 @@ test_that("Promethee Windows tables can be exported as PNG", {
   expect_true(file.exists(ficheros$tabEscenario))
   expect_true(file.exists(ficheros$tabAcciones))
 })
+
+test_that("TOPSIS ranks symmetric alternatives equally", {
+  X <- multicriterio.crea.matrizdecision(c(4, 1, 1, 4), 2, 2)
+  res <- multicriterio.metodo.topsis(X, c(0.5, 0.5))
+  expect_named(res$tabla,
+               c("Alternativa", "Separacion_ideal", "Separacion_antiideal",
+                 "Cerca_ideal", "Rango"))
+  expect_equal(res$cerca_ideal, c(a1 = 0.5, a2 = 0.5), tolerance = 1e-8)
+  expect_equal(res$tabla$Rango, 1:2)
+})
+
+test_that("TOPSIS handles cost criteria via fminmax", {
+  X <- multicriterio.crea.matrizdecision(c(10, 5, 20, 9), 2, 2,
+    v.nombresalt = c("A1", "A2"), v.nombrescri = c("precio", "calidad"))
+  res <- multicriterio.metodo.topsis(X, c(0.5, 0.5), fminmax = c("min", "max"))
+  expect_equal(res$tabla$Alternativa[1], "A1")
+  expect_true(all(res$tabla$Cerca_ideal >= 0 & res$tabla$Cerca_ideal <= 1))
+})
+
+test_that("TOPSIS variants agree with equal weights and may differ otherwise", {
+  X <- multicriterio.crea.matrizdecision(
+    c(690, 3.1, 9, 7, 4, 590, 3.9, 7, 6, 10,
+      600, 3.6, 8, 8, 7, 620, 3.8, 7, 10, 6,
+      700, 2.8, 10, 4, 6, 650, 4, 6, 9, 8), 6, 5)
+  w_iguales <- rep(0.2, 5)
+  res_clasico <- multicriterio.metodo.topsis(X, w_iguales)
+  res_modif <- multicriterio.metodo.topsis_modificado(X, w_iguales)
+  expect_identical(res_clasico$tabla$Alternativa, res_modif$tabla$Alternativa)
+  w_desiguales <- c(0.6, 0.1, 0.1, 0.1, 0.1)
+  res_clasico2 <- multicriterio.metodo.topsis(X, w_desiguales)
+  res_modif2 <- multicriterio.metodo.topsis_modificado(X, w_desiguales)
+  expect_false(identical(res_clasico2$tabla$Alternativa,
+                         res_modif2$tabla$Alternativa))
+})
+
+test_that("TOPSIS validates its inputs", {
+  X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+  expect_error(
+    multicriterio.metodo.topsis(X, c(0.5, 0.5)),
+    "pesos"
+  )
+  expect_error(
+    multicriterio.metodo.topsis(X, c(0.5, 0.3, 0.2), fminmax = c("max", "max")),
+    "fminmax"
+  )
+  expect_error(
+    multicriterio.metodo.topsis_modificado(X, c(0.5, 0.3, 0.2),
+                                            fminmax = c("max", "mid", "max")),
+    "fminmax"
+  )
+})
+
+test_that("TOPSIS tables can be built with tinytable", {
+  skip_if_not_installed("tinytable")
+  X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+  res <- multicriterio.metodo.topsis(X, c(0.5, 0.3, 0.2))
+  tab <- multicriterio.metodo.topsis_tinytable(res)
+  expect_true(inherits(tab, "tinytable"))
+  expect_error(multicriterio.metodo.topsis_tinytable(list()))
+})
+
+test_that("TOPSIS plot runs without error", {
+  X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+  res <- multicriterio.metodo.topsis(X, c(0.5, 0.3, 0.2))
+  grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off(), add = TRUE)
+  pos <- multicriterio.metodo.topsis_grafico(res, titulo = "Prueba")
+  expect_length(pos, 2)
+  expect_error(multicriterio.metodo.topsis_grafico(list()))
+})

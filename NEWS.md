@@ -2,6 +2,12 @@
 
 ## New features
 
+* New functions `multicriterio.metodo.topsis()` and
+  `multicriterio.metodo.topsis_modificado()` implement the classic and
+  modified TOPSIS methods, with presentation helpers
+  `multicriterio.metodo.topsis_tinytable()` (native Typst, HTML and LaTeX
+  tables) and `multicriterio.metodo.topsis_grafico()` (relative-closeness
+  bar chart).
 * New functions `multicriterio.metodo.promethee_windows_tinytable()` and
   `multicriterio.metodo.promethee_windows_tinytable_exportar()` build the
   Promethee Windows tables with the 'tinytable' package. The objects returned

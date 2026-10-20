@@ -1388,3 +1388,130 @@ multicriterio.metodo.promethee_windows_tinytable_exportar = function(res_prometh
     return(ficheros)
 
 }
+
+
+## Metodo TOPSIS: presentacion ----
+
+#' TOPSIS - Tabla con tinytable
+#'
+#' Presenta el resultado de \code{\link{multicriterio.metodo.topsis}} o de
+#' \code{\link{multicriterio.metodo.topsis_modificado}} como tabla
+#' \pkg{tinytable}, con filas alternadas, cabecera destacada y la alternativa
+#' ganadora resaltada en azul. El objeto devuelto se adapta automaticamente
+#' al formato de salida (HTML, Typst o LaTeX) cuando se imprime dentro de un
+#' chunk de Quarto o RMarkdown.
+#'
+#' @param res_topsis Lista resultado de \code{multicriterio.metodo.topsis} o
+#'   de \code{multicriterio.metodo.topsis_modificado}.
+#' @param colocacion Character string con la colocacion de la tabla en la
+#'   salida LaTeX. El valor por defecto \code{"H"} mantiene la tabla en su
+#'   sitio (requiere el paquete LaTeX \code{float}); si se pone \code{NULL} se
+#'   comporta como un flotante y puede cambiar de pagina. No afecta a las
+#'   salidas HTML y Typst.
+#'
+#' @return Objeto \code{tt} del paquete \pkg{tinytable} con la tabla de
+#'   resultados ordenada de mejor a peor alternativa.
+#'
+#' @examples
+#' \dontrun{
+#' X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+#' res <- multicriterio.metodo.topsis(X, c(0.5, 0.3, 0.2))
+#' multicriterio.metodo.topsis_tinytable(res)
+#' }
+#'
+#' @export
+multicriterio.metodo.topsis_tinytable = function(res_topsis,
+                                                 colocacion = "H") {
+
+    if (!requireNamespace("tinytable", quietly = TRUE)) {
+        stop("Package \"tinytable\" needed for this function. Please install it with install.packages(\"tinytable\").", call. = FALSE)
+    }
+    if (!is.list(res_topsis) || is.null(res_topsis$tabla)) {
+        stop("res_topsis debe ser el resultado de multicriterio.metodo.topsis() o de multicriterio.metodo.topsis_modificado().", call. = FALSE)
+    }
+
+    tab = tinytable::tt(res_topsis$tabla)
+    tab = tinytable::theme_striped(tab)
+    tab = tinytable::style_tt(tab, 0, bold = TRUE, background = "grey90")
+    # Los nombres de columna llevan "_" (p. ej. "Cerca_ideal"), que debe
+    # escaparse en LaTeX. Se usan indices de columna (4 y 5) porque
+    # style_tt() con nombres no es compatible con escape = TRUE.
+    tab = tinytable::style_tt(tab, i = 1, j = c(4, 5),
+                              bold = TRUE, color = "#1f5a7a")
+    tab = tinytable::format_tt(tab, escape = TRUE)
+
+    if (!is.null(colocacion)) {
+        tab = tinytable::theme_latex(tab, placement = colocacion)
+    }
+
+    return(tab)
+
+}
+
+
+#' TOPSIS - Grafico de cercania relativa
+#'
+#' Dibuja un diagrama de barras con la cercania relativa a la solucion ideal
+#' de cada alternativa, ordenadas de mejor a peor. El estilo (barras azules
+#' degradadas, rejilla punteada y valores sobre las barras) sigue el formato
+#' habitual de presentacion del metodo.
+#'
+#' @param res_topsis Lista resultado de \code{multicriterio.metodo.topsis} o
+#'   de \code{multicriterio.metodo.topsis_modificado}.
+#' @param titulo Character string con el titulo del grafico. Por defecto se
+#'   usa el nombre del metodo aplicado.
+#'
+#' @return None. Produce un grafico como efecto secundario. Devuelve de forma
+#'   invisible las posiciones de las barras.
+#'
+#' @examples
+#' \dontrun{
+#' X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+#' res <- multicriterio.metodo.topsis(X, c(0.5, 0.3, 0.2))
+#' multicriterio.metodo.topsis_grafico(res, titulo = "Ejemplo TOPSIS")
+#' }
+#'
+#' @export
+multicriterio.metodo.topsis_grafico = function(res_topsis,
+                                               titulo = NULL) {
+
+    if (!is.list(res_topsis) || is.null(res_topsis$tabla)) {
+        stop("res_topsis debe ser el resultado de multicriterio.metodo.topsis() o de multicriterio.metodo.topsis_modificado().", call. = FALSE)
+    }
+    if (is.null(titulo)) {
+        titulo = paste0("Metodo ", res_topsis$metodo)
+    }
+
+    tabla = res_topsis$tabla
+    n = nrow(tabla)
+    azules = grDevices::colorRampPalette(c("#2f6f97", "#b8d4e3"))(n)
+    op = graphics::par(mar = c(9, 5, 4, 1))
+    on.exit(graphics::par(op), add = TRUE)
+    posiciones = graphics::barplot(tabla$Cerca_ideal,
+                                   names.arg = tabla$Alternativa,
+                                   las = 2,
+                                   ylim = c(0, 1),
+                                   ylab = "Cercania relativa C",
+                                   main = titulo,
+                                   col = azules,
+                                   border = NA,
+                                   cex.names = 0.95,
+                                   cex.lab = 1.1,
+                                   cex.main = 1.25)
+    graphics::abline(h = seq(0, 1, by = 0.2), lty = 3, col = "grey70")
+    posiciones = graphics::barplot(tabla$Cerca_ideal,
+                                   names.arg = tabla$Alternativa,
+                                   las = 2,
+                                   ylim = c(0, 1),
+                                   col = azules,
+                                   border = NA,
+                                   cex.names = 0.95,
+                                   add = TRUE)
+    graphics::text(x = posiciones,
+                   y = tabla$Cerca_ideal + 0.035,
+                   labels = sprintf("%.3f", tabla$Cerca_ideal),
+                   cex = 0.95)
+
+    return(invisible(posiciones))
+
+}

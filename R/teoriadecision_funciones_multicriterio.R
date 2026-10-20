@@ -1764,6 +1764,199 @@ multicriterio.metodo.promethee_ii_med = function(tabdecs.X,pesos.criterios,tab.f
 }
 
 
+## Metodo TOPSIS ----
+
+validar_fminmax <- function(fminmax, n) {
+  if (is.null(fminmax)) {
+    return(rep("max", n))
+  }
+  fminmax = tolower(as.character(fminmax))
+  if (length(fminmax) != n || any(!fminmax %in% c("min", "max"))) {
+    stop("fminmax debe ser NULL o un vector con \"min\" o \"max\" por criterio.", call. = FALSE)
+  }
+  return(fminmax)
+}
+
+topsis_normaliza_vector <- function(X) {
+  normas = sqrt(colSums(X^2))
+  if (any(normas == 0)) {
+    stop("No se puede normalizar: hay criterios con todos los valores nulos.", call. = FALSE)
+  }
+  Y = sweep(X, 2, normas, "/")
+  colnames(Y) = colnames(X)
+  rownames(Y) = rownames(X)
+  return(Y)
+}
+
+topsis_construye_salida <- function(metodo, X, pesos.criterios, fminmax, matriz_normalizada,
+                                    ideal, antiideal, separacion_ideal, separacion_antiideal) {
+  denominador = separacion_ideal + separacion_antiideal
+  cerca_ideal = separacion_antiideal / denominador
+  cerca_ideal[denominador == 0] = 0
+  names(separacion_ideal) = rownames(X)
+  names(separacion_antiideal) = rownames(X)
+  names(cerca_ideal) = rownames(X)
+  rango = rank(-cerca_ideal, ties.method = "first")
+  tabla = data.frame(Alternativa = rownames(X),
+                     Separacion_ideal = round(unname(separacion_ideal), 4),
+                     Separacion_antiideal = round(unname(separacion_antiideal), 4),
+                     Cerca_ideal = round(unname(cerca_ideal), 4),
+                     Rango = unname(rango),
+                     stringsAsFactors = FALSE)
+  tabla = tabla[order(tabla$Rango), ]
+  rownames(tabla) = NULL
+  salida = list(metodo = metodo,
+                matriz_decision = X,
+                pesos = pesos.criterios,
+                fminmax = fminmax,
+                matriz_normalizada = matriz_normalizada,
+                ideal = ideal,
+                antiideal = antiideal,
+                separacion_ideal = separacion_ideal,
+                separacion_antiideal = separacion_antiideal,
+                cerca_ideal = cerca_ideal,
+                tabla = tabla)
+  return(salida)
+}
+
+#' Metodo TOPSIS
+#'
+#' Aplica el metodo TOPSIS (Technique for Order Preference by Similarity to
+#' Ideal Solution) de Hwang y Yoon: normaliza la matriz de decision por
+#' columnas (normalizacion vectorial), pondera con los pesos de los criterios,
+#' calcula las soluciones ideal y anti-ideal y ordena las alternativas segun
+#' su cercania relativa a la solucion ideal.
+#'
+#' Sigue las etapas descritas en Chakraborty (2022): normalizacion vectorial,
+#' matriz ponderada, soluciones ideales, distancias euclideas de separacion
+#' y puntuacion global de preferencia.
+#'
+#' @param tabdecs.X Matriz numerica de decision (alternativas x criterios).
+#' @param pesos.criterios Vector numerico con los pesos de los criterios.
+#' @param fminmax Vector de character strings opcional con "min" o "max"
+#'   para cada criterio. Por defecto todos los criterios son de beneficio
+#'   ("max").
+#'
+#' @return Lista con los siguientes elementos:
+#' \describe{
+#'   \item{metodo}{Character string con el nombre del metodo}
+#'   \item{matriz_normalizada}{Matriz de decision normalizada}
+#'   \item{ideal}{Solucion ideal (una fila por criterio ponderado)}
+#'   \item{antiideal}{Solucion anti-ideal}
+#'   \item{separacion_ideal}{Distancias euclideas a la solucion ideal}
+#'   \item{separacion_antiideal}{Distancias euclideas a la solucion anti-ideal}
+#'   \item{cerca_ideal}{Cercania relativa a la solucion ideal}
+#'   \item{tabla}{Data frame con las alternativas ordenadas de mejor a peor
+#'     (Alternativa, Separacion_ideal, Separacion_antiideal, Cerca_ideal,
+#'     Rango)}
+#' }
+#'
+#' @examples
+#' X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+#' res <- multicriterio.metodo.topsis(X, c(0.5, 0.3, 0.2))
+#' res$tabla
+#'
+#' @export
+multicriterio.metodo.topsis = function(tabdecs.X,pesos.criterios,fminmax = NULL) {
+
+  validar_matriz_numerica(tabdecs.X)
+  validar_pesos(pesos.criterios, ncol(tabdecs.X))
+  if (nrow(tabdecs.X) < 2) {
+    stop("Se necesitan al menos dos alternativas.", call. = FALSE)
+  }
+  fminmax = validar_fminmax(fminmax, ncol(tabdecs.X))
+
+  X = as.matrix(tabdecs.X)
+  es_beneficio = fminmax == "max"
+
+  Y = topsis_normaliza_vector(X)
+  V = sweep(Y, 2, pesos.criterios, "*")
+
+  ideal = antiideal = numeric(ncol(X))
+  for (j in 1:ncol(X)) {
+    if (es_beneficio[j]) {
+      ideal[j] = max(V[, j])
+      antiideal[j] = min(V[, j])
+    } else {
+      ideal[j] = min(V[, j])
+      antiideal[j] = max(V[, j])
+    }
+  }
+
+  separacion_ideal = sqrt(rowSums(sweep(V, 2, ideal, "-")^2))
+  separacion_antiideal = sqrt(rowSums(sweep(V, 2, antiideal, "-")^2))
+
+  salida = topsis_construye_salida("TOPSIS", X, pesos.criterios, fminmax, Y,
+                                   ideal, antiideal,
+                                   separacion_ideal, separacion_antiideal)
+  return(salida)
+}
+
+
+#' Metodo TOPSIS modificado
+#'
+#' Variante del metodo TOPSIS de Deng, Yeh y Willis: a diferencia del TOPSIS
+#' clasico, que pondera las valoraciones normalizadas, pondera las distancias
+#' euclideas a las soluciones ideal y anti-ideal, calculadas sobre la matriz
+#' normalizada sin ponderar. Con pesos iguales por criterio ambos metodos
+#' producen la misma ordenacion; con pesos distintos pueden diferir.
+#'
+#' Sigue las etapas descritas en Chakraborty (2022): normalizacion vectorial,
+#' soluciones ideales sobre la matriz normalizada, distancias euclideas
+#' ponderadas y puntuacion global de preferencia.
+#'
+#' @param tabdecs.X Matriz numerica de decision (alternativas x criterios).
+#' @param pesos.criterios Vector numerico con los pesos de los criterios.
+#' @param fminmax Vector de character strings opcional con "min" o "max"
+#'   para cada criterio. Por defecto todos los criterios son de beneficio
+#'   ("max").
+#'
+#' @return Lista con los mismos elementos que
+#'   \code{\link{multicriterio.metodo.topsis}}.
+#'
+#' @examples
+#' X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+#' res <- multicriterio.metodo.topsis_modificado(X, c(0.5, 0.3, 0.2))
+#' res$tabla
+#'
+#' @export
+multicriterio.metodo.topsis_modificado = function(tabdecs.X,pesos.criterios,fminmax = NULL) {
+
+  validar_matriz_numerica(tabdecs.X)
+  validar_pesos(pesos.criterios, ncol(tabdecs.X))
+  if (nrow(tabdecs.X) < 2) {
+    stop("Se necesitan al menos dos alternativas.", call. = FALSE)
+  }
+  fminmax = validar_fminmax(fminmax, ncol(tabdecs.X))
+
+  X = as.matrix(tabdecs.X)
+  es_beneficio = fminmax == "max"
+
+  Y = topsis_normaliza_vector(X)
+
+  ideal = antiideal = numeric(ncol(X))
+  for (j in 1:ncol(X)) {
+    if (es_beneficio[j]) {
+      ideal[j] = max(Y[, j])
+      antiideal[j] = min(Y[, j])
+    } else {
+      ideal[j] = min(Y[, j])
+      antiideal[j] = max(Y[, j])
+    }
+  }
+
+  dif_ideal = sweep(Y, 2, ideal, "-")^2
+  dif_antiideal = sweep(Y, 2, antiideal, "-")^2
+  separacion_ideal = sqrt(rowSums(sweep(dif_ideal, 2, pesos.criterios, "*")))
+  separacion_antiideal = sqrt(rowSums(sweep(dif_antiideal, 2, pesos.criterios, "*")))
+
+  salida = topsis_construye_salida("TOPSIS modificado", X, pesos.criterios, fminmax, Y,
+                                   ideal, antiideal,
+                                   separacion_ideal, separacion_antiideal)
+  return(salida)
+}
+
+
 ## Metodo axiomatico de Arrow y Raymond ----
 
 #' Matriz de clasificacion (Arrow-Raymond)

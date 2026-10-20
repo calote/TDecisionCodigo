@@ -1,0 +1,78 @@
+---
+title: "TOPSIS clásico y modificado (Typst, HTML y PDF)"
+author: "Pedro Luque"
+date: "`r Sys.Date()`"
+format:
+  typst:
+    toc: false
+    papersize: a4
+    margin:
+      x: 1.5cm
+      y: 1.5cm
+  html:
+    embed-resources: true
+    toc: false
+  pdf:
+    keep-tex: false
+    toc: false
+execute:
+  echo: true
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+El método TOPSIS y su variante modificada se resuelven con las funciones
+`multicriterio.metodo.topsis()` y `multicriterio.metodo.topsis_modificado()`,
+que aceptan los mismos elementos que el resto de problemas multicriterio del
+paquete: matriz de decisión, vector de pesos y sentido de cada criterio.
+
+```{r}
+raiz = normalizePath(file.path(dirname(knitr::current_input(dir = TRUE)), "..", "..", ".."))
+source(file = file.path(raiz, "R", "teoriadecision_funciones_multicriterio.R"))
+source(file = file.path(raiz, "R", "teoriadecision_funciones_multicriterio_utiles.R"))
+```
+
+## Datos del problema: elección de portátil
+
+Precio y peso son criterios de coste (a minimizar); disco, memoria y garantía
+son de beneficio (a maximizar).
+
+```{r}
+X = multicriterio.crea.matrizdecision(
+    c(3200, 16, 512, 8, 2,
+      2800, 12, 1024, 16, 3,
+      3500, 8, 256, 32, 1,
+      2400, 10, 512, 16, 2,
+      4200, 20, 2048, 64, 4),
+    numalternativas = 5, numcriterios = 5,
+    v.nombresalt = c("NovaBook 14", "ProMax 16", "AeroSlim 15", "EcoBook 13", "TitanGT 17"),
+    v.nombrescri = c("precio", "peso", "disco", "ram", "garantia"))
+
+pesos = c(0.30, 0.25, 0.15, 0.20, 0.10)
+fminmax = c("min", "min", "max", "max", "max")
+
+res = multicriterio.metodo.topsis(X, pesos, fminmax)
+res_mod = multicriterio.metodo.topsis_modificado(X, pesos, fminmax)
+```
+
+## TOPSIS clásico
+
+```{r}
+multicriterio.metodo.topsis_tinytable(res)
+```
+
+```{r}
+multicriterio.metodo.topsis_grafico(res, titulo = "Ejemplo 1: elección de portátil (TOPSIS)")
+```
+
+## TOPSIS modificado
+
+```{r}
+multicriterio.metodo.topsis_tinytable(res_mod)
+```
+
+```{r}
+multicriterio.metodo.topsis_grafico(res_mod, titulo = "Ejemplo 1: elección de portátil (TOPSIS modificado)")
+```

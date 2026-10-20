@@ -34,8 +34,8 @@ remotes::install_github("calote/TDecisionCodigo@feat-documentacion-funciones")
   Savage, Laplace, Ideal Point and joint summary.
 * **Multicriteria:** value functions, Nadir and Promethee homogenisation,
   Analytic Hierarchy Process (three variants, global weights,
-  inconsistency), ELECTRE I, PROMETHEE I and II, GAIA plane and
-  Arrow-Raymond.
+  inconsistency), ELECTRE I, PROMETHEE I and II, TOPSIS (classic and
+  modified variants), GAIA plane and Arrow-Raymond.
 * **Bayesian trees:** joint, marginal and posterior distributions, prior and
   posterior expected values, REII, RER, VEX, VEIP, entropy and channel
   information.
