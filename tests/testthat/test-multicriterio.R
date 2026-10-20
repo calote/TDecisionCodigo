@@ -84,3 +84,67 @@ test_that("AHP and PROMETHEE validate numerical inputs", {
     "compatibles"
   )
 })
+
+test_that("Promethee Windows tables can be built with tinytable", {
+  skip_if_not_installed("tinytable")
+  X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+  fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+                      pi = c(5, 3, 2), si = c(1, 1, 1))
+  res <- multicriterio.metodo.promethee_windows(X, fpref, c(0.5, 0.3, 0.2))
+  tablas <- multicriterio.metodo.promethee_windows_tinytable(res)
+  expect_named(tablas, c("tabEscenario", "tabAcciones"))
+  expect_true(inherits(tablas$tabEscenario, "tinytable"))
+  expect_true(inherits(tablas$tabAcciones, "tinytable"))
+})
+
+test_that("Promethee Windows blocks are detected with and without fminmax", {
+  X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+  fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+                      pi = c(5, 3, 2), si = c(1, 1, 1))
+  res <- multicriterio.metodo.promethee_windows(X, fpref, c(0.5, 0.3, 0.2))
+  bloques <- multicriterio.metodo.promethee_windows_bloques_escenario(res)
+  expect_equal(bloques$npreferencias, 5)
+  expect_equal(bloques$nestadisticas, 4)
+  expect_equal(bloques$nalternativas, 2)
+  expect_length(bloques$etiquetas, nrow(res$Escenario))
+
+  res2 <- multicriterio.metodo.promethee_windows(X, fpref, c(0.5, 0.3, 0.2),
+                                                 fminmax = c("min", "max", "max"))
+  bloques2 <- multicriterio.metodo.promethee_windows_bloques_escenario(res2)
+  expect_equal(bloques2$npreferencias, 6)
+  expect_equal(bloques2$nestadisticas, 4)
+  expect_length(bloques2$etiquetas, nrow(res2$Escenario))
+})
+
+test_that("Promethee Windows tables can be exported with tinytable", {
+  skip_if_not_installed("tinytable")
+  X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+  fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+                      pi = c(5, 3, 2), si = c(1, 1, 1))
+  res <- multicriterio.metodo.promethee_windows(X, fpref, c(0.5, 0.3, 0.2))
+  destino <- file.path(tempdir(), "testPrometheeWindowsTinytable")
+  ficheros <- multicriterio.metodo.promethee_windows_tinytable_exportar(
+    res, formato = "typ", directorio = destino)
+  expect_true(file.exists(ficheros$tabEscenario))
+  expect_true(file.exists(ficheros$tabAcciones))
+  expect_true(any(grepl("#table", readLines(ficheros$tabEscenario), fixed = TRUE)))
+  expect_error(
+    multicriterio.metodo.promethee_windows_tinytable_exportar(
+      res, formato = "desconocido", directorio = destino)
+  )
+})
+
+test_that("Promethee Windows tables can be exported as PNG", {
+  skip_on_cran()
+  skip_if_not_installed("tinytable")
+  skip_if_not_installed("webshot2")
+  X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+  fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+                      pi = c(5, 3, 2), si = c(1, 1, 1))
+  res <- multicriterio.metodo.promethee_windows(X, fpref, c(0.5, 0.3, 0.2))
+  destino <- file.path(tempdir(), "testPrometheeWindowsPng")
+  ficheros <- multicriterio.metodo.promethee_windows_tinytable_exportar(
+    res, formato = "png", directorio = destino)
+  expect_true(file.exists(ficheros$tabEscenario))
+  expect_true(file.exists(ficheros$tabAcciones))
+})

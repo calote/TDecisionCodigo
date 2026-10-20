@@ -41,8 +41,20 @@ remotes::install_github("calote/TDecisionCodigo@feat-documentacion-funciones")
   information.
 
 Optional formatted tables and plots require suggested packages
-('kableExtra', 'formattable', 'factoextra', 'diagram', 'webshot', among
-others). See `?TDecisionCodigo` for details.
+('kableExtra', 'tinytable', 'formattable', 'factoextra', 'diagram', 'webshot',
+among others). See `?TDecisionCodigo` for details.
+
+The Promethee Windows tables can be built with either 'kableExtra' (HTML and
+LaTeX only) or 'tinytable', which also produces native Typst output and can
+export the tables to PNG, Typst, HTML or PDF files:
+
+```r
+res <- multicriterio.metodo.promethee_windows(matdecision, tab.fpref, pesos)
+tablas <- multicriterio.metodo.promethee_windows_tinytable(res)
+tablas$tabEscenario   # adapts to the output format (HTML, Typst or LaTeX)
+ficheros <- multicriterio.metodo.promethee_windows_tinytable_exportar(
+  res, formato = "png", directorio = ".")
+```
 
 ## Example
 

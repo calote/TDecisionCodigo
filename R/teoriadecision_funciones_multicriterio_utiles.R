@@ -1046,11 +1046,14 @@ multicriterio.metodo.promethee_windows_kableExtra_html = function(res_promethee_
   if (!requireNamespace("knitr", quietly = TRUE)) {
     stop("Package \"knitr\" needed for this function. Please install it with install.packages(\"knitr\").", call. = FALSE)
   }
+    bloques = multicriterio.metodo.promethee_windows_bloques_escenario(res_promethee_windows)
+    nfilas = nrow(res_promethee_windows$Escenario)
+
     tab01 = kableExtra::kbl(res_promethee_windows$Escenario) |>
         kableExtra::kable_paper("striped", full_width = FALSE) |>
-        kableExtra::pack_rows("Preferencias",1,6) |>
-        kableExtra::pack_rows("Estadisticas",7,10) |>
-        kableExtra::pack_rows("Evaluaciones",11,nrow(res_promethee_windows$Escenario))
+        kableExtra::pack_rows("Preferencias",1,bloques$npreferencias) |>
+        kableExtra::pack_rows("Estadisticas",bloques$npreferencias + 1,bloques$npreferencias + bloques$nestadisticas) |>
+        kableExtra::pack_rows("Evaluaciones",bloques$npreferencias + bloques$nestadisticas + 1,nfilas)
 
     tab02 = kableExtra::kbl(res_promethee_windows$Acciones) |>
         kableExtra::kable_paper("striped", full_width = FALSE)
@@ -1089,10 +1092,13 @@ multicriterio.metodo.promethee_windows_kableExtra_pdf = function(res_promethee_w
   if (!requireNamespace("knitr", quietly = TRUE)) {
     stop("Package \"knitr\" needed for this function. Please install it with install.packages(\"knitr\").", call. = FALSE)
   }
+    bloques = multicriterio.metodo.promethee_windows_bloques_escenario(res_promethee_windows)
+    nfilas = nrow(res_promethee_windows$Escenario)
+
     tab01 = kableExtra::kbl(res_promethee_windows$Escenario, booktabs = TRUE) |>
-        kableExtra::pack_rows("Preferencias",1,6) |>
-        kableExtra::pack_rows("Estadisticas",7,10) |>
-        kableExtra::pack_rows("Evaluaciones",11,nrow(res_promethee_windows$Escenario))
+        kableExtra::pack_rows("Preferencias",1,bloques$npreferencias) |>
+        kableExtra::pack_rows("Estadisticas",bloques$npreferencias + 1,bloques$npreferencias + bloques$nestadisticas) |>
+        kableExtra::pack_rows("Evaluaciones",bloques$npreferencias + bloques$nestadisticas + 1,nfilas)
 
     tab02 = kableExtra::kbl(res_promethee_windows$Acciones, booktabs = TRUE)
 
@@ -1134,5 +1140,251 @@ multicriterio.metodo.promethee_windows_kableExtra = function(res_promethee_windo
         res = multicriterio.metodo.promethee_windows_kableExtra_pdf(res_promethee_windows)
     }
     return(res)
+
+}
+
+
+## Promethee Windows con tinytable ----
+
+#' Bloques de la tabla de escenario de Promethee Windows
+#'
+#' Calcula los limites de los tres bloques ("Preferencias", "Estadisticas" y
+#' "Evaluaciones") de la tabla de escenario de Promethee Windows. El primer
+#' bloque tiene cinco o seis filas segun se haya indicado o no el criterio
+#' de minimizacion o maximizacion de cada criterio, por lo que no puede
+#' fijarse a priori.
+#'
+#' @param res_promethee_windows Lista resultado de
+#'   \code{multicriterio.metodo.promethee_windows}.
+#'
+#' @return Lista con los elementos \code{npreferencias},
+#'   \code{nestadisticas}, \code{nalternativas} y \code{etiquetas} (vector de
+#'   etiquetas de grupo, una por fila de la tabla de escenario).
+#'
+#' @keywords internal
+#' @noRd
+multicriterio.metodo.promethee_windows_bloques_escenario = function(res_promethee_windows) {
+
+    esc = res_promethee_windows$Escenario
+    nfilas = nrow(esc)
+    nalternativas = nrow(res_promethee_windows$Acciones)
+
+    pos_min = which(rownames(esc) == "Minimo")
+    if (length(pos_min) > 0) {
+        npreferencias = pos_min[1] - 1
+    } else {
+        npreferencias = 6
+    }
+    nestadisticas = nfilas - npreferencias - nalternativas
+    if (nestadisticas < 0) {
+        nestadisticas = 0
+    }
+    if (npreferencias < 0) {
+        npreferencias = 0
+    }
+
+    etiquetas = c(rep("Preferencias", npreferencias),
+                  rep("Estadisticas", nestadisticas),
+                  rep("Evaluaciones", nalternativas))
+
+    res = list(npreferencias = npreferencias,
+               nestadisticas = nestadisticas,
+               nalternativas = nalternativas,
+               etiquetas = etiquetas)
+
+    return(res)
+
+}
+
+
+#' Prepara una matriz para su presentacion en una tabla
+#'
+#' Convierte una matriz (o data frame) en un data frame con los nombres de
+#' fila como primera columna, sin titulo, y convierte a numerico las columnas
+#' que solo contienen valores numericos.
+#'
+#' @param x Matriz numerica o de caracteres o data frame.
+#'
+#' @return Data frame con los nombres de fila en la primera columna.
+#'
+#' @keywords internal
+#' @noRd
+multicriterio.metodo.promethee_windows_prepara_tabla = function(x) {
+
+    if (is.matrix(x) || is.vector(x)) {
+        x = as.data.frame(x, stringsAsFactors = FALSE)
+    }
+    nombres_fila = rownames(x)
+    if (is.null(nombres_fila)) {
+        nombres_fila = as.character(seq_len(nrow(x)))
+    }
+    tabla = data.frame(nombres_fila, x, check.names = FALSE, stringsAsFactors = FALSE)
+    colnames(tabla)[1] = ""
+
+    for (j in 2:ncol(tabla)) {
+        columna = tabla[[j]]
+        if (is.character(columna)) {
+            vacios = is.na(columna) | trimws(columna) == ""
+            numerico = suppressWarnings(as.numeric(columna))
+            if (all(vacios | !is.na(numerico))) {
+                numerico[vacios] = NA
+                tabla[[j]] = numerico
+            }
+        }
+    }
+
+    return(tabla)
+
+}
+
+
+#' Promethee Windows - Tablas con tinytable
+#'
+#' Genera las tablas de la aplicacion Promethee Windows con el paquete
+#' \pkg{tinytable}. Los objetos devueltos son de clase \code{tt} y se adaptan
+#' automaticamente al formato de salida (HTML, Typst o LaTeX) cuando se
+#' imprimen dentro de un chunk de Quarto o RMarkdown. Esta es la alternativa
+#' a \code{multicriterio.metodo.promethee_windows_kableExtra} que permite
+#' usar el formato de salida Typst.
+#'
+#' La tabla de escenario conserva los tres bloques de la aplicacion Windows
+#' ("Preferencias", "Estadisticas" y "Evaluaciones") como grupos de filas que
+#' abarcan todas las columnas.
+#'
+#' @param res_promethee_windows Lista resultado de
+#'   \code{multicriterio.metodo.promethee_windows}.
+#' @param colocacion Character string con la colocacion de la tabla en la
+#'   salida LaTeX. El valor por defecto \code{"H"} mantiene la tabla en su
+#'   sitio (requiere el paquete LaTeX \code{float}); si se pone \code{NULL} se
+#'   comporta como un flotante y puede cambiar de pagina. No afecta a las
+#'   salidas HTML y Typst.
+#'
+#' @return Lista con los elementos \code{tabEscenario} y \code{tabAcciones},
+#'   ambos objetos \code{tt} del paquete \pkg{tinytable}.
+#'
+#' @seealso \code{\link{multicriterio.metodo.promethee_windows_tinytable_exportar}}
+#'   para escribir las tablas en disco (PNG, Typst, HTML o PDF).
+#'
+#' @examples
+#' \dontrun{
+#' matdecision <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+#' tab.fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+#'                         pi = c(5, 3, 2), si = c(1, 1, 1))
+#' res <- multicriterio.metodo.promethee_windows(
+#'   matdecision, tab.fpref, c(0.5, 0.3, 0.2))
+#' resultado <- multicriterio.metodo.promethee_windows_tinytable(res)
+#' resultado$tabEscenario
+#' resultado$tabAcciones
+#' }
+#'
+#' @export
+multicriterio.metodo.promethee_windows_tinytable = function(res_promethee_windows,
+                                                             colocacion = "H") {
+
+    if (!requireNamespace("tinytable", quietly = TRUE)) {
+        stop("Package \"tinytable\" needed for this function. Please install it with install.packages(\"tinytable\").", call. = FALSE)
+    }
+
+    bloques = multicriterio.metodo.promethee_windows_bloques_escenario(res_promethee_windows)
+
+    tabla01 = multicriterio.metodo.promethee_windows_prepara_tabla(res_promethee_windows$Escenario)
+    tabla02 = multicriterio.metodo.promethee_windows_prepara_tabla(res_promethee_windows$Acciones)
+
+    tab01 = tinytable::tt(tabla01)
+    tab01 = tinytable::group_tt(tab01, i = bloques$etiquetas)
+    tab01 = tinytable::style_tt(tab01, 0, bold = TRUE, background = "grey90")
+    tab01 = tinytable::style_tt(tab01, i = "groupi", bold = TRUE, background = "grey90")
+
+    tab02 = tinytable::tt(tabla02)
+    tab02 = tinytable::style_tt(tab02, 0, bold = TRUE, background = "grey90")
+
+    if (!is.null(colocacion)) {
+        tab01 = tinytable::theme_latex(tab01, placement = colocacion)
+        tab02 = tinytable::theme_latex(tab02, placement = colocacion)
+    }
+
+    res = list(tabEscenario = tab01,
+               tabAcciones = tab02)
+
+    return(res)
+
+}
+
+
+#' Promethee Windows - Exportacion de las tablas con tinytable
+#'
+#' Escribe en disco las tablas de la aplicacion Promethee Windows generadas
+#' con \code{\link{multicriterio.metodo.promethee_windows_tinytable}}. Los
+#' formatos admitidos son:
+#' \itemize{
+#'   \item \code{png}: imagen PNG (requiere el paquete \pkg{webshot2} y un
+#'     navegador Chrome o Chromium). Util para insertar las tablas en
+#'     documentos PDF generados con LaTeX o en cualquier otro formato.
+#'   \item \code{typ}: codigo Typst que puede incluirse en un documento
+#'     Typst con \code{\#include}.
+#'   \item \code{html}: pagina HTML autocontenida.
+#'   \item \code{pdf}: documento PDF (requiere una instalacion de LaTeX).
+#' }
+#'
+#' @param res_promethee_windows Lista resultado de
+#'   \code{multicriterio.metodo.promethee_windows}.
+#' @param formato Character string con el formato de salida: \code{"png"},
+#'   \code{"typ"}, \code{"html"} o \code{"pdf"}.
+#' @param directorio Directorio donde se escriben los ficheros.
+#' @param prefijo Prefijo de los nombres de los ficheros generados.
+#' @param sobrescribir Logical. Si es \code{TRUE} se sobrescriben los
+#'   ficheros que ya existen.
+#'
+#' @return Lista con los elementos \code{tabEscenario} y \code{tabAcciones},
+#'   cada uno con la ruta del fichero generado.
+#'
+#' @seealso \code{\link{multicriterio.metodo.promethee_windows_tinytable}}
+#'
+#' @examples
+#' \dontrun{
+#' matdecision <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+#' tab.fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+#'                         pi = c(5, 3, 2), si = c(1, 1, 1))
+#' res <- multicriterio.metodo.promethee_windows(
+#'   matdecision, tab.fpref, c(0.5, 0.3, 0.2))
+#' ficheros <- multicriterio.metodo.promethee_windows_tinytable_exportar(
+#'   res, formato = "png", directorio = tempdir())
+#' ficheros$tabEscenario
+#' }
+#'
+#' @export
+multicriterio.metodo.promethee_windows_tinytable_exportar = function(res_promethee_windows,
+                                                                     formato = c("png", "typ", "html", "pdf"),
+                                                                     directorio = ".",
+                                                                     prefijo = "promethee_windows",
+                                                                     sobrescribir = TRUE) {
+
+    if (!requireNamespace("tinytable", quietly = TRUE)) {
+        stop("Package \"tinytable\" needed for this function. Please install it with install.packages(\"tinytable\").", call. = FALSE)
+    }
+    if (length(formato) > 1) {
+        formato = formato[1]
+    }
+    formatos_validos = c("png", "typ", "html", "pdf")
+    if (!formato %in% formatos_validos) {
+        stop("El formato debe ser uno de: ", paste(formatos_validos, collapse = ", "), ".", call. = FALSE)
+    }
+    if (formato == "png" && !requireNamespace("webshot2", quietly = TRUE)) {
+        stop("Package \"webshot2\" needed to export the tables as PNG. Please install it with install.packages(\"webshot2\").", call. = FALSE)
+    }
+    if (!dir.exists(directorio)) {
+        dir.create(directorio, recursive = TRUE, showWarnings = FALSE)
+    }
+
+    tablas = multicriterio.metodo.promethee_windows_tinytable(res_promethee_windows)
+
+    extension = ifelse(formato == "typ", "typ", formato)
+    ficheros = list(tabEscenario = file.path(directorio, paste0(prefijo, "_escenario.", extension)),
+                    tabAcciones = file.path(directorio, paste0(prefijo, "_acciones.", extension)))
+
+    tinytable::save_tt(tablas$tabEscenario, ficheros[["tabEscenario"]], overwrite = sobrescribir)
+    tinytable::save_tt(tablas$tabAcciones, ficheros[["tabAcciones"]], overwrite = sobrescribir)
+
+    return(ficheros)
 
 }
