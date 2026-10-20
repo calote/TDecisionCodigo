@@ -28,6 +28,6 @@ relacion de preferencia entre alternativas.
 }
 \examples{
 multicriterio.crea.matrizvaloraciones(c(1,2,1/2,1), 2, c("Rendimiento","Riesgo"))
-multicriterio.crea.matrizvaloraciones(c(1,1,1,0,1,0,1,0,0,1), 3)
+multicriterio.crea.matrizvaloraciones(c(1,1,1,0,1,0,1,0,1), 3)
 
 }

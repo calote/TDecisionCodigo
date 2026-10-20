@@ -1,3 +1,11 @@
+# TDecisionCodigo 0.1.0.9000
+
+## Development changes
+
+* `multicriterio.metodoAHP.variante3.completo()` now allocates the list of
+  second-level weights according to the number of criteria, so AHP hierarchies
+  with different numbers of criteria and alternatives are handled correctly.
+
 # TDecisionCodigo 0.1.0
 
 ## New features

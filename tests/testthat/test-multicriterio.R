@@ -30,3 +30,57 @@ test_that("Arrow-Raymond returns an ordering", {
   res <- multicriterio.metodoaxiomatico.ArrowRaymond(Mvalor)
   expect_equal(length(res$alternativasordenadas), 3)
 })
+
+test_that("complete AHP handles different numbers of criteria and alternatives", {
+  nivel1 <- multicriterio.crea.matrizvaloraciones(
+    c(1, 2, 1 / 2, 1),
+    numalternativas = 2,
+    v.nombres.alternativas = c("Coste", "Calidad")
+  )
+  nivel2 <- array(NA_real_, dim = c(3, 3, 2))
+  nivel2[, , 1] <- multicriterio.crea.matrizvaloraciones(
+    c(1, 2, 4, 1 / 2, 1, 3, 1 / 4, 1 / 3, 1),
+    numalternativas = 3,
+    v.nombres.alternativas = c("A", "B", "C")
+  )
+  nivel2[, , 2] <- multicriterio.crea.matrizvaloraciones(
+    c(1, 3, 2, 1 / 3, 1, 1 / 2, 1 / 2, 2, 1),
+    numalternativas = 3,
+    v.nombres.alternativas = c("A", "B", "C")
+  )
+  resultado <- multicriterio.metodoAHP.variante3.completo(nivel1, nivel2)
+  expect_length(resultado$l.pesos.nivel2, 2)
+  expect_length(resultado$pesos.globales, 3)
+  expect_equal(sum(resultado$pesos.globales), 1, tolerance = 1e-8)
+})
+
+test_that("normalisation handles constant criteria without NaN", {
+  X <- matrix(c(1, 10, 2, 10, 4, 10), nrow = 3, byrow = TRUE)
+  resultado <- multicriterio.homogeneizacion.nadir(X)
+  expect_false(anyNA(resultado))
+  expect_equal(resultado[, 2], c(0, 0, 0))
+})
+
+test_that("matrix constructors reject incompatible dimensions", {
+  expect_error(
+    multicriterio.crea.matrizdecision(1:5, numalternativas = 2, numcriterios = 3),
+    "compatible"
+  )
+  expect_error(
+    multicriterio.crea.matrizvaloraciones_mej(1:2, numalternativas = 3),
+    "diagonal superior"
+  )
+})
+
+test_that("AHP and PROMETHEE validate numerical inputs", {
+  expect_error(
+    multicriterio.metodoAHP.variante3.basico(matrix(c(1, 0, 1, 1), 2)),
+    "positivos"
+  )
+  X <- multicriterio.crea.matrizdecision(1:6, 2, 3)
+  fpref <- data.frame(tipo = c(1, 1, 1), qi = 0, pi = 1, si = 1)
+  expect_error(
+    indice.prefmulticriterio(X, c(0.5, 0.5), fpref),
+    "compatibles"
+  )
+})

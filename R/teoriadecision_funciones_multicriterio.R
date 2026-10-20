@@ -3,6 +3,32 @@
 
 ## Nota: mayor utilidad (mayor valor) mejor
 
+## Validaciones internas ------------------------------------------------------
+
+validar_matriz_numerica <- function(X, cuadrada = FALSE, positiva = FALSE) {
+  es_tabla_numerica <- is.matrix(X) || is.data.frame(X)
+  valores <- if (is.data.frame(X)) unlist(X, use.names = FALSE) else X
+  if (!es_tabla_numerica || !is.numeric(valores) || any(!is.finite(valores))) {
+    stop("X debe ser una matriz numerica finita.", call. = FALSE)
+  }
+  if (cuadrada && nrow(X) != ncol(X)) {
+    stop("X debe ser una matriz cuadrada.", call. = FALSE)
+  }
+  if (positiva && any(X <= 0)) {
+    stop("X debe contener valores estrictamente positivos.", call. = FALSE)
+  }
+  invisible(X)
+}
+
+validar_pesos <- function(pesos, n) {
+  if (!is.numeric(pesos) || length(pesos) != n ||
+      any(!is.finite(pesos)) || any(pesos < 0) || sum(pesos) <= 0) {
+    stop("Los pesos deben ser numericos, no negativos y compatibles con los criterios.",
+         call. = FALSE)
+  }
+  invisible(pesos)
+}
+
 
 #### Funciones de creacion de matrices ----
 
@@ -21,11 +47,18 @@
 #'
 #' @examples
 #' multicriterio.crea.matrizvaloraciones(c(1,2,1/2,1), 2, c("Rendimiento","Riesgo"))
-#' multicriterio.crea.matrizvaloraciones(c(1,1,1,0,1,0,1,0,0,1), 3)
+#' multicriterio.crea.matrizvaloraciones(c(1,1,1,0,1,0,1,0,1), 3)
 #'
 #' @export
 multicriterio.crea.matrizvaloraciones = function(vector_matporfilas,numalternativas=4,
-                                                 v.nombres.alternativas=NULL) {
+                                                  v.nombres.alternativas=NULL) {
+  if (length(numalternativas) != 1 || numalternativas < 1 ||
+      numalternativas != as.integer(numalternativas)) {
+    stop("numalternativas debe ser un entero positivo.", call. = FALSE)
+  }
+  if (length(vector_matporfilas) != numalternativas^2) {
+    stop("El vector debe contener numalternativas^2 valores.", call. = FALSE)
+  }
   X = matrix(vector_matporfilas,nrow=numalternativas,ncol=numalternativas,byrow=TRUE);
   if (is.null(v.nombres.alternativas)) {
     colnames(X) = paste('a',1:numalternativas,sep='');
@@ -59,6 +92,13 @@ multicriterio.crea.matrizvaloraciones = function(vector_matporfilas,numalternati
 #'
 #' @export
 multicriterio.crea.matrizvaloraciones_mej = function(vector_valoraciones_diagsup,numalternativas=4,v.nombres.alternativas = NULL) {
+  if (length(numalternativas) != 1 || numalternativas < 1 ||
+      numalternativas != as.integer(numalternativas)) {
+    stop("numalternativas debe ser un entero positivo.", call. = FALSE)
+  }
+  if (length(vector_valoraciones_diagsup) != numalternativas * (numalternativas - 1) / 2) {
+    stop("El vector debe contener los valores de la diagonal superior.", call. = FALSE)
+  }
 
   if (is.null(v.nombres.alternativas)) {
     nbalt = paste0("a",1:numalternativas)
@@ -97,7 +137,16 @@ multicriterio.crea.matrizvaloraciones_mej = function(vector_valoraciones_diagsup
 #'
 #' @export
 multicriterio.crea.matrizdecision = function(vector_matporfilas,numalternativas=3,
-                                    numcriterios=4,v.nombresalt=NULL,v.nombrescri=NULL) {
+                                     numcriterios=4,v.nombresalt=NULL,v.nombrescri=NULL) {
+  if (length(numalternativas) != 1 || length(numcriterios) != 1 ||
+      numalternativas < 1 || numcriterios < 1 ||
+      numalternativas != as.integer(numalternativas) ||
+      numcriterios != as.integer(numcriterios)) {
+    stop("Las dimensiones deben ser enteros positivos.", call. = FALSE)
+  }
+  if (length(vector_matporfilas) != numalternativas * numcriterios) {
+    stop("El vector no es compatible con las dimensiones indicadas.", call. = FALSE)
+  }
 
   X = matrix(vector_matporfilas,nrow=numalternativas,ncol=numcriterios,byrow=TRUE)
   if (is.null(v.nombrescri)) {
@@ -209,6 +258,7 @@ multicriterio.constfuncutilidad.estructuraborrosa = function(Xmatrizvaloraciones
 #'
 #' @export
 multicriterio.homogeneizacion.nadir = function(Xmatrizdecision) {
+  validar_matriz_numerica(Xmatrizdecision)
   X = Xmatrizdecision
   (vcol.max = apply(X,2,max))
   (vcol.min = apply(X,2,min))
@@ -216,7 +266,10 @@ multicriterio.homogeneizacion.nadir = function(Xmatrizdecision) {
   numcolus = ncol(X)
   (m.vcol.min = matrix(vcol.min,numfilas,numcolus,byrow=TRUE))
   (m.vcol.max = matrix(vcol.max,numfilas,numcolus,byrow=TRUE))
-  Nueva.X = (X-m.vcol.min)/(m.vcol.max - m.vcol.min)
+  rango = vcol.max - vcol.min
+  rango[rango == 0] = 1
+  m.rango = matrix(rango,numfilas,numcolus,byrow=TRUE)
+  Nueva.X = (X-m.vcol.min)/m.rango
   return(Nueva.X)
 }
 
@@ -240,6 +293,14 @@ multicriterio.homogeneizacion.nadir = function(Xmatrizdecision) {
 #'
 #' @export
 multicriterio.homogeneizacion.promethee = function(Xmatrizdecision,v.delta.min,v.delta.max) {
+  validar_matriz_numerica(Xmatrizdecision)
+  if (length(v.delta.min) != ncol(Xmatrizdecision) ||
+      length(v.delta.max) != ncol(Xmatrizdecision) ||
+      any(!is.finite(v.delta.min)) || any(!is.finite(v.delta.max)) ||
+      any(v.delta.min < 0) || any(v.delta.max <= v.delta.min)) {
+    stop("Los umbrales deben cumplir 0 <= delta.min < delta.max por criterio.",
+         call. = FALSE)
+  }
   X.matriz = Xmatrizdecision
   X.nueva = c();
   for (i in (1:dim(X.matriz)[2]) ) {
@@ -299,6 +360,7 @@ func_calculo.flujo.neto = function(X.matriz) {
 #'
 #' @export
 multicriterio.metodoAHP.chequeo.matrizcomparaciones = function(Xmatrizvaloraciones) {
+validar_matriz_numerica(Xmatrizvaloraciones, cuadrada = TRUE, positiva = TRUE)
 dset = Xmatrizvaloraciones
 nitem <- ncol(dset)
 if (ncol(dset) != nrow(dset)) {
@@ -351,6 +413,8 @@ if (recip == 1) {
 #'
 #' @export
 multicriterio.metodoAHP.variante1.autovectormayorautovalor = function(Xmatrizvaloraciones) {
+
+  validar_matriz_numerica(Xmatrizvaloraciones, cuadrada = TRUE, positiva = TRUE)
 
   C.valora = Xmatrizvaloraciones
 
@@ -442,6 +506,8 @@ func_media.geometrica = function(vector) {
 #' @export
 multicriterio.metodoAHP.variante2.mediageometrica = function(Xmatrizvaloraciones) {
 
+  validar_matriz_numerica(Xmatrizvaloraciones, cuadrada = TRUE, positiva = TRUE)
+
   C.valora = Xmatrizvaloraciones
 
   (mgeoms = apply(C.valora,1,func_media.geometrica))
@@ -489,6 +555,8 @@ multicriterio.metodoAHP.variante2.mediageometrica = function(Xmatrizvaloraciones
 #' @export
 multicriterio.metodoAHP.variante3.basico = function(Xmatrizvaloraciones) {
 
+  validar_matriz_numerica(Xmatrizvaloraciones, cuadrada = TRUE, positiva = TRUE)
+
   C.valora = Xmatrizvaloraciones
 
   (suma.columnas = colSums(C.valora));
@@ -531,6 +599,8 @@ multicriterio.metodoAHP.variante3.basico = function(Xmatrizvaloraciones) {
 #'
 #' @export
 multicriterio.metodoAHP.pesosglobales = function(pesos.criterios,matriz.pesos.locales) {
+  validar_matriz_numerica(matriz.pesos.locales)
+  validar_pesos(pesos.criterios, nrow(matriz.pesos.locales))
   vector1 = as.numeric(pesos.criterios%*%matriz.pesos.locales)
   names(vector1) = colnames(matriz.pesos.locales)
   return(vector1)
@@ -591,6 +661,7 @@ multicriterio.metodoAHP.pesosglobales_entabla = function(pesos.criterios,
 #'
 #' @export
 multicriterio.metodoAHP.coef.inconsistencia = function(Xmatrizvaloraciones) {
+  validar_matriz_numerica(Xmatrizvaloraciones, cuadrada = TRUE, positiva = TRUE)
   C.valora = Xmatrizvaloraciones
   autovalores.C = eigen(C.valora,symmetric=FALSE);
   autova.C = Re(autovalores.C$values[Im(autovalores.C$values)==0]);
@@ -645,6 +716,8 @@ multicriterio.metodoAHP.coef.inconsistencia = function(Xmatrizvaloraciones) {
 #'
 #' @export
 multicriterio.metodoAHP.variante3.basico.coef.inconsistencia = function(Xmatrizvaloraciones) {
+
+  validar_matriz_numerica(Xmatrizvaloraciones, cuadrada = TRUE, positiva = TRUE)
 
   C.valora = Xmatrizvaloraciones
 
@@ -724,7 +797,7 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
   num.cri.nivel1 = dim(Xmatriznivel2)[3]
   num.alt.nivel2 = dim(Xmatriznivel2)[1]
   l.inconsistencia.nivel2 = vector("list",num.cri.nivel1)
-  l.pesos.nivel2 = vector("list",num.alt.nivel2)
+  l.pesos.nivel2 = vector("list",num.cri.nivel1)
   m.pesos.nivel2 = matrix(NA,nrow = num.cri.nivel1,ncol = num.alt.nivel2)
   for (i in 1:num.cri.nivel1) {
     Xmatriz = Xmatriznivel2[,,i]
@@ -993,6 +1066,18 @@ multicriterio.metodoAHP.pesosglobales_formattable = function(tb.nivel01, l_tb.ni
 #'
 #' @export
 multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concordancia.minimo.alpha,no.se.compensan,que.alternativas=TRUE) {
+
+  validar_matriz_numerica(tabdecs.X)
+  validar_pesos(pesos.criterios, ncol(tabdecs.X))
+  if (length(nivel.concordancia.minimo.alpha) != 1 ||
+      !is.finite(nivel.concordancia.minimo.alpha) ||
+      nivel.concordancia.minimo.alpha < 0 || nivel.concordancia.minimo.alpha > 1) {
+    stop("El umbral de concordancia debe estar entre 0 y 1.", call. = FALSE)
+  }
+  if (length(no.se.compensan) != ncol(tabdecs.X) ||
+      any(is.na(no.se.compensan)) || any(no.se.compensan < 0)) {
+    stop("Los umbrales de discordancia deben ser no negativos.", call. = FALSE)
+  }
 
   if (!is.logical(que.alternativas)) {
     tabdec.X = tabdecs.X[que.alternativas,];
@@ -1364,6 +1449,14 @@ fpref.todas = function(cual,vaj,vah,qi=0,pi=1,si=0.5) {
 #'
 #' @export
 indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) {
+  validar_matriz_numerica(tabdecs.X)
+  validar_pesos(pesos.criterios, ncol(tabdecs.X))
+  if (!is.data.frame(tab.fpref) && !is.matrix(tab.fpref)) {
+    stop("tab.fpref debe ser una matriz o data.frame.", call. = FALSE)
+  }
+  if (nrow(tab.fpref) != ncol(tabdecs.X) || ncol(tab.fpref) < 4) {
+    stop("tab.fpref debe tener una fila y cuatro columnas por criterio.", call. = FALSE)
+  }
   num.alt = nrow(tabdecs.X);
   num.cri = ncol(tabdecs.X);
   tab.indices = matrix(NA,num.alt,num.alt);
@@ -1689,6 +1782,10 @@ multicriterio.metodo.promethee_ii_med = function(tabdecs.X,pesos.criterios,tab.f
 #'
 #' @export
 func_calcula_matrizclasificacion = function(Mvalor) {
+  validar_matriz_numerica(Mvalor)
+  if (nrow(Mvalor) < 2) {
+    stop("Se necesitan al menos dos alternativas.", call. = FALSE)
+  }
   num.alter=nrow(Mvalor)
   num.crit=ncol(Mvalor)
   Mclasificacion = matrix(NA,nrow=num.alter,ncol=num.alter)
