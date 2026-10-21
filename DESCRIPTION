@@ -1,6 +1,6 @@
 Package: TDecisionCodigo
 Title: Decision Theory: Uncertainty, Multicriteria and Bayesian Methods
-Version: 0.2.0.9000
+Version: 0.3.0
 Authors@R: person("Pedro Luis", "Luque Calvo", role = c("aut", "cre", "cph"), email = "calvo@us.es")
 Author: Pedro Luis Luque Calvo [aut, cre, cph]
 Maintainer: Pedro Luis Luque Calvo <calvo@us.es>

@@ -1,4 +1,4 @@
-# TDecisionCodigo 0.2.0.9000
+# TDecisionCodigo 0.3.0
 
 ## New features
 
@@ -17,6 +17,11 @@
   'ggrepel'.
 * New function `func_tabla_rangos_metodos()` builds the long table of ranks
   per method that the range comparison plots use.
+
+# TDecisionCodigo 0.2.0
+
+## New features
+
 * New functions `multicriterio.metodo.topsis()` and
   `multicriterio.metodo.topsis_modificado()` implement the classic and
   modified TOPSIS methods, with presentation helpers
