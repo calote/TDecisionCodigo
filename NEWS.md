@@ -1,7 +1,22 @@
-# TDecisionCodigo 0.2.0
+# TDecisionCodigo 0.2.0.9000
 
 ## New features
 
+* New function `multicriterio.metodo.mediaPonderada()` implements the weighted
+  mean indicator method: the valuation matrix is homogenised with the Nadir
+  method, weighted with the criterion weights and the alternatives are
+  ranked by the sum of their weighted valuations.
+* `func_calcula_matrizclasificacion()` and
+  `multicriterio.metodoaxiomatico.ArrowRaymond()` accept a new optional
+  `pesos` argument, so the Arrow-Raymond axiomatic method can now be applied
+  with weighted criteria. The unweighted result is unchanged.
+* New file with the multicriteria graphics: `plot_promethee_I()`,
+  `plot_barras_vector()`, `plot_lineas_rangos()`,
+  `plot_barras_acumuladas_rangos()`, `plot_segmentos_rangos()` and
+  `plot_barras_acumuladas_Mvaloraciones()`, all built with 'ggplot2' and
+  'ggrepel'.
+* New function `func_tabla_rangos_metodos()` builds the long table of ranks
+  per method that the range comparison plots use.
 * New functions `multicriterio.metodo.topsis()` and
   `multicriterio.metodo.topsis_modificado()` implement the classic and
   modified TOPSIS methods, with presentation helpers

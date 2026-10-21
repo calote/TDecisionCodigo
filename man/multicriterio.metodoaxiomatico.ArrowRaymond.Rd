@@ -4,10 +4,13 @@
 \alias{multicriterio.metodoaxiomatico.ArrowRaymond}
 \title{Metodo axiomatico de Arrow y Raymond}
 \usage{
-multicriterio.metodoaxiomatico.ArrowRaymond(Mvalor)
+multicriterio.metodoaxiomatico.ArrowRaymond(Mvalor, pesos = NULL)
 }
 \arguments{
 \item{Mvalor}{Matriz numerica de valoracion (alternativas x criterios).}
+
+\item{pesos}{Vector numerico opcional con los pesos de los criterios. Si
+es \code{NULL} todos los criterios cuentan lo mismo.}
 }
 \value{
 Lista con los siguientes elementos:

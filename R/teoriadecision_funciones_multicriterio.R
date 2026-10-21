@@ -1965,22 +1965,30 @@ multicriterio.metodo.topsis_modificado = function(tabdecs.X,pesos.criterios,fmin
 #' Arrow y Raymond.
 #'
 #' @param Mvalor Matriz numerica de valoracion (alternativas x criterios).
+#' @param pesos Vector numerico opcional con los pesos de los criterios. Si
+#'   es \code{NULL} todos los criterios cuentan lo mismo.
 #'
 #' @return Matriz cuadrada de clasificacion donde cada elemento indica
-#'   cuantas veces la alternativa i es mejor o igual que la j.
+#'   cuantas veces la alternativa i es mejor o igual que la j (ponderado con
+#'   \code{pesos} si se indica).
 #'
 #' @examples
 #' Mvalor <- matrix(c(8,25,20,10,75,5), nrow=2, ncol=3, byrow=TRUE)
 #' func_calcula_matrizclasificacion(Mvalor)
 #'
 #' @export
-func_calcula_matrizclasificacion = function(Mvalor) {
+func_calcula_matrizclasificacion = function(Mvalor, pesos = NULL) {
   validar_matriz_numerica(Mvalor)
   if (nrow(Mvalor) < 2) {
     stop("Se necesitan al menos dos alternativas.", call. = FALSE)
   }
   num.alter=nrow(Mvalor)
   num.crit=ncol(Mvalor)
+  vpesos = rep(1,num.crit)
+  if (!is.null(pesos)) {
+    validar_pesos(pesos, num.crit)
+    vpesos = pesos
+  }
   Mclasificacion = matrix(NA,nrow=num.alter,ncol=num.alter)
   rownames(Mclasificacion) = colnames(Mclasificacion) = rownames(Mvalor)
   for (i in 1:nrow(Mvalor)) {
@@ -1988,8 +1996,8 @@ func_calcula_matrizclasificacion = function(Mvalor) {
       if (i!=j) {
         filai = Mvalor[i,]
         filaj = Mvalor[j,]
-        mayoriquej = sum(filai>filaj)
-        igualiquej = sum(filai==filaj)
+        mayoriquej = sum((filai>filaj)*vpesos)
+        igualiquej = sum((filai==filaj)*vpesos)
         Mclasificacion[i,j] = mayoriquej + 0.5 * igualiquej
       }
     }
@@ -2004,6 +2012,8 @@ func_calcula_matrizclasificacion = function(Mvalor) {
 #' clasificacion completa de alternativas.
 #'
 #' @param Mvalor Matriz numerica de valoracion (alternativas x criterios).
+#' @param pesos Vector numerico opcional con los pesos de los criterios. Si
+#'   es \code{NULL} todos los criterios cuentan lo mismo.
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
@@ -2020,15 +2030,22 @@ func_calcula_matrizclasificacion = function(Mvalor) {
 #' resultado$alternativasordenadas
 #'
 #' @export
-multicriterio.metodoaxiomatico.ArrowRaymond = function(Mvalor) {
+multicriterio.metodoaxiomatico.ArrowRaymond = function(Mvalor, pesos = NULL) {
 
+  validar_matriz_numerica(Mvalor)
+  if (nrow(Mvalor) < 2) {
+    stop("Se necesitan al menos dos alternativas.", call. = FALSE)
+  }
+  if (!is.null(pesos)) {
+    validar_pesos(pesos, ncol(Mvalor))
+  }
   num.alter = nrow(Mvalor)
   salida = vector("list",num.alter-1)
   salidatemp = list()
   Mvalor_red = Mvalor
   alternativas.salen = c()
   for (i in 1:(num.alter-1)) {
-     Mclasificacion_red = func_calcula_matrizclasificacion(Mvalor_red)
+     Mclasificacion_red = func_calcula_matrizclasificacion(Mvalor_red,pesos)
      nombres.alternativas = rownames(Mclasificacion_red)
      max.filas = apply(Mclasificacion_red,1,max,na.rm=TRUE)
      inds.orden = order(max.filas)
@@ -2047,5 +2064,61 @@ multicriterio.metodoaxiomatico.ArrowRaymond = function(Mvalor) {
   salidas$pasos = salida
   salidas$alternativasordenadas = alternativas.salen[length(alternativas.salen):1]
  return(salidas)
+
+}
+
+
+#' Metodo del indicador de media ponderada
+#'
+#' Aplica el metodo del indicador de media ponderada: homogeneiza la matriz
+#' de valoracion con el metodo de Nadir, pondera las valoraciones
+#' homogeneizadas con los pesos de los criterios y obtiene la puntuacion de
+#' cada alternativa como la suma de sus valoraciones ponderadas.
+#'
+#' @param Mvalor Matriz numerica de valoracion (alternativas x criterios).
+#' @param pesos Vector numerico opcional con los pesos de los criterios. Si
+#'   es \code{NULL} se usan pesos uniformes \code{1/ncriterios}.
+#'
+#' @return Lista con los siguientes elementos:
+#' \describe{
+#'   \item{Puntuaciones}{Vector con la puntuacion de cada alternativa}
+#'   \item{Rangos_Alternativas}{Vector con el rango de cada alternativa}
+#'   \item{Alternativas_Ordenadas}{Vector con las alternativas ordenadas de
+#'     mejor a peor}
+#'   \item{Mvalor_transf_ponderada}{Matriz de valoraciones homogeneizadas y
+#'     ponderadas}
+#' }
+#'
+#' @examples
+#' Mvalor <- matrix(c(8, 25, 20, 10, 75, 5,
+#'                    12, 35, 17, 25, 100, 7), nrow = 2, ncol = 6, byrow = TRUE)
+#' rownames(Mvalor) <- c("A1", "A2")
+#' resultado <- multicriterio.metodo.mediaPonderada(Mvalor, c(1, 1, 1, 1, 1, 1))
+#' resultado$Alternativas_Ordenadas
+#'
+#' @export
+multicriterio.metodo.mediaPonderada = function(Mvalor, pesos = NULL) {
+
+  validar_matriz_numerica(Mvalor)
+  num.crit = ncol(Mvalor)
+  vpesos = rep(1,num.crit)/num.crit
+  if (!is.null(pesos)) {
+    validar_pesos(pesos, num.crit)
+    vpesos = pesos
+  }
+
+  Mvalor_transf = multicriterio.homogeneizacion.nadir(Mvalor)*100
+  Mvalor_transf_pond = t( t(Mvalor_transf)*vpesos )
+  Puntuaciones = rowSums(Mvalor_transf_pond)
+  Puntuaciones_ordenadas = sort(Puntuaciones, decreasing = TRUE)
+  Alternativas_ordenadas = names(Puntuaciones_ordenadas)
+  Alternativas_Rangos = rank(-Puntuaciones)
+
+  return(list(
+    Puntuaciones = Puntuaciones,
+    Rangos_Alternativas = Alternativas_Rangos,
+    Alternativas_Ordenadas = Alternativas_ordenadas,
+    Mvalor_transf_ponderada = Mvalor_transf_pond
+  ))
 
 }

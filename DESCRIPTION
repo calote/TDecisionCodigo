@@ -1,6 +1,6 @@
 Package: TDecisionCodigo
 Title: Decision Theory: Uncertainty, Multicriteria and Bayesian Methods
-Version: 0.2.0
+Version: 0.2.0.9000
 Authors@R: person("Pedro Luis", "Luque Calvo", role = c("aut", "cre", "cph"), email = "calvo@us.es")
 Author: Pedro Luis Luque Calvo [aut, cre, cph]
 Maintainer: Pedro Luis Luque Calvo <calvo@us.es>
@@ -29,6 +29,7 @@ Suggests:
     diagram,
     dplyr,
     factoextra,
+    ggrepel,
     formattable,
     ggplot2,
     htmltools,
@@ -37,6 +38,7 @@ Suggests:
     rmarkdown,
     stringr,
     testthat (>= 3.0.0),
+    tidyr,
     tinytable,
     webshot,
     webshot2

@@ -4,14 +4,18 @@
 \alias{func_calcula_matrizclasificacion}
 \title{Matriz de clasificacion (Arrow-Raymond)}
 \usage{
-func_calcula_matrizclasificacion(Mvalor)
+func_calcula_matrizclasificacion(Mvalor, pesos = NULL)
 }
 \arguments{
 \item{Mvalor}{Matriz numerica de valoracion (alternativas x criterios).}
+
+\item{pesos}{Vector numerico opcional con los pesos de los criterios. Si
+es \code{NULL} todos los criterios cuentan lo mismo.}
 }
 \value{
 Matriz cuadrada de clasificacion donde cada elemento indica
-cuantas veces la alternativa i es mejor o igual que la j.
+cuantas veces la alternativa i es mejor o igual que la j (ponderado con
+\code{pesos} si se indica).
 }
 \description{
 Calcula la matriz de clasificacion para el metodo axiomatico de

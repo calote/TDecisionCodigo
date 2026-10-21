@@ -218,3 +218,82 @@ test_that("TOPSIS plot runs without error", {
   expect_length(pos, 2)
   expect_error(multicriterio.metodo.topsis_grafico(list()))
 })
+
+test_that("Arrow-Raymond accepts weights and keeps the unweighted result", {
+  Mvalor <- matrix(c(8, 25, 20, 10, 75, 5,
+                     12, 35, 17, 25, 100, 7,
+                     10, 40, 40, 35, 125, 2,
+                     15, 40, 20, 20, 35, 4,
+                     12, 35, 15, 45, 75, 6), nrow = 5, ncol = 6, byrow = TRUE)
+  rownames(Mvalor) <- c("A1", "A2", "A3", "A4", "A5")
+  sin_pesos <- multicriterio.metodoaxiomatico.ArrowRaymond(Mvalor)
+  con_pesos <- multicriterio.metodoaxiomatico.ArrowRaymond(
+    Mvalor, c(10, 10, 0.1, 0.1, 10, 10))
+  expect_identical(sin_pesos$alternativasordenadas,
+                   multicriterio.metodoaxiomatico.ArrowRaymond(Mvalor, NULL)$alternativasordenadas)
+  expect_length(con_pesos$alternativasordenadas, 5)
+  expect_equal(func_calcula_matrizclasificacion(Mvalor),
+               func_calcula_matrizclasificacion(Mvalor, NULL))
+  expect_error(
+    multicriterio.metodoaxiomatico.ArrowRaymond(Mvalor, c(1, 2)),
+    "pesos"
+  )
+})
+
+test_that("weighted mean indicator method ranks the alternatives", {
+  Mvalor <- matrix(c(8, 25, 20, 10, 75, 5,
+                     12, 35, 17, 25, 100, 7,
+                     10, 40, 40, 35, 125, 2,
+                     15, 40, 20, 20, 35, 4,
+                     12, 35, 15, 45, 75, 6), nrow = 5, ncol = 6, byrow = TRUE)
+  rownames(Mvalor) <- c("A1", "A2", "A3", "A4", "A5")
+  res <- multicriterio.metodo.mediaPonderada(Mvalor)
+  expect_named(res, c("Puntuaciones", "Rangos_Alternativas",
+                      "Alternativas_Ordenadas", "Mvalor_transf_ponderada"))
+  expect_length(res$Alternativas_Ordenadas, 5)
+  expect_equal(res$Alternativas_Ordenadas[1], "A3")
+  expect_equal(unname(res$Rangos_Alternativas), c(5, 3, 1, 4, 2))
+  expect_false(anyNA(res$Puntuaciones))
+  expect_error(multicriterio.metodo.mediaPonderada(Mvalor, c(1, 2)), "pesos")
+})
+
+test_that("weighted mean indicator method tolerates constant criteria", {
+  Mvalor <- matrix(c(8, 25, 20, 10, 75, 5,
+                     12, 35, 17, 25, 100, 7), nrow = 2, ncol = 6, byrow = TRUE)
+  Mvalor[, 3] <- 5
+  res <- multicriterio.metodo.mediaPonderada(Mvalor)
+  expect_false(any(is.nan(res$Puntuaciones)))
+  expect_false(anyNA(res$Puntuaciones))
+})
+
+test_that("long range table is built for the comparison plots", {
+  skip_if_not_installed("dplyr")
+  skip_if_not_installed("tidyr")
+  rangos <- data.frame(RangosAHP = c(1, 5, 3), RangosPromethee = c(1, 5, 4))
+  rownames(rangos) <- c("Coche", "Bus1", "Bus2")
+  tabla <- func_tabla_rangos_metodos(rangos)
+  expect_named(tabla, c("Alternativas", "Metodos", "Rangos", "SumaRangos"))
+  expect_equal(nrow(tabla), 6)
+  expect_equal(unique(tabla$SumaRangos[tabla$Alternativas == "Bus1"]), 10)
+  expect_error(func_tabla_rangos_metodos(matrix(1:6, nrow = 3)))
+})
+
+test_that("multicriteria plots return a ggplot object", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("ggrepel")
+  Mvalor <- matrix(c(8, 25, 20, 10, 75, 5,
+                     12, 35, 17, 25, 100, 7,
+                     10, 40, 40, 35, 125, 2), nrow = 3, ncol = 6, byrow = TRUE)
+  rownames(Mvalor) <- c("A1", "A2", "A3")
+  rangos <- data.frame(RangosAHP = c(1, 5, 3), RangosPromethee = c(1, 5, 4))
+  rownames(rangos) <- c("Coche", "Bus1", "Bus2")
+  tabla <- func_tabla_rangos_metodos(rangos)
+  valores <- setNames(Mvalor[, 1], rownames(Mvalor))
+  expect_true(inherits(plot_promethee_I(c(1, 2, 3), c(3, 2, 1)), "ggplot"))
+  expect_true(inherits(plot_barras_vector(valores), "ggplot"))
+  expect_true(inherits(plot_lineas_rangos(rangos), "ggplot"))
+  expect_true(inherits(plot_barras_acumuladas_rangos(tabla), "ggplot"))
+  expect_true(inherits(plot_segmentos_rangos(tabla), "ggplot"))
+  expect_true(inherits(plot_barras_acumuladas_Mvaloraciones(Mvalor), "ggplot"))
+  expect_error(plot_barras_vector(c(1, 2, 3)))
+})

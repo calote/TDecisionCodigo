@@ -46,6 +46,10 @@ on the "zip" format.
     PDF files. This is the recommended option for Quarto documents
     with `format: typst`.
   * `kableExtra`: result tables for HTML and LaTeX only.
+  * `ggplot2` and `ggrepel`: the multicriteria graphics (PROMETHEE I
+    flows, ranking bars and comparisons between methods).
+  * `dplyr` and `tidyr`: data preparation for the ranking comparison
+    graphics.
   * `webshot2` plus a Chrome or Chromium browser: table export to PNG
     images (useful to embed tables in LaTeX-generated PDFs).
   * `factoextra` and `ggplot2`: GAIA plane for PROMETHEE.
@@ -61,10 +65,13 @@ on the "zip" format.
 * **Multicriteria:** value functions, Nadir and Promethee homogenisation,
   Analytic Hierarchy Process (three variants, global weights,
   inconsistency), ELECTRE I, PROMETHEE I and II, TOPSIS (classic and
-  modified variants), GAIA plane and Arrow-Raymond.
+  modified variants), weighted mean indicator, GAIA plane and
+  Arrow-Raymond (optionally weighted).
 * **Bayesian trees:** joint, marginal and posterior distributions, prior and
   posterior expected values, REII, RER, VEX, VEIP, entropy and channel
   information.
+* **Graphics:** PROMETHEE I flows, ranking bar charts and comparisons of
+  the rankings obtained by different multicriteria methods.
 
 The Promethee Windows tables can be built with either 'kableExtra' (HTML and
 LaTeX only) or 'tinytable', which also produces native Typst output and can
