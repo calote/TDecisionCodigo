@@ -12,7 +12,7 @@ Install the released version from CRAN (once published):
 install.packages("TDecisionCodigo")
 ```
 
-Install the development version from GitHub:
+Install the development version from GitHub (branch `master` by default):
 
 ```r
 # install.packages("remotes")
@@ -28,6 +28,32 @@ remotes::install_github("calote/TDecisionCodigo@feat-documentacion-funciones")
 #                         ref = "feat-documentacion-funciones")
 ```
 
+Previous releases are available from the Tags page of the GitHub
+repository (<https://github.com/calote/TDecisionCodigo/tags>). For
+example, version v0.1.0 contains the functions in the legacy format of
+separate plain R script files: open its tag and download it by clicking
+on the "zip" format.
+
+## Requirements
+
+* R (>= 4.1.0). No hard dependencies beyond base and recommended
+  packages: suggested packages are only loaded when the functions that
+  need them are called.
+* Formatted tables and plots require suggested packages, installed only
+  if you use those features:
+  * `tinytable`: result tables that adapt to the output format
+    (HTML, Typst and LaTeX) and can be exported to PNG, Typst, HTML or
+    PDF files. This is the recommended option for Quarto documents
+    with `format: typst`.
+  * `kableExtra`: result tables for HTML and LaTeX only.
+  * `webshot2` plus a Chrome or Chromium browser: table export to PNG
+    images (useful to embed tables in LaTeX-generated PDFs).
+  * `factoextra` and `ggplot2`: GAIA plane for PROMETHEE.
+  * `formattable`: formatted AHP weight tables.
+  * `dplyr`: PROMETHEE Windows calculations.
+* A LaTeX installation (e.g. TinyTeX) is only needed to compile PDF
+  documents and for table export to PDF.
+
 ## Overview
 
 * **Uncertainty:** Wald, Optimistic, Hurwicz (with interval analysis),
@@ -39,10 +65,6 @@ remotes::install_github("calote/TDecisionCodigo@feat-documentacion-funciones")
 * **Bayesian trees:** joint, marginal and posterior distributions, prior and
   posterior expected values, REII, RER, VEX, VEIP, entropy and channel
   information.
-
-Optional formatted tables and plots require suggested packages
-('kableExtra', 'tinytable', 'formattable', 'factoextra', 'diagram', 'webshot',
-among others). See `?TDecisionCodigo` for details.
 
 The Promethee Windows tables can be built with either 'kableExtra' (HTML and
 LaTeX only) or 'tinytable', which also produces native Typst output and can
@@ -73,12 +95,22 @@ probs_XdE <- matrix(c(0.8, 0.2, 0.4, 0.6, 0.1, 0.9),
                     nrow = 3, byrow = TRUE)
 TV <- matrix(c(100, 50, -30, 80, 60, 10), nrow = 2, byrow = TRUE)
 func_VEX(TV, probs_E, probs_XdE, favorable = TRUE)
+
+# Multicriteria (classic TOPSIS, all criteria to maximise by default)
+Y <- multicriterio.crea.matrizdecision(c(8, 3, 6, 5, 7, 4, 9, 2, 6), 3, 3,
+                 v.nombresalt = c("A1", "A2", "A3"))
+res <- multicriterio.metodo.topsis(Y, c(0.5, 0.3, 0.2))
+res$tabla
+multicriterio.metodo.topsis_grafico(res)
 ```
 
 ## Documentation
 
 Full function reference is available in the package manuals
-(`help(package = "TDecisionCodigo")`).
+(`help(package = "TDecisionCodigo")`). Worked examples that render to
+Typst, HTML and PDF are preserved in `tests/manual/` (excluded from the
+built package), e.g. `tests/manual/Multicriterio/testTopsis01.qmd` and
+`tests/manual/Multicriterio/testPrometheeWindows03.qmd`.
 
 ## Source and bug reports
 
