@@ -30,6 +30,19 @@
   also handled, returning a single interval `(0, 1)` instead of `NA`.
   Fixes issue #22.
 
+## Development changes (issue #21)
+
+* `multicriterio.metodoAHP.variante3.completo()` now returns a new element
+  `Calculos` with the intermediate results (`pesos.nivel1`, `l.pesos.nivel2`,
+  `m.pesos.nivel2`, `nombres.alternativas`, `nombres.criterios`,
+  `pesos.globales.ordenados`, `orden.alternativas`), so reports can access
+  the details without printing the full output. The alternatives are ordered
+  from highest to lowest global weight.
+* New function `multicriterio.metodoAHP.variante3.completo_tinytable()`
+  builds `tinytable` tables from the AHP results: global weights (sorted),
+  local weights per criterion, and inconsistency (RI) per level. The tables
+  render natively in Quarto documents to HTML, Typst/PDF or LaTeX.
+
 # TDecisionCodigo 0.3.0
 
 ## New features

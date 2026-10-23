@@ -877,7 +877,119 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
   salida$l.inconsistencia.nivel2 = l.inconsistencia.nivel2
   salida$pesos.globales = pesos.globales
   salida$pesos.globales_entabla = pesos.globales_entabla
+  # Elemento "Calculos" con los resultados intermedios (evita salidas largas
+  # cuando se genera un informe). Ordena las alternativas de mayor a menor
+  # peso global.
+  ord = order(pesos.globales, decreasing = TRUE)
+  salida$Calculos = list(
+    pesos.nivel1 = pesos.nivel1,
+    l.pesos.nivel2 = l.pesos.nivel2,
+    m.pesos.nivel2 = m.pesos.nivel2,
+    nombres.alternativas = nombres.alternativas,
+    nombres.criterios = rownames(Xmatriznivel1),
+    pesos.globales.ordenados = pesos.globales[ord],
+    orden.alternativas = ord
+  )
   return(salida)
+}
+
+
+#' Tablas tinytable para AHP variante 3 completo
+#'
+#' Genera tablas de tipo \code{tinytable} a partir del resultado de
+#' \code{\link{multicriterio.metodoAHP.variante3.completo}}, listas para
+#' renderizar en documentos Quarto (HTML, Typst/PDF o LaTeX).
+#'
+#' @param resultado Objeto lista devuelto por
+#'   \code{\link{multicriterio.metodoAHP.variante3.completo}}.
+#' @param ordenar Logico. Si \code{TRUE} (por defecto), las alternativas de
+#'   la tabla de pesos globales se ordenan de mayor a menor peso.
+#'
+#' @return Lista con los siguientes elementos:
+#' \describe{
+#'   \item{tabla_pesos_globales}{Tabla tinytable con alternativa y peso
+#'     global, ordenada de mayor a menor peso.}
+#'   \item{tabla_pesos_locales}{Tabla tinytable con la matriz de pesos
+#'     locales: filas = criterios, columnas = alternativas.}
+#'   \item{tabla_inconsistencia}{Tabla tinytable con el coeficiente de
+#'     inconsistencia (RI) de cada nivel (nivel 1 y nivel 2 por criterio).}
+#' }
+#'
+#' @examples
+#' mat_cri <- multicriterio.crea.matrizvaloraciones(c(1,2,1/2,1), 2,
+#'                                                 c("Coste","Calidad"))
+#' mat_alt1 <- multicriterio.crea.matrizvaloraciones(c(1,3,1/3,1), 2,
+#'                                                  c("A","B"))
+#' mat_alt2 <- multicriterio.crea.matrizvaloraciones(c(1,1/2,2,1), 2,
+#'                                                  c("A","B"))
+#' mat_nivel2 <- array(NA, dim=c(2,2,2))
+#' mat_nivel2[,,1] <- mat_alt1
+#' mat_nivel2[,,2] <- mat_alt2
+#' resultado <- multicriterio.metodoAHP.variante3.completo(mat_cri, mat_nivel2)
+#' tablas <- multicriterio.metodoAHP.variante3.completo_tinytable(resultado)
+#' tablas$tabla_pesos_globales
+#'
+#' @seealso \code{\link{multicriterio.metodoAHP.variante3.completo}},
+#'   \code{\link{multicriterio.metodoAHP.pesosglobales_formattable}}
+#' @export
+multicriterio.metodoAHP.variante3.completo_tinytable = function(resultado,
+                                                                 ordenar = TRUE) {
+  if (!requireNamespace("tinytable", quietly = TRUE)) {
+    stop("Package \"tinytable\" needed for this function. Please install it with install.packages(\"tinytable\").", call. = FALSE)
+  }
+
+  # Tabla de pesos globales (ordenados si se pide)
+  pesos = if (ordenar) resultado$Calculos$pesos.globales.ordenados
+          else resultado$pesos.globales
+  alt_names = names(pesos)
+  df_globales = data.frame(
+    Alternativa = alt_names,
+    Peso_Global = round(as.numeric(pesos), 4),
+    stringsAsFactors = FALSE
+  )
+  if (ordenar) {
+    df_globales = df_globales[order(df_globales$Peso_Global,
+                                    decreasing = TRUE), , drop = FALSE]
+    rownames(df_globales) = NULL
+  }
+  tabla_globales = tinytable::tt(df_globales,
+                                 caption = "Pesos globales AHP (alternativas)")
+
+  # Tabla de pesos locales (criterios x alternativas)
+  m_locales = resultado$Calculos$m.pesos.nivel2
+  cri_names = rownames(m_locales)
+  alt_names_loc = colnames(m_locales)
+  df_locales = data.frame(
+    Criterio = cri_names,
+    round(m_locales, 4),
+    stringsAsFactors = FALSE,
+    check.names = FALSE
+  )
+  colnames(df_locales)[-1] = alt_names_loc
+  tabla_locales = tinytable::tt(df_locales,
+                                caption = "Pesos locales AHP por criterio")
+
+  # Tabla de inconsistencia
+  inc_n1 = if (!is.null(resultado$inconsistencia.nivel1$RI.coef.inconsistencia))
+             resultado$inconsistencia.nivel1$RI.coef.inconsistencia else NA_real_
+  inc_n2 = sapply(resultado$l.inconsistencia.nivel2, function(x) {
+    if (!is.null(x$RI.coef.inconsistencia)) x$RI.coef.inconsistencia else NA_real_
+  })
+  df_inc = data.frame(
+    Nivel = c("Nivel 1 (criterios)", paste0("Nivel 2 - ",
+                                          resultado$Calculos$nombres.criterios)),
+    RI = round(c(inc_n1, inc_n2), 4),
+    Consistencia = ifelse(is.na(c(inc_n1, inc_n2)) |
+                            c(inc_n1, inc_n2) < 0.10,
+                          "Aceptable", "No aceptable"),
+    stringsAsFactors = FALSE
+  )
+  tabla_inc = tinytable::tt(df_inc,
+                            caption = "Coeficiente de inconsistencia AHP (RI)")
+
+  list(tabla_pesos_globales = tabla_globales,
+       tabla_pesos_locales = tabla_locales,
+       tabla_inconsistencia = tabla_inc)
 }
 
 
