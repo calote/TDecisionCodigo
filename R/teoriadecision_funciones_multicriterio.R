@@ -994,26 +994,14 @@ multicriterio.metodoAHP.variante3.completo_tinytable = function(resultado,
   tabla_inc = tinytable::tt(df_inc,
                             caption = "Coeficiente de inconsistencia AHP (RI)")
 
-  # Tabla resumen al estilo del paquete 'ahp': alternativa + peso global +
-  # pesos locales por criterio + RI de nivel 2
-  pesos_g = if (ordenar) resultado$Calculos$pesos.globales.ordenados
-            else resultado$pesos.globales
-  ord_idx = if (ordenar) resultado$Calculos$orden.indices
-            else seq_along(resultado$pesos.globales)
-  m_loc = resultado$Calculos$m.pesos.nivel2[, ord_idx, drop = FALSE]
-  # RI de nivel 2 como vector numérico indexado por posición (no por nombre)
-  ri_n2_vec = unname(sapply(resultado$l.inconsistencia.nivel2, function(x) {
-    if (!is.null(x$RI.coef.inconsistencia)) x$RI.coef.inconsistencia else NA_real_
-  }))
-  df_resumen = data.frame(
-    Alternativa = names(pesos_g),
-    Peso_Global = round(as.numeric(pesos_g), 4),
-    round(t(m_loc), 4),
-    RI_Nivel2 = round(ri_n2_vec[ord_idx], 4),
-    stringsAsFactors = FALSE,
-    check.names = FALSE
-  )
-  colnames(df_resumen)[3:(2 + ncol(m_loc))] = colnames(m_loc)
+  # Tabla resumen al estilo del paquete 'ahp': filas = alternativas +
+  # Ponder.Criterios, columnas = criterios + Ponderadores Globales.
+  # Se usa directamente resultado$pesos.globales_entabla que ya tiene
+  # los nombres correctos de alternativas (filas) y criterios (columnas).
+  df_resumen = as.data.frame(resultado$pesos.globales_entabla)
+  df_resumen = cbind(Alternativa = rownames(df_resumen), df_resumen)
+  rownames(df_resumen) = NULL
+  colnames(df_resumen)[ncol(df_resumen)] = "Peso_Global"
   tabla_resumen = tinytable::tt(df_resumen,
                                 caption = "Resumen AHP: pesos globales y locales por alternativa")
 
