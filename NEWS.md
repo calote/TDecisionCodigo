@@ -20,6 +20,16 @@
   since the package is not published on CRAN yet; GitHub is now the primary
   installation source.
 
+## Bug fixes
+
+* `dibuja.criterio.Hurwicz_Intervalos()` no longer fails with
+  `uniroot` when two consecutive optimal alternatives do not cross within
+  `[0, 1]` (e.g. alternatives with identical range). The root search is now
+  wrapped in `tryCatch` and pairs without a sign change are skipped. The case
+  where a single alternative is optimal throughout `[0, 1]` (no cut point) is
+  also handled, returning a single interval `(0, 1)` instead of `NA`.
+  Fixes issue #22.
+
 # TDecisionCodigo 0.3.0
 
 ## New features

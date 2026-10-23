@@ -506,6 +506,7 @@ dibuja.criterio.Hurwicz_Intervalos = function(tablaX,favorable=TRUE,mostrarGrafi
         }
     }
 
+    alfaCorte = numeric(0)
     for (i in 1:(length(Alt)-1)){
         imax = as.numeric(Altmax[Alt[i]])
         imax1 = as.numeric(Altmax[Alt[i+1]])
@@ -513,12 +514,15 @@ dibuja.criterio.Hurwicz_Intervalos = function(tablaX,favorable=TRUE,mostrarGrafi
         imin1 = as.numeric(Altmin[Alt[i+1]])
         if (favorable){
             pCorte = function(alfa) {alfa * (imax-imax1-imin+imin1)+imin-imin1}
-            alfaC = uniroot(pCorte, interval = c(0,1))$root[[1]]
-            alfaCorte[i] = alfaC
         } else {
             pCorte = function(alfa) {alfa * (imin-imin1-imax+imax1)+imax-imax1}
-            alfaC = uniroot(pCorte, interval = c(0,1))$root[[1]]
-            alfaCorte[i] = alfaC
+        }
+        # uniroot falla si no hay cambio de signo en [0,1] (p. ej. alternativas
+        # con mismo rango que no se cruzan). Se ignora ese par y se continúa.
+        alfaC = tryCatch(uniroot(pCorte, interval = c(0,1))$root,
+                         error = function(e) NA_real_)
+        if (!is.na(alfaC)) {
+            alfaCorte = c(alfaCorte, alfaC)
         }
     }
 
@@ -548,7 +552,9 @@ dibuja.criterio.Hurwicz_Intervalos = function(tablaX,favorable=TRUE,mostrarGrafi
         }
 
         lines(valfa,Hurw$vHurwicz,col="green",lty=3,lwd=3)
-        abline(v = alfaCorte, col="red")
+        if (length(alfaCorte) > 0) {
+            abline(v = alfaCorte, col="red")
+        }
 
         if (favorable) {
             legend("bottomright",legend=rownames(X),fill=colores,inset=0.05)
@@ -560,18 +566,21 @@ dibuja.criterio.Hurwicz_Intervalos = function(tablaX,favorable=TRUE,mostrarGrafi
     }
 
     alfaCorte = round(alfaCorte, 3)
-    if (length(alfaCorte)==1){
+    nCorte = length(alfaCorte)
+    if (nCorte == 0) {
+        # No hay punto de corte: una sola alternativa es optima en todo [0,1]
+        Soluciones = cbind(c("(0, 1)"), c(Alt[1]))
+    } else if (nCorte == 1){
         Int1=paste("(",0,",",alfaCorte,")")
         Int2=paste("(",alfaCorte,",",1,")")
         Soluciones = cbind(c(Int1,Int2),c(Alt[1],Alt[2]))
     } else {
         Int0=paste("(",0,",",alfaCorte[1],")")
-        Int1=paste("(",alfaCorte[length(alfaCorte)],",",1,")")
-        Int = ""
+        Int1=paste("(",alfaCorte[nCorte],",",1,")")
         Soluciones= c(Int0, Alt[1])
-        for (i in 1:(length(alfaCorte)-1)){
-            Int[i] = paste("(",alfaCorte[i],",",alfaCorte[i+1],")")
-            Soluciones = rbind(Soluciones,c(Int[i],Alt[i+1]))
+        for (i in 1:(nCorte-1)){
+            Int_i = paste("(",alfaCorte[i],",",alfaCorte[i+1],")")
+            Soluciones = rbind(Soluciones,c(Int_i,Alt[i+1]))
         }
         Soluciones = rbind(Soluciones,c(Int1,Alt[length(Alt)]))
     }
