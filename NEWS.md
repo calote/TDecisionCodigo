@@ -48,6 +48,11 @@
   local weights per criterion + RI of level 2), `tabla_pesos_globales`,
   `tabla_pesos_locales` and `tabla_inconsistencia`. The tables render
   natively in Quarto documents to HTML, Typst/PDF or LaTeX.
+* New argument `porcentajes` in
+  `multicriterio.metodoAHP.variante3.completo_tinytable()`. When
+  \code{TRUE}, numeric values are multiplied by 100 and rounded to 2
+  decimals (displayed as percentages), and column headers get a
+  " (%)" suffix.
 
 # TDecisionCodigo 0.3.0
 

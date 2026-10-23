@@ -908,6 +908,9 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
 #'   \code{\link{multicriterio.metodoAHP.variante3.completo}}.
 #' @param ordenar Logico. Si \code{TRUE} (por defecto), las alternativas de
 #'   la tabla de pesos globales se ordenan de mayor a menor peso.
+#' @param porcentajes Logico. Si \code{TRUE}, los valores numéricos de las
+#'   tablas se muestran como porcentajes multiplicados por 100 y redondeados
+#'   a 2 decimales (útil para documentos Quarto).
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
@@ -936,14 +939,31 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
 #' tablas$tabla_resumen
 #' tablas$tabla_pesos_globales
 #'
+#' # Con valores en porcentaje
+#' tablas_pct <- multicriterio.metodoAHP.variante3.completo_tinytable(
+#'   resultado, porcentajes = TRUE
+#' )
+#' tablas_pct$tabla_resumen
+#'
 #' @seealso \code{\link{multicriterio.metodoAHP.variante3.completo}},
 #'   \code{\link{multicriterio.metodoAHP.pesosglobales_formattable}}
 #' @export
 multicriterio.metodoAHP.variante3.completo_tinytable = function(resultado,
-                                                                 ordenar = TRUE) {
+                                                                 ordenar = TRUE,
+                                                                 porcentajes = FALSE) {
   if (!requireNamespace("tinytable", quietly = TRUE)) {
     stop("Package \"tinytable\" needed for this function. Please install it with install.packages(\"tinytable\").", call. = FALSE)
   }
+
+  formatea_pct = function(x) {
+    if (porcentajes) {
+      round(as.numeric(x) * 100, 2)
+    } else {
+      round(as.numeric(x), 4)
+    }
+  }
+
+  sufijo_col = if (porcentajes) " (%)" else ""
 
   # Tabla de pesos globales (ordenados si se pide)
   pesos = if (ordenar) resultado$Calculos$pesos.globales.ordenados
@@ -951,7 +971,7 @@ multicriterio.metodoAHP.variante3.completo_tinytable = function(resultado,
   alt_names = names(pesos)
   df_globales = data.frame(
     Alternativa = alt_names,
-    Peso_Global = round(as.numeric(pesos), 4),
+    Peso_Global = formatea_pct(pesos),
     stringsAsFactors = FALSE
   )
   if (ordenar) {
@@ -959,6 +979,7 @@ multicriterio.metodoAHP.variante3.completo_tinytable = function(resultado,
                                     decreasing = TRUE), , drop = FALSE]
     rownames(df_globales) = NULL
   }
+  colnames(df_globales)[2] = paste0("Peso_Global", sufijo_col)
   tabla_globales = tinytable::tt(df_globales,
                                  caption = "Pesos globales AHP (alternativas)")
 
@@ -966,13 +987,14 @@ multicriterio.metodoAHP.variante3.completo_tinytable = function(resultado,
   m_locales = resultado$Calculos$m.pesos.nivel2
   cri_names = rownames(m_locales)
   alt_names_loc = colnames(m_locales)
+  m_locales_f = apply(m_locales, 2, formatea_pct)
   df_locales = data.frame(
     Criterio = cri_names,
-    round(m_locales, 4),
+    m_locales_f,
     stringsAsFactors = FALSE,
     check.names = FALSE
   )
-  colnames(df_locales)[-1] = alt_names_loc
+  colnames(df_locales)[-1] = paste0(alt_names_loc, sufijo_col)
   tabla_locales = tinytable::tt(df_locales,
                                 caption = "Pesos locales AHP por criterio")
 
@@ -1001,7 +1023,15 @@ multicriterio.metodoAHP.variante3.completo_tinytable = function(resultado,
   df_resumen = as.data.frame(resultado$pesos.globales_entabla)
   df_resumen = cbind(Alternativa = rownames(df_resumen), df_resumen)
   rownames(df_resumen) = NULL
-  colnames(df_resumen)[ncol(df_resumen)] = "Peso_Global"
+  ncol_cri = ncol(df_resumen) - 2
+  colnames(df_resumen)[2:(1 + ncol_cri)] = paste0(
+    colnames(df_resumen)[2:(1 + ncol_cri)], sufijo_col
+  )
+  colnames(df_resumen)[ncol(df_resumen)] = paste0("Peso_Global", sufijo_col)
+  # Aplicar formato porcentaje a las columnas numéricas (todas excepto la 1)
+  for (j in 2:ncol(df_resumen)) {
+    df_resumen[[j]] = formatea_pct(df_resumen[[j]])
+  }
   tabla_resumen = tinytable::tt(df_resumen,
                                 caption = "Resumen AHP: pesos globales y locales por alternativa")
 

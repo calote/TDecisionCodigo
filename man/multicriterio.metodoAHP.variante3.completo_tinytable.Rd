@@ -4,7 +4,11 @@
 \alias{multicriterio.metodoAHP.variante3.completo_tinytable}
 \title{Tablas tinytable para AHP variante 3 completo}
 \usage{
-multicriterio.metodoAHP.variante3.completo_tinytable(resultado, ordenar = TRUE)
+multicriterio.metodoAHP.variante3.completo_tinytable(
+  resultado,
+  ordenar = TRUE,
+  porcentajes = FALSE
+)
 }
 \arguments{
 \item{resultado}{Objeto lista devuelto por
@@ -12,6 +16,10 @@ multicriterio.metodoAHP.variante3.completo_tinytable(resultado, ordenar = TRUE)
 
 \item{ordenar}{Logico. Si \code{TRUE} (por defecto), las alternativas de
 la tabla de pesos globales se ordenan de mayor a menor peso.}
+
+\item{porcentajes}{Logico. Si \code{TRUE}, los valores numéricos de las
+tablas se muestran como porcentajes multiplicados por 100 y redondeados
+a 2 decimales (útil para documentos Quarto).}
 }
 \value{
 Lista con los siguientes elementos:
@@ -45,6 +53,12 @@ resultado <- multicriterio.metodoAHP.variante3.completo(mat_cri, mat_nivel2)
 tablas <- multicriterio.metodoAHP.variante3.completo_tinytable(resultado)
 tablas$tabla_resumen
 tablas$tabla_pesos_globales
+
+# Con valores en porcentaje
+tablas_pct <- multicriterio.metodoAHP.variante3.completo_tinytable(
+  resultado, porcentajes = TRUE
+)
+tablas_pct$tabla_resumen
 
 }
 \seealso{
