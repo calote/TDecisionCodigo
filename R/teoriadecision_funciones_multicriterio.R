@@ -598,55 +598,37 @@ multicriterio.metodoAHP.variante3.basico = function(Xmatrizvaloraciones) {
 #' @param pesos.criterios Vector numerico con las prioridades de los criterios.
 #' @param matriz.pesos.locales Matriz numerica donde las filas son los pesos
 #'   locales de las alternativas para cada criterio.
+#' @param en.tabla Logico. Si \code{FALSE} (por defecto) devuelve un vector
+#'   numerico con los pesos globales. Si \code{TRUE} devuelve una matriz
+#'   con los pesos locales, ponderacion de criterios y ponderadores globales
+#'   (formato tabla).
 #'
-#' @return Vector numerico con los pesos globales de cada alternativa.
+#' @return Si \code{en.tabla = FALSE}: Vector numerico con los pesos globales
+#'   de cada alternativa. Si \code{en.tabla = TRUE}: Matriz numerica con los
+#'   pesos locales, ponderacion de criterios y ponderadores globales.
 #'
 #' @examples
 #' pesos_cri <- c(0.6, 0.4)
 #' pesos_locales <- matrix(c(0.7, 0.3, 0.4, 0.6), nrow = 2, byrow = TRUE)
 #' multicriterio.metodoAHP.pesosglobales(pesos_cri, pesos_locales)
+#' multicriterio.metodoAHP.pesosglobales(pesos_cri, pesos_locales, en.tabla = TRUE)
 #'
-#' @seealso \code{\link{multicriterio.metodoAHP.pesosglobales_entabla}},
-#'   \code{\link{multicriterio.metodoAHP.variante3.completo}}
+#' @seealso \code{\link{multicriterio.metodoAHP.variante3.completo}}
 #' @export
-multicriterio.metodoAHP.pesosglobales = function(pesos.criterios,matriz.pesos.locales) {
+multicriterio.metodoAHP.pesosglobales = function(pesos.criterios,matriz.pesos.locales, en.tabla = FALSE) {
   validar_matriz_numerica(matriz.pesos.locales)
   validar_pesos(pesos.criterios, nrow(matriz.pesos.locales))
   vector1 = as.numeric(pesos.criterios%*%matriz.pesos.locales)
   names(vector1) = colnames(matriz.pesos.locales)
-  return(vector1)
-}
-
-
-#' AHP - Pesos globales en tabla
-#'
-#' Calcula los pesos globales y los presenta en formato de tabla para
-#' su visualizacion.
-#'
-#' @param pesos.criterios Vector numerico con las prioridades de los criterios.
-#' @param matriz.pesos.locales Matriz numerica con los pesos locales.
-#'
-#' @return Matriz numerica con los pesos locales, ponderacion de criterios
-#'   y ponderadores globales.
-#'
-#' @examples
-#' pesos_cri <- c(0.6, 0.4)
-#' pesos_locales <- matrix(c(0.7, 0.3, 0.4, 0.6), nrow = 2, byrow = TRUE)
-#' multicriterio.metodoAHP.pesosglobales_entabla(pesos_cri, pesos_locales)
-#'
-#' @seealso \code{\link{multicriterio.metodoAHP.pesosglobales}},
-#'   \code{\link{multicriterio.metodoAHP.variante3.completo}}
-#' @export
-multicriterio.metodoAHP.pesosglobales_entabla = function(pesos.criterios,
-                                                         matriz.pesos.locales) {
-  vector1 = as.numeric(pesos.criterios%*%matriz.pesos.locales)
-
-  tablafinal = rbind(t(matriz.pesos.locales),pesos.criterios)
-  tablafinal = cbind(tablafinal,c(vector1,NA))
-  rownames(tablafinal)[nrow(tablafinal)] = "Ponder.Criterios"
-  colnames(tablafinal)[ncol(tablafinal)] = "Ponderadores Globales"
-
-  return(tablafinal)
+  if (en.tabla) {
+    tablafinal = rbind(t(matriz.pesos.locales),pesos.criterios)
+    tablafinal = cbind(tablafinal,c(vector1,NA))
+    rownames(tablafinal)[nrow(tablafinal)] = "Ponder.Criterios"
+    colnames(tablafinal)[ncol(tablafinal)] = "Ponderadores Globales"
+    return(tablafinal)
+  } else {
+    return(vector1)
+  }
 }
 
 
@@ -702,75 +684,6 @@ multicriterio.metodoAHP.coef.inconsistencia = function(Xmatrizvaloraciones) {
   salida$RI.coef.inconsistencia = RI.coef.inconsistencia
   salida$mensaje = texto
   return(salida);
-}
-
-
-#' AHP Variante 3 con coeficiente de inconsistencia
-#'
-#' Calcula las valoraciones AHP (variante 3) junto con su coeficiente
-#' de inconsistencia.
-#'
-#' @param Xmatrizvaloraciones Matriz cuadrada de comparaciones por pares.
-#'
-#' @return Lista con los siguientes elementos:
-#' \describe{
-#'   \item{lambda}{Mayor autovalor}
-#'   \item{m}{Dimension de la matriz}
-#'   \item{CI.coef.inconsistencia}{Coeficiente de inconsistencia}
-#'   \item{CA.aleatorio}{Coeficiente aleatorio}
-#'   \item{RI.coef.inconsistencia}{Coeficiente relativo}
-#'   \item{mensaje}{Mensaje sobre la consistencia}
-#'   \item{tablaresumen}{Tabla resumen con calculos detallados}
-#' }
-#'
-#' @examples
-#' vector <- c(1,3,6,1/3,1,3,1/6,1/3,1)
-#' Xmat <- multicriterio.crea.matrizvaloraciones(vector, 3)
-#' multicriterio.metodoAHP.variante3.basico.coef.inconsistencia(Xmat)
-#'
-#' @export
-multicriterio.metodoAHP.variante3.basico.coef.inconsistencia = function(Xmatrizvaloraciones) {
-
-  validar_matriz_numerica(Xmatrizvaloraciones, cuadrada = TRUE, positiva = TRUE)
-
-  C.valora = Xmatrizvaloraciones
-
-  (suma.columnas = colSums(C.valora));
-  (m.suma.columnas = matrix(suma.columnas,length(suma.columnas),
-                            length(suma.columnas),byrow=TRUE))
-  (C.valora.normalizada = C.valora/m.suma.columnas)
-  (prioridades.relativas = rowMeans(C.valora.normalizada))
-
-  paso1 = C.valora %*% prioridades.relativas
-  paso2 = paso1 / prioridades.relativas
-  lambda = mean(paso2)
-  tablaresumen = C.valora
-  tablaresumen = cbind(tablaresumen,paso1,paso2)
-  tablaresumen = rbind(tablaresumen,c(prioridades.relativas,NA,lambda))
-  mm = dim(C.valora)[1];
-  CI.coef.inconsistencia = (lambda-mm)/(mm-1);
-  CA.coefs.inconsistencia.aleatorio = c(NA,0.00,0.58,0.90,1.12,1.24,1.32,1.41,1.45,1.49);
-  RI.coef.inconsistencia = CI.coef.inconsistencia/CA.coefs.inconsistencia.aleatorio[mm];
-  if (mm <= 2) {
-    texto='Consistencia aceptable';
-  } else {
-    if (RI.coef.inconsistencia < 0.1) {
-      texto='Consistencia aceptable';
-    } else {
-      texto='Consistencia no aceptable. Revisar las comparaciones de criterios por pares';
-    }
-  }
-
-  salida = list()
-  salida$lambda = lambda
-  salida$m = mm
-  salida$CI.coef.inconsistencia = CI.coef.inconsistencia
-  salida$CA.aleatorio = CA.coefs.inconsistencia.aleatorio[mm]
-  salida$RI.coef.inconsistencia = RI.coef.inconsistencia
-  salida$mensaje = texto
-  salida$tablaresumen = tablaresumen
-  return(salida);
-
 }
 
 
@@ -831,8 +744,7 @@ multicriterio.metodoAHP.variante3.basico.coef.inconsistencia = function(Xmatrizv
 #'   \code{\link{multicriterio.metodoAHP.variante2.mediageometrica}},
 #'   \code{\link{multicriterio.metodoAHP.variante3.basico}},
 #'   \code{\link{multicriterio.metodoAHP.coef.inconsistencia}},
-#'   \code{\link{multicriterio.metodoAHP.pesosglobales}},
-#'   \code{\link{multicriterio.metodoAHP.pesosglobales_entabla}}
+#'   \code{\link{multicriterio.metodoAHP.pesosglobales}}
 #' @export
 multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel2) {
 
@@ -870,8 +782,8 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
   colnames(m.pesos.nivel2) = nombres.alternativas
   rownames(m.pesos.nivel2) = rownames(Xmatriznivel1)
   pesos.globales = multicriterio.metodoAHP.pesosglobales(pesos.nivel1$valoraciones.ahp,m.pesos.nivel2)
-  pesos.globales_entabla = multicriterio.metodoAHP.pesosglobales_entabla(pesos.nivel1$valoraciones.ahp,
-                                                                         m.pesos.nivel2)
+  pesos.globales_entabla = multicriterio.metodoAHP.pesosglobales(pesos.nivel1$valoraciones.ahp,
+                                                                 m.pesos.nivel2, en.tabla = TRUE)
   names(pesos.globales) = nombres.alternativas
   salida = list()
   salida$pesos.nivel1 = pesos.nivel1
@@ -1167,8 +1079,8 @@ multicriterio.metodoAHP.pesosglobales_formattable = function(tb.nivel01, l_tb.ni
                               lapply(1:length(l_pesos.nivel02), function(x) l_pesos.nivel02[[x]]$valoraciones.ahp)
     )
 
-    pglobales = multicriterio.metodoAHP.pesosglobales_entabla(pesos.nivel01$valoraciones.ahp,
-                                                              m_pesos.nivel02)
+    pglobales = multicriterio.metodoAHP.pesosglobales(pesos.nivel01$valoraciones.ahp,
+                                                      m_pesos.nivel02, en.tabla = TRUE)
 
     ind_ord_r = c(nrow(pglobales), 1:(nrow(pglobales)-1) )
     ind_ord_c = c(ncol(pglobales), 1:(ncol(pglobales)-1) )
@@ -1520,131 +1432,43 @@ multicriterio.metodoelectre_varlibro <- function (Mvalor, pesos.criterios,umbral
 
 #' Funciones de preferencia para Promethee
 #'
-#' Funciones auxiliares que definen las funciones de preferencia utilizadas
-#' en el metodo Promethee.
+#' Funciones de preferencia utilizadas en el metodo Promethee.
 #'
-#' @param vaj Numerico. Valor de la alternativa a.
-#' @param vah Numerico. Valor de la alternativa h.
-#' @param qi Numerico. Umbral de indiferencia.
-#' @param pi Numerico. Umbral de preferencia.
-#' @param si Numerico. Parametro de la funcion gaussiana.
-#'
-#' @return Valor numerico de la preferencia (entre 0 y 1).
-#'
-#' @examples
-#' fpref.criterio_usual(10, 5)
-#' fpref.cuasi_criterio(10, 5, qi = 3)
-#' fpref.criterio_preflineal(10, 5, pi = 8)
-#'
-#' @export
-fpref.criterio_usual = function(vaj,vah) {
-  di = vaj-vah;
-  if (di <= 0) {
-    res = 0;
-  } else {
-    res = 1;
-  }
-  return(res);
-}
-
-#' @rdname fpref.criterio_usual
-#' @export
-fpref.cuasi_criterio = function(vaj,vah,qi) {
-  di = vaj - vah;
-  if (di <= qi) {
-    res = 0;
-  } else {
-    res = 1;
-  }
-  return(res);
-}
-
-#' @rdname fpref.criterio_usual
-#' @export
-fpref.criterio_preflineal = function(vaj,vah,pi) {
-  di = vaj - vah;
-  if (di <= 0) {
-    res = 0;
-  } else if (di > pi) {
-    res = 1;
-  } else {
-    res = di/pi;
-  }
-  return(res);
-}
-
-#' @rdname fpref.criterio_usual
-#' @export
-fpref.criterio_nivel = function(vaj,vah,qi,pi) {
-  di = vaj - vah;
-  if (di <= qi) {
-    res = 0;
-  } else if (di >= pi) {
-    res = 1;
-  } else {
-    res = 0.5;
-  }
-  return(res);
-}
-
-#' @rdname fpref.criterio_usual
-#' @export
-fpref.criterio_preflineal_indif = function(vaj,vah,qi,pi) {
-  di = vaj - vah;
-  if (di <= qi) {
-    res = 0;
-  } else if (di > pi) {
-    res = 1;
-  } else {
-    res = (di-qi)/(pi-qi);
-  }
-  return(res);
-}
-
-#' @rdname fpref.criterio_usual
-#' @export
-fpref.criterio_gaussiano = function(vaj,vah,qi,pi,si) {
-  di = vaj - vah;
-  if (di <= 0) {
-    res = 0;
-  } else {
-    res = 1 - exp((-di^2)/(2*si^2));
-  }
-  return(res);
-}
-
-#' Funcion de preferencia selector
-#'
-#' Selecciona y aplica la funcion de preferencia adecuada segun el tipo indicado.
-#'
-#' @param cual Numerico. Tipo de funcion (1=Usual, 2=U-shape, 3=V-shape,
-#'   4=Level, 5=Linear, 6=Gaussian).
+#' @param tipo Numerico. Tipo de funcion (1=Usual, 2=U-shape/Cuasi, 3=V-shape/Preflineal,
+#'   4=Level/Nivel, 5=Linear/Preflineal con indiferencia, 6=Gaussian/Gaussiano).
 #' @param vaj Numerico. Valor de la alternativa a.
 #' @param vah Numerico. Valor de la alternativa h.
 #' @param qi Numerico. Umbral de indiferencia. Por defecto 0.
 #' @param pi Numerico. Umbral de preferencia. Por defecto 1.
-#' @param si Numerico. Parametro gaussiano. Por defecto 0.5.
+#' @param si Numerico. Parametro de la funcion gaussiana. Por defecto 0.5.
 #'
-#' @return Valor numerico de la preferencia.
+#' @return Valor numerico de la preferencia (entre 0 y 1).
 #'
 #' @examples
-#' fpref.todas(1, 10, 5)  # Usual
-#' fpref.todas(2, 10, 5, qi = 3)  # U-shape
+#' fpref(1, 10, 5)                            # Usual
+#' fpref(2, 10, 5, qi = 3)                   # U-shape (cuasi-criterio)
+#' fpref(3, 10, 5, pi = 8)                   # V-shape (pref. pre-lineal)
+#' fpref(4, 10, 5, qi = 3, pi = 8)           # Level (nivel)
+#' fpref(5, 10, 5, qi = 3, pi = 8)           # Linear con indiferencia
+#' fpref(6, 10, 5, qi = 3, pi = 8, si = 0.5) # Gaussiano
 #'
 #' @export
-fpref.todas = function(cual,vaj,vah,qi=0,pi=1,si=0.5) {
-  if (cual == 2) {
-    res = fpref.cuasi_criterio(vaj,vah,qi);
-  } else if (cual==3) {
-    res = fpref.criterio_preflineal(vaj,vah,pi);
-  } else if (cual==4) {
-    res = fpref.criterio_nivel(vaj,vah,qi,pi);
-  } else if (cual==5) {
-    res = fpref.criterio_preflineal_indif(vaj,vah,qi,pi);
-  } else if (cual==6) {
-    res = fpref.criterio_gaussiano(vaj,vah,qi,pi,si);
+fpref = function(tipo, vaj, vah, qi = 0, pi = 1, si = 0.5) {
+  di = vaj - vah;
+  if (tipo == 1) {
+    if (di <= 0) { res = 0; } else { res = 1; }
+  } else if (tipo == 2) {
+    if (di <= qi) { res = 0; } else { res = 1; }
+  } else if (tipo == 3) {
+    if (di <= 0) { res = 0; } else if (di > pi) { res = 1; } else { res = di / pi; }
+  } else if (tipo == 4) {
+    if (di <= qi) { res = 0; } else if (di >= pi) { res = 1; } else { res = 0.5; }
+  } else if (tipo == 5) {
+    if (di <= qi) { res = 0; } else if (di > pi) { res = 1; } else { res = (di - qi) / (pi - qi); }
+  } else if (tipo == 6) {
+    if (di <= 0) { res = 0; } else { res = 1 - exp((-di^2) / (2 * si^2)); }
   } else {
-    res = fpref.criterio_usual(vaj,vah);
+    stop("tipo debe ser un entero entre 1 y 6.", call. = FALSE)
   }
   return(res);
 }
@@ -1670,10 +1494,9 @@ fpref.todas = function(cual,vaj,vah,qi=0,pi=1,si=0.5) {
 #' tab.indices <- indice.prefmulticriterio(X, pesos, fpref)
 #' tab.indices
 #'
-#' @seealso \code{\link{fpref.todas}},
-#'   \code{\link{flujo.entrante.Promethee}},
-#'   \code{\link{multicriterio.metodo.promethee_i}},
-#'   \code{\link{multicriterio.metodo.promethee_ii}}
+#' @seealso \code{\link{fpref}},
+#'   \code{\link{flujo.Promethee}},
+#'   \code{\link{multicriterio.metodo.promethee}}
 #' @export
 indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) {
   validar_matriz_numerica(tabdecs.X)
@@ -1697,7 +1520,7 @@ indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) {
         qi = tab.fpref[j,2];
         pi = tab.fpref[j,3];
         si = tab.fpref[j,4];
-        total = total + pesos.criterios[j] * fpref.todas(cual,vai,vah,qi,pi,si)
+        total = total + pesos.criterios[j] * fpref(cual,vai,vah,qi,pi,si)
       }
       tab.indices[i,h] = total;
     }
@@ -1708,11 +1531,15 @@ indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) {
 
 #' Flujos Promethee
 #'
-#' Funciones para calcular flujos entrantes, salientes y netos en Promethee.
+#' Calcula flujos entrantes, salientes y netos en Promethee.
 #'
 #' @param tab.indices Matriz de indices de preferencia multicriterio.
+#' @param tipo Character. Tipo de flujo: \code{"entrante"}, \code{"saliente"} o
+#'   \code{"neto"}.
+#' @param medio Logico. Si \code{TRUE} se calculan flujos medios (dividiendo por
+#'   el numero de alternativas menos uno).
 #'
-#' @return Vector numerico con los flujos.
+#' @return Vector numerico con los flujos solicitados.
 #'
 #' @examples
 #' X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
@@ -1720,98 +1547,48 @@ indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) {
 #' fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
 #'                     pi = c(5, 3, 2), si = c(1, 1, 1))
 #' tab.indices <- indice.prefmulticriterio(X, pesos, fpref)
-#' flujo.entrante.Promethee(tab.indices)
-#' flujo.saliente.Promethee(tab.indices)
-#' flujo.neto.Promethee(tab.indices)
+#' flujo.Promethee(tab.indices, tipo = "entrante")
+#' flujo.Promethee(tab.indices, tipo = "saliente")
+#' flujo.Promethee(tab.indices, tipo = "neto")
+#' flujo.Promethee(tab.indices, tipo = "neto", medio = TRUE)
 #'
-#' @seealso \code{\link{flujo.saliente.Promethee}},
-#'   \code{\link{flujo.neto.Promethee}},
-#'   \code{\link{indice.prefmulticriterio}},
-#'   \code{\link{multicriterio.metodo.promethee_i}},
-#'   \code{\link{multicriterio.metodo.promethee_ii}}
 #' @export
-flujo.entrante.Promethee = function(tab.indices) {
-  res = rowSums(tab.indices);
-  return(res);
-}
-
-#' @rdname flujo.entrante.Promethee
-#' @export
-flujo.saliente.Promethee = function(tab.indices) {
-  res = colSums(tab.indices);
-  return(res);
-}
-
-#' @rdname flujo.entrante.Promethee
-#' @export
-flujo.neto.Promethee = function(tab.indices) {
-  vflujo.ent = flujo.entrante.Promethee(tab.indices);
-  vflujo.sal = flujo.saliente.Promethee(tab.indices);
-  res = vflujo.ent - vflujo.sal;
+flujo.Promethee = function(tab.indices, tipo = c("entrante", "saliente", "neto"), medio = FALSE) {
+  tipo = match.arg(tipo)
+  n = dim(tab.indices)[1]
+  divisor = if (medio) (n - 1) else 1
+  if (tipo == "entrante") {
+    res = rowSums(tab.indices) / divisor;
+  } else if (tipo == "saliente") {
+    res = colSums(tab.indices) / divisor;
+  } else {
+    res = (rowSums(tab.indices) - colSums(tab.indices)) / divisor;
+  }
   return(res);
 }
 
 
-#' Flujos medios Promethee
+#' Metodo Promethee
 #'
-#' Funciones para calcular flujos medios (promediados) en Promethee.
-#'
-#' @param tab.indices Matriz de indices de preferencia multicriterio.
-#'
-#' @return Vector numerico con los flujos medios.
-#'
-#' @examples
-#' X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
-#' pesos <- c(0.5, 0.3, 0.2)
-#' fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
-#'                     pi = c(5, 3, 2), si = c(1, 1, 1))
-#' tab.indices <- indice.prefmulticriterio(X, pesos, fpref)
-#' flujomed.entrante.Promethee(tab.indices)
-#' flujomed.saliente.Promethee(tab.indices)
-#' flujomed.neto.Promethee(tab.indices)
-#'
-#' @seealso \code{\link{flujomed.saliente.Promethee}},
-#'   \code{\link{flujomed.neto.Promethee}},
-#'   \code{\link{flujo.entrante.Promethee}},
-#'   \code{\link{multicriterio.metodo.promethee_i_med}},
-#'   \code{\link{multicriterio.metodo.promethee_ii_med}}
-#' @export
-flujomed.entrante.Promethee = function(tab.indices) {
-  res = rowSums(tab.indices)/(dim(tab.indices)[1]-1);
-  return(res);
-}
-
-#' @rdname flujomed.entrante.Promethee
-#' @export
-flujomed.saliente.Promethee = function(tab.indices) {
-  res = colSums(tab.indices)/(dim(tab.indices)[1]-1);
-  return(res);
-}
-
-#' @rdname flujomed.entrante.Promethee
-#' @export
-flujomed.neto.Promethee = function(tab.indices) {
-  vflujo.ent = flujomed.entrante.Promethee(tab.indices);
-  vflujo.sal = flujomed.saliente.Promethee(tab.indices);
-  res = vflujo.ent - vflujo.sal;
-  return(res);
-}
-
-
-#' Metodo Promethee I
-#'
-#' Aplica el metodo Promethee I que establece una relacion de preferencia
-#' parcial entre alternativas basada en flujos entrantes y salientes.
+#' Aplica el metodo Promethee I o II para establecer una relacion de preferencia
+#' o clasificacion de alternativas basada en flujos.
 #'
 #' @param tabdecs.X Matriz numerica de decision (alternativas x criterios).
 #' @param pesos.criterios Vector numerico con los pesos de los criterios.
 #' @param tab.fpref Matriz de configuracion de funciones de preferencia.
+#'   Columnas: tipo funcion, qi, pi, si.
+#' @param tipo Character. Tipo de metodo: \code{"I"} para relacion de preferencia
+#'   parcial (flujos entrantes y salientes) o \code{"II"} para clasificacion
+#'   completa (flujo neto).
+#' @param medio Logico. Si \code{TRUE} se utilizan flujos medios (dividiendo por
+#'   el numero de alternativas menos uno).
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
 #'   \item{tabla.indices}{Matriz de indices de preferencia multicriterio}
-#'   \item{vflujos.ent}{Vector de flujos entrantes}
-#'   \item{vflujos.sal}{Vector de flujos salientes}
+#'   \item{vflujos.ent}{Vector de flujos entrantes (solo tipo "I")}
+#'   \item{vflujos.sal}{Vector de flujos salientes (solo tipo "I")}
+#'   \item{vflujos.netos}{Vector de flujos netos (solo tipo "II")}
 #'   \item{tablarelacionsupera}{Matriz de relacion superacion}
 #' }
 #'
@@ -1819,192 +1596,77 @@ flujomed.neto.Promethee = function(tab.indices) {
 #' X <- multicriterio.crea.matrizdecision(c(10,20,5,8,15,12), 2, 3)
 #' pesos <- c(0.5, 0.3, 0.2)
 #' fpref <- data.frame(tipo = c(1,1,1), qi = c(0,0,0), pi = c(5,3,2), si = c(1,1,1))
-#' multicriterio.metodo.promethee_i(X, pesos, fpref)
+#' multicriterio.metodo.promethee(X, pesos, fpref, tipo = "I")
+#' multicriterio.metodo.promethee(X, pesos, fpref, tipo = "II")
+#' multicriterio.metodo.promethee(X, pesos, fpref, tipo = "I", medio = TRUE)
+#' multicriterio.metodo.promethee(X, pesos, fpref, tipo = "II", medio = TRUE)
 #'
-#' @seealso \code{\link{multicriterio.metodo.promethee_ii}},
-#'   \code{\link{flujo.entrante.Promethee}},
-#'   \code{\link{flujo.neto.Promethee}}
+#' @seealso \code{\link{flujo.Promethee}},
+#'   \code{\link{indice.prefmulticriterio}}
 #' @export
-multicriterio.metodo.promethee_i = function(tabdecs.X,pesos.criterios,tab.fpref) {
-
+multicriterio.metodo.promethee = function(tabdecs.X,pesos.criterios,tab.fpref, tipo = c("I", "II"), medio = FALSE) {
+  tipo = match.arg(tipo)
   tab.indices =  indice.prefmulticriterio(tabdecs.X,pesos.criterios,tab.fpref);
-  vflujo.ent = flujo.entrante.Promethee(tab.indices);
-  vflujo.sal = flujo.saliente.Promethee(tab.indices);
   colnames(tab.indices)=rownames(tab.indices) = rownames(tabdecs.X)
-  names(vflujo.ent) = rownames(tabdecs.X)
-  names(vflujo.sal) = rownames(tabdecs.X)
-  num.alt = length(vflujo.ent);
-  tab.Pthee.i = matrix(NA,num.alt,num.alt);
-  colnames(tab.Pthee.i)=rownames(tab.Pthee.i) = rownames(tabdecs.X)
-  for (i in 1:num.alt) {
-    for (j in 1:num.alt) {
-      smas = (vflujo.ent[i] > vflujo.ent[j]);
-      imas = (vflujo.ent[i] == vflujo.ent[j]);
-      smenos = (vflujo.sal[i] < vflujo.sal[j]);
-      imenos = (vflujo.sal[i] == vflujo.sal[j]);
-      if ((smas & smenos) | (smas & imenos) | (imas & smenos)) {
-        tab.Pthee.i[i,j]=1;
-      } else if (imas & imenos) {
-        tab.Pthee.i[i,j]=0.5;
-      } else {
-        tab.Pthee.i[i,j]=0;
+
+  if (tipo == "I") {
+    vflujo.ent = flujo.Promethee(tab.indices, tipo = "entrante", medio = medio);
+    vflujo.sal = flujo.Promethee(tab.indices, tipo = "saliente", medio = medio);
+    names(vflujo.ent) = rownames(tabdecs.X)
+    names(vflujo.sal) = rownames(tabdecs.X)
+    num.alt = length(vflujo.ent);
+    tab.Pthee = matrix(NA,num.alt,num.alt);
+    colnames(tab.Pthee)=rownames(tab.Pthee) = rownames(tabdecs.X)
+    for (i in 1:num.alt) {
+      for (j in 1:num.alt) {
+        smas = (vflujo.ent[i] > vflujo.ent[j]);
+        imas = (vflujo.ent[i] == vflujo.ent[j]);
+        smenos = (vflujo.sal[i] < vflujo.sal[j]);
+        imenos = (vflujo.sal[i] == vflujo.sal[j]);
+        if (medio) {
+          if ((smas & smenos) | (smas & imenos) | (imas & smenos)) {
+            tab.Pthee[i,j]=1;
+          } else {
+            tab.Pthee[i,j]=0;
+          }
+        } else {
+          if ((smas & smenos) | (smas & imenos) | (imas & smenos)) {
+            tab.Pthee[i,j]=1;
+          } else if (imas & imenos) {
+            tab.Pthee[i,j]=0.5;
+          } else {
+            tab.Pthee[i,j]=0;
+          }
+        }
       }
     }
-  }
-  salida = list()
-  salida$tabla.indices = tab.indices
-  salida$vflujos.ent=vflujo.ent
-  salida$vflujos.sal=vflujo.sal
-  salida$tablarelacionsupera = tab.Pthee.i
-  return(salida)
-
-}
-
-
-#' Metodo Promethee II
-#'
-#' Aplica el metodo Promethee II que establece una clasificacion completa
-#' de alternativas basada en flujos netos.
-#'
-#' @param tabdecs.X Matriz numerica de decision (alternativas x criterios).
-#' @param pesos.criterios Vector numerico con los pesos de los criterios.
-#' @param tab.fpref Matriz de configuracion de funciones de preferencia.
-#'
-#' @return Lista con los siguientes elementos:
-#' \describe{
-#'   \item{tabla.indices}{Matriz de indices de preferencia multicriterio}
-#'   \item{vflujos.netos}{Vector de flujos netos}
-#'   \item{tablarelacionsupera}{Matriz de relacion superacion}
-#' }
-#'
-#' @examples
-#' X <- multicriterio.crea.matrizdecision(c(10,20,5,8,15,12), 2, 3)
-#' pesos <- c(0.5, 0.3, 0.2)
-#' fpref <- data.frame(tipo = c(1,1,1), qi = c(0,0,0), pi = c(5,3,2), si = c(1,1,1))
-#' multicriterio.metodo.promethee_ii(X, pesos, fpref)
-#'
-#' @seealso \code{\link{multicriterio.metodo.promethee_i}},
-#'   \code{\link{flujo.neto.Promethee}},
-#'   \code{\link{flujo.entrante.Promethee}}
-#' @export
-multicriterio.metodo.promethee_ii = function(tabdecs.X,pesos.criterios,tab.fpref) {
-
-  tab.indices =  indice.prefmulticriterio(tabdecs.X,pesos.criterios,tab.fpref);
-  vflujos.netos = flujo.neto.Promethee(tab.indices);
-  colnames(tab.indices)=rownames(tab.indices) = rownames(tabdecs.X)
-  names(vflujos.netos) = rownames(tabdecs.X)
-  num.alt = length(vflujos.netos);
-  tab.Pthee.ii = matrix(NA,num.alt,num.alt);
-  colnames(tab.Pthee.ii)=rownames(tab.Pthee.ii) = rownames(tabdecs.X)
-  for (i in 1:num.alt) {
-    for (j in 1:num.alt) {
-      if (vflujos.netos[i] > vflujos.netos[j]) {
-        tab.Pthee.ii[i,j]=1;
-      } else if (vflujos.netos[i] == vflujos.netos[j]) {
-        tab.Pthee.ii[i,j]=0.5;
-      } else {
-        tab.Pthee.ii[i,j]=0;
+    salida = list()
+    salida$tabla.indices = tab.indices
+    salida$vflujos.ent=vflujo.ent
+    salida$vflujos.sal=vflujo.sal
+    salida$tablarelacionsupera = tab.Pthee
+  } else {
+    vflujos.netos = flujo.Promethee(tab.indices, tipo = "neto", medio = medio);
+    names(vflujos.netos) = rownames(tabdecs.X)
+    num.alt = length(vflujos.netos);
+    tab.Pthee = matrix(NA,num.alt,num.alt);
+    colnames(tab.Pthee)=rownames(tab.Pthee) = rownames(tabdecs.X)
+    for (i in 1:num.alt) {
+      for (j in 1:num.alt) {
+        if (vflujos.netos[i] > vflujos.netos[j]) {
+          tab.Pthee[i,j]=1;
+        } else if (!medio && vflujos.netos[i] == vflujos.netos[j]) {
+          tab.Pthee[i,j]=0.5;
+        } else {
+          tab.Pthee[i,j]=0;
+        }
       }
     }
+    salida = list()
+    salida$tabla.indices = tab.indices
+    salida$vflujos.netos=vflujos.netos
+    salida$tablarelacionsupera = tab.Pthee
   }
-  salida = list()
-  salida$tabla.indices = tab.indices
-  salida$vflujos.netos=vflujos.netos
-  salida$tablarelacionsupera = tab.Pthee.ii
-  return(salida)
-
-}
-
-
-#' Metodo Promethee I con flujos medios
-#'
-#' Variante de Promethee I que utiliza flujos medios en lugar de sumas.
-#'
-#' @param tabdecs.X Matriz numerica de decision.
-#' @param pesos.criterios Vector numerico con los pesos de los criterios.
-#' @param tab.fpref Matriz de configuracion de funciones de preferencia.
-#'
-#' @return Lista con tabla de indices, flujos medios y relacion superacion.
-#'
-#' @examples
-#' X <- multicriterio.crea.matrizdecision(c(10,20,5,8,15,12), 2, 3)
-#' pesos <- c(0.5, 0.3, 0.2)
-#' fpref <- data.frame(tipo = c(1,1,1), qi = c(0,0,0), pi = c(5,3,2), si = c(1,1,1))
-#' multicriterio.metodo.promethee_i_med(X, pesos, fpref)
-#'
-#' @export
-multicriterio.metodo.promethee_i_med = function(tabdecs.X,pesos.criterios,tab.fpref) {
-
-  tab.indices =  indice.prefmulticriterio(tabdecs.X,pesos.criterios,tab.fpref);
-  vflujo.ent = flujomed.entrante.Promethee(tab.indices);
-  vflujo.sal = flujomed.saliente.Promethee(tab.indices);
-  colnames(tab.indices)=rownames(tab.indices) = rownames(tabdecs.X)
-  names(vflujo.ent) = rownames(tabdecs.X)
-  names(vflujo.sal) = rownames(tabdecs.X)
-  num.alt = length(vflujo.ent);
-  tab.Pthee.i = matrix(NA,num.alt,num.alt);
-  colnames(tab.Pthee.i)=rownames(tab.Pthee.i) = rownames(tabdecs.X)
-  for (i in 1:num.alt) {
-    for (j in 1:num.alt) {
-      smas = (vflujo.ent[i] > vflujo.ent[j]);
-      imas = (vflujo.ent[i] == vflujo.ent[j]);
-      smenos = (vflujo.sal[i] < vflujo.sal[j]);
-      imenos = (vflujo.sal[i] == vflujo.sal[j]);
-      if ((smas & smenos) | (smas & imenos) | (imas & smenos)) {
-        tab.Pthee.i[i,j]=1;
-      } else {
-        tab.Pthee.i[i,j]=0;
-      }
-    }
-  }
-  salida = list()
-  salida$tabla.indices = tab.indices
-  salida$vflujos.ent=vflujo.ent
-  salida$vflujos.sal=vflujo.sal
-  salida$tablarelacionsupera = tab.Pthee.i
-  return(salida)
-}
-
-
-#' Metodo Promethee II con flujos medios
-#'
-#' Variante de Promethee II que utiliza flujos medios en lugar de sumas.
-#'
-#' @param tabdecs.X Matriz numerica de decision.
-#' @param pesos.criterios Vector numerico con los pesos de los criterios.
-#' @param tab.fpref Matriz de configuracion de funciones de preferencia.
-#'
-#' @return Lista con tabla de indices, flujos netos medios y relacion superacion.
-#'
-#' @examples
-#' X <- multicriterio.crea.matrizdecision(c(10,20,5,8,15,12), 2, 3)
-#' pesos <- c(0.5, 0.3, 0.2)
-#' fpref <- data.frame(tipo = c(1,1,1), qi = c(0,0,0), pi = c(5,3,2), si = c(1,1,1))
-#' multicriterio.metodo.promethee_ii_med(X, pesos, fpref)
-#'
-#' @export
-multicriterio.metodo.promethee_ii_med = function(tabdecs.X,pesos.criterios,tab.fpref) {
-
-  tab.indices =  indice.prefmulticriterio(tabdecs.X,pesos.criterios,tab.fpref);
-  vflujos.netos = flujomed.neto.Promethee(tab.indices);
-  colnames(tab.indices)=rownames(tab.indices) = rownames(tabdecs.X)
-  names(vflujos.netos) = rownames(tabdecs.X)
-  num.alt = length(vflujos.netos);
-  tab.Pthee.ii = matrix(NA,num.alt,num.alt);
-  colnames(tab.Pthee.ii)=rownames(tab.Pthee.ii) = rownames(tabdecs.X)
-  for (i in 1:num.alt) {
-    for (j in 1:num.alt) {
-      if (vflujos.netos[i] > vflujos.netos[j]) {
-        tab.Pthee.ii[i,j]=1;
-      } else {
-        tab.Pthee.ii[i,j]=0;
-      }
-    }
-  }
-  salida = list()
-  salida$tabla.indices = tab.indices
-  salida$vflujos.netos=vflujos.netos
-  salida$tablarelacionsupera = tab.Pthee.ii
   return(salida)
 }
 

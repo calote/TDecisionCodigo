@@ -752,7 +752,7 @@ calculo_tablaM = function(tabdecs.X,pesos.criterios,tab.fpref) {
                     qi = tab.fpref[j,2];
                     pi = tab.fpref[j,3];
                     si = tab.fpref[j,4];
-                    total = total + fpref.todas(cual,vai,vah,qi,pi,si) - fpref.todas(cual,vah,vai,qi,pi,si)
+                    total = total + fpref(cual,vai,vah,qi,pi,si) - fpref(cual,vah,vai,qi,pi,si)
                 }
             }
             tabla.M[i,j] = (1/(num.alt-1)) * total;
@@ -975,16 +975,20 @@ multicriterio.metodo.promethee_windows = function(matdecision, tab.fpref, pesos.
   if (!requireNamespace("dplyr", quietly = TRUE)) {
     stop("Package \"dplyr\" needed for this function. Please install it with install.packages(\"dplyr\").", call. = FALSE)
   }
-    res01_i = multicriterio.metodo.promethee_i_med(
+    res01_i = multicriterio.metodo.promethee(
         tabdecs.X = matdecision,
         pesos.criterios = pesos.criterios,
-        tab.fpref = tab.fpref
+        tab.fpref = tab.fpref,
+        tipo = "I",
+        medio = TRUE
     )
 
-    res01_ii = multicriterio.metodo.promethee_ii_med(
+    res01_ii = multicriterio.metodo.promethee(
         tabdecs.X = matdecision,
         pesos.criterios = pesos.criterios,
-        tab.fpref = tab.fpref
+        tab.fpref = tab.fpref,
+        tipo = "II",
+        medio = TRUE
     )
 
     df_res = data.frame(Phi = res01_ii$vflujos.netos,

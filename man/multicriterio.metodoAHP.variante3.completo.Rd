@@ -67,6 +67,5 @@ sapply(resultado$l.inconsistencia.nivel2, function(x) x$mensaje)
 \code{\link{multicriterio.metodoAHP.variante2.mediageometrica}},
 \code{\link{multicriterio.metodoAHP.variante3.basico}},
 \code{\link{multicriterio.metodoAHP.coef.inconsistencia}},
-\code{\link{multicriterio.metodoAHP.pesosglobales}},
-\code{\link{multicriterio.metodoAHP.pesosglobales_entabla}}
+\code{\link{multicriterio.metodoAHP.pesosglobales}}
 }

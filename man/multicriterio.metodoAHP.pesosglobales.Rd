@@ -4,16 +4,27 @@
 \alias{multicriterio.metodoAHP.pesosglobales}
 \title{AHP - Pesos globales de alternativas}
 \usage{
-multicriterio.metodoAHP.pesosglobales(pesos.criterios, matriz.pesos.locales)
+multicriterio.metodoAHP.pesosglobales(
+  pesos.criterios,
+  matriz.pesos.locales,
+  en.tabla = FALSE
+)
 }
 \arguments{
 \item{pesos.criterios}{Vector numerico con las prioridades de los criterios.}
 
 \item{matriz.pesos.locales}{Matriz numerica donde las filas son los pesos
 locales de las alternativas para cada criterio.}
+
+\item{en.tabla}{Logico. Si \code{FALSE} (por defecto) devuelve un vector
+numerico con los pesos globales. Si \code{TRUE} devuelve una matriz
+con los pesos locales, ponderacion de criterios y ponderadores globales
+(formato tabla).}
 }
 \value{
-Vector numerico con los pesos globales de cada alternativa.
+Si \code{en.tabla = FALSE}: Vector numerico con los pesos globales
+de cada alternativa. Si \code{en.tabla = TRUE}: Matriz numerica con los
+pesos locales, ponderacion de criterios y ponderadores globales.
 }
 \description{
 Calcula los pesos globales de las alternativas combinando los pesos de
@@ -23,9 +34,9 @@ criterios con las valoraciones locales de cada alternativa.
 pesos_cri <- c(0.6, 0.4)
 pesos_locales <- matrix(c(0.7, 0.3, 0.4, 0.6), nrow = 2, byrow = TRUE)
 multicriterio.metodoAHP.pesosglobales(pesos_cri, pesos_locales)
+multicriterio.metodoAHP.pesosglobales(pesos_cri, pesos_locales, en.tabla = TRUE)
 
 }
 \seealso{
-\code{\link{multicriterio.metodoAHP.pesosglobales_entabla}},
 \code{\link{multicriterio.metodoAHP.variante3.completo}}
 }

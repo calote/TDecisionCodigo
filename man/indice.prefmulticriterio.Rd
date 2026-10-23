@@ -31,8 +31,7 @@ tab.indices
 
 }
 \seealso{
-\code{\link{fpref.todas}},
-\code{\link{flujo.entrante.Promethee}},
-\code{\link{multicriterio.metodo.promethee_i}},
-\code{\link{multicriterio.metodo.promethee_ii}}
+\code{\link{fpref}},
+\code{\link{flujo.Promethee}},
+\code{\link{multicriterio.metodo.promethee}}
 }

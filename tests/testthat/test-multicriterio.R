@@ -18,7 +18,7 @@ test_that("Promethee II runs on tiny example", {
   pesos <- c(0.5, 0.3, 0.2)
   fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
                       pi = c(5, 3, 2), si = c(1, 1, 1))
-  res <- multicriterio.metodo.promethee_ii(X, pesos, fpref)
+  res <- multicriterio.metodo.promethee(X, pesos, fpref, tipo = "II")
   expect_equal(length(res$vflujos.netos), 2)
 })
 
