@@ -683,10 +683,11 @@ multicriterio.metodoAHP.coef.inconsistencia = function(Xmatrizvaloraciones) {
   mm = dim(C.valora)[1];
   CI.coef.inconsistencia = (lambda-mm)/(mm-1);
   CA.coefs.inconsistencia.aleatorio = c(NA,0.00,0.58,0.90,1.12,1.24,1.32,1.41,1.45,1.49);
-  RI.coef.inconsistencia = CI.coef.inconsistencia/CA.coefs.inconsistencia.aleatorio[mm];
   if (mm <= 2) {
+    RI.coef.inconsistencia = 0
     texto='Consistencia aceptable';
   } else {
+    RI.coef.inconsistencia = CI.coef.inconsistencia/CA.coefs.inconsistencia.aleatorio[mm];
     if (RI.coef.inconsistencia < 0.1) {
       texto='Consistencia aceptable';
     } else {
@@ -784,12 +785,13 @@ multicriterio.metodoAHP.variante3.basico.coef.inconsistencia = function(Xmatrizv
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
-#'   \item{pesos.nivel1}{Resultado de AHP para el nivel 1}
-#'   \item{l.pesos.nivel2}{Lista de resultados AHP para cada criterio del nivel 2}
 #'   \item{inconsistencia.nivel1}{Inconsistencia del nivel 1}
 #'   \item{l.inconsistencia.nivel2}{Lista de inconsistencias del nivel 2}
 #'   \item{pesos.globales}{Pesos globales de las alternativas}
 #'   \item{pesos.globales_entabla}{Tabla con pesos globales formateados}
+#'   \item{Calculos}{Lista con los resultados intermedios: pesos.nivel1,
+#'     l.pesos.nivel2, m.pesos.nivel2, nombres.alternativas, nombres.criterios,
+#'     pesos.globales.ordenados y orden.alternativas}
 #' }
 #'
 #' @examples
@@ -863,6 +865,7 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
     l.inconsistencia.nivel2[[i]] = multicriterio.metodoAHP.coef.inconsistencia(Xmatriz)
     l.pesos.nivel2[[i]] = multicriterio.metodoAHP.variante3.basico(Xmatriz)
     m.pesos.nivel2[i,] = l.pesos.nivel2[[i]]$valoraciones.ahp
+    rownames(l.pesos.nivel2[[i]]$tablaresumen) = c(nombres.alternativas, "")
   }
   colnames(m.pesos.nivel2) = nombres.alternativas
   rownames(m.pesos.nivel2) = rownames(Xmatriznivel1)
@@ -888,7 +891,8 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
     nombres.alternativas = nombres.alternativas,
     nombres.criterios = rownames(Xmatriznivel1),
     pesos.globales.ordenados = pesos.globales[ord],
-    orden.alternativas = ord
+    orden.alternativas = nombres.alternativas[ord],
+    orden.indices = ord
   )
   return(salida)
 }
@@ -907,6 +911,8 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
 #'
 #' @return Lista con los siguientes elementos:
 #' \describe{
+#'   \item{tabla_resumen}{Tabla tinytable al estilo del paquete \code{ahp}:
+#'     alternativas con peso global, pesos locales por criterio y RI de nivel 2.}
 #'   \item{tabla_pesos_globales}{Tabla tinytable con alternativa y peso
 #'     global, ordenada de mayor a menor peso.}
 #'   \item{tabla_pesos_locales}{Tabla tinytable con la matriz de pesos
@@ -927,6 +933,7 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
 #' mat_nivel2[,,2] <- mat_alt2
 #' resultado <- multicriterio.metodoAHP.variante3.completo(mat_cri, mat_nivel2)
 #' tablas <- multicriterio.metodoAHP.variante3.completo_tinytable(resultado)
+#' tablas$tabla_resumen
 #' tablas$tabla_pesos_globales
 #'
 #' @seealso \code{\link{multicriterio.metodoAHP.variante3.completo}},
@@ -987,7 +994,31 @@ multicriterio.metodoAHP.variante3.completo_tinytable = function(resultado,
   tabla_inc = tinytable::tt(df_inc,
                             caption = "Coeficiente de inconsistencia AHP (RI)")
 
-  list(tabla_pesos_globales = tabla_globales,
+  # Tabla resumen al estilo del paquete 'ahp': alternativa + peso global +
+  # pesos locales por criterio + RI de nivel 2
+  pesos_g = if (ordenar) resultado$Calculos$pesos.globales.ordenados
+            else resultado$pesos.globales
+  ord_idx = if (ordenar) resultado$Calculos$orden.indices
+            else seq_along(resultado$pesos.globales)
+  m_loc = resultado$Calculos$m.pesos.nivel2[, ord_idx, drop = FALSE]
+  # RI de nivel 2 como vector numérico indexado por posición (no por nombre)
+  ri_n2_vec = unname(sapply(resultado$l.inconsistencia.nivel2, function(x) {
+    if (!is.null(x$RI.coef.inconsistencia)) x$RI.coef.inconsistencia else NA_real_
+  }))
+  df_resumen = data.frame(
+    Alternativa = names(pesos_g),
+    Peso_Global = round(as.numeric(pesos_g), 4),
+    round(t(m_loc), 4),
+    RI_Nivel2 = round(ri_n2_vec[ord_idx], 4),
+    stringsAsFactors = FALSE,
+    check.names = FALSE
+  )
+  colnames(df_resumen)[3:(2 + ncol(m_loc))] = colnames(m_loc)
+  tabla_resumen = tinytable::tt(df_resumen,
+                                caption = "Resumen AHP: pesos globales y locales por alternativa")
+
+  list(tabla_resumen = tabla_resumen,
+       tabla_pesos_globales = tabla_globales,
        tabla_pesos_locales = tabla_locales,
        tabla_inconsistencia = tabla_inc)
 }

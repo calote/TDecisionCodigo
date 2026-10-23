@@ -16,6 +16,8 @@ la tabla de pesos globales se ordenan de mayor a menor peso.}
 \value{
 Lista con los siguientes elementos:
 \describe{
+\item{tabla_resumen}{Tabla tinytable al estilo del paquete \code{ahp}:
+alternativas con peso global, pesos locales por criterio y RI de nivel 2.}
 \item{tabla_pesos_globales}{Tabla tinytable con alternativa y peso
 global, ordenada de mayor a menor peso.}
 \item{tabla_pesos_locales}{Tabla tinytable con la matriz de pesos
@@ -41,6 +43,7 @@ mat_nivel2[,,1] <- mat_alt1
 mat_nivel2[,,2] <- mat_alt2
 resultado <- multicriterio.metodoAHP.variante3.completo(mat_cri, mat_nivel2)
 tablas <- multicriterio.metodoAHP.variante3.completo_tinytable(resultado)
+tablas$tabla_resumen
 tablas$tabla_pesos_globales
 
 }

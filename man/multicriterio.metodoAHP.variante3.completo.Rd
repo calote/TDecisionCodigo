@@ -15,12 +15,13 @@ de alternativas para cada criterio (nivel 2).}
 \value{
 Lista con los siguientes elementos:
 \describe{
-\item{pesos.nivel1}{Resultado de AHP para el nivel 1}
-\item{l.pesos.nivel2}{Lista de resultados AHP para cada criterio del nivel 2}
 \item{inconsistencia.nivel1}{Inconsistencia del nivel 1}
 \item{l.inconsistencia.nivel2}{Lista de inconsistencias del nivel 2}
 \item{pesos.globales}{Pesos globales de las alternativas}
 \item{pesos.globales_entabla}{Tabla con pesos globales formateados}
+\item{Calculos}{Lista con los resultados intermedios: pesos.nivel1,
+l.pesos.nivel2, m.pesos.nivel2, nombres.alternativas, nombres.criterios,
+pesos.globales.ordenados y orden.alternativas}
 }
 }
 \description{

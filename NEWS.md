@@ -29,19 +29,25 @@
   where a single alternative is optimal throughout `[0, 1]` (no cut point) is
   also handled, returning a single interval `(0, 1)` instead of `NA`.
   Fixes issue #22.
+* `multicriterio.metodoAHP.coef.inconsistencia()` now returns
+  `RI.coef.inconsistencia = 0` (instead of `NaN`) for 2x2 matrices, where
+  the random consistency index is undefined.
 
 ## Development changes (issue #21)
 
 * `multicriterio.metodoAHP.variante3.completo()` now returns a new element
   `Calculos` with the intermediate results (`pesos.nivel1`, `l.pesos.nivel2`,
   `m.pesos.nivel2`, `nombres.alternativas`, `nombres.criterios`,
-  `pesos.globales.ordenados`, `orden.alternativas`), so reports can access
-  the details without printing the full output. The alternatives are ordered
-  from highest to lowest global weight.
+  `pesos.globales.ordenados`, `orden.alternativas` [nombres], `orden.indices`
+  [índices numéricos]). `orden.alternativas` now returns alternative names
+  instead of numeric indices. Row names of `tablaresumen` in level-2 results
+  are now set to the alternative names.
 * New function `multicriterio.metodoAHP.variante3.completo_tinytable()`
-  builds `tinytable` tables from the AHP results: global weights (sorted),
-  local weights per criterion, and inconsistency (RI) per level. The tables
-  render natively in Quarto documents to HTML, Typst/PDF or LaTeX.
+  builds `tinytable` tables from the AHP results: `tabla_resumen` (summary
+  table in the style of the 'ahp' package: alternative + global weight +
+  local weights per criterion + RI of level 2), `tabla_pesos_globales`,
+  `tabla_pesos_locales` and `tabla_inconsistencia`. The tables render
+  natively in Quarto documents to HTML, Typst/PDF or LaTeX.
 
 # TDecisionCodigo 0.3.0
 
