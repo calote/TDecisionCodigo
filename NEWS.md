@@ -1,3 +1,46 @@
+# TDecisionCodigo 0.4.0
+
+## Breaking changes: reduction of exported functions
+
+The multicriteria functions have been consolidated to reduce the number of
+exported functions: 18 functions were removed and merged into 4. The
+functionality is unchanged; only the call signatures differ. Migration:
+
+* The six preference-function helpers `fpref.criterio_usual()`,
+  `fpref.cuasi_criterio()`, `fpref.criterio_preflineal()`,
+  `fpref.criterio_nivel()`, `fpref.criterio_preflineal_indif()` and
+  `fpref.criterio_gaussiano()`, plus the selector `fpref.todas()`, are now a
+  single `fpref(tipo, vaj, vah, qi, pi, si)` where `tipo` runs from 1 to 6
+  (Usual, U-shape, V-shape, Level, Linear with indifference, Gaussian). The
+  old `cual` argument is now named `tipo`.
+* The six flow helpers `flujo.entrante.Promethee()`,
+  `flujo.saliente.Promethee()`, `flujo.neto.Promethee()`,
+  `flujomed.entrante.Promethee()`, `flujomed.saliente.Promethee()` and
+  `flujomed.neto.Promethee()` are now a single
+  `flujo.Promethee(tab.indices, tipo, medio)` where `tipo` is `"entrante"`,
+  `"saliente"` or `"neto"` and `medio = TRUE` computes the mean flows
+  (the former `flujomed.*` functions).
+* The four methods `multicriterio.metodo.promethee_i()`,
+  `multicriterio.metodo.promethee_ii()`,
+  `multicriterio.metodo.promethee_i_med()` and
+  `multicriterio.metodo.promethee_ii_med()` are now a single
+  `multicriterio.metodo.promethee(tabdecs.X, pesos.criterios, tab.fpref,
+  tipo, medio)` with `tipo = "I"` or `tipo = "II"` and `medio = TRUE` for
+  mean flows. The returned list keeps the same element names
+  (`tabla.indices`, `vflujos.ent`, `vflujos.sal`, `vflujos.netos`,
+  `tablarelacionsupera`).
+* `multicriterio.metodoAHP.pesosglobales_entabla()` is folded into
+  `multicriterio.metodoAHP.pesosglobales(..., en.tabla = TRUE)`; the default
+  `en.tabla = FALSE` returns the global-weight vector as before.
+* `multicriterio.metodoAHP.variante3.basico.coef.inconsistencia()` was
+  removed as a duplicate: use
+  `multicriterio.metodoAHP.variante3.basico()` for the weights and
+  `multicriterio.metodoAHP.coef.inconsistencia()` for the consistency index.
+* `multicriterio.metodo.promethee_windows()` calls the new consolidated API
+  internally, so its behaviour is unchanged. The 'formattable'-based helpers
+  (`export_formattable()`, `multicriterio.metodoAHP.pesosglobales_formattable()`)
+  are kept as they serve a different purpose than the 'tinytable' tables.
+
 # TDecisionCodigo 0.3.1
 
 ## Development changes
