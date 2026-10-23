@@ -55,3 +55,6 @@ pesos <- c(0.3, 0.2, 0.4, 0.1)
 multicriterio.metodoELECTRE_I(tabdec, pesos, 0.7, c(15, Inf, 2, Inf))
 
 }
+\seealso{
+\code{\link{multicriterio.metodoelectre_varlibro}}
+}

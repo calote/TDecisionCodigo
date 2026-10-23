@@ -26,3 +26,6 @@ Mvalor <- matrix(c(8,25,20,10,75,5), nrow=2, ncol=3, byrow=TRUE)
 func_calcula_matrizclasificacion(Mvalor)
 
 }
+\seealso{
+\code{\link{multicriterio.metodoaxiomatico.ArrowRaymond}}
+}

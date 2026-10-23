@@ -411,6 +411,9 @@ if (recip == 1) {
 #' resultado <- multicriterio.metodoAHP.variante1.autovectormayorautovalor(Xmat)
 #' resultado$valoraciones.ahp
 #'
+#' @seealso \code{\link{multicriterio.metodoAHP.variante2.mediageometrica}},
+#'   \code{\link{multicriterio.metodoAHP.variante3.basico}},
+#'   \code{\link{multicriterio.metodoAHP.coef.inconsistencia}}
 #' @export
 multicriterio.metodoAHP.variante1.autovectormayorautovalor = function(Xmatrizvaloraciones) {
 
@@ -503,6 +506,9 @@ func_media.geometrica = function(vector) {
 #' resultado <- multicriterio.metodoAHP.variante2.mediageometrica(Xmat)
 #' resultado$valoraciones.ahp
 #'
+#' @seealso \code{\link{multicriterio.metodoAHP.variante1.autovectormayorautovalor}},
+#'   \code{\link{multicriterio.metodoAHP.variante3.basico}},
+#'   \code{\link{multicriterio.metodoAHP.coef.inconsistencia}}
 #' @export
 multicriterio.metodoAHP.variante2.mediageometrica = function(Xmatrizvaloraciones) {
 
@@ -552,6 +558,9 @@ multicriterio.metodoAHP.variante2.mediageometrica = function(Xmatrizvaloraciones
 #' resultado <- multicriterio.metodoAHP.variante3.basico(Xmat)
 #' resultado$valoraciones.ahp
 #'
+#' @seealso \code{\link{multicriterio.metodoAHP.variante1.autovectormayorautovalor}},
+#'   \code{\link{multicriterio.metodoAHP.variante2.mediageometrica}},
+#'   \code{\link{multicriterio.metodoAHP.coef.inconsistencia}}
 #' @export
 multicriterio.metodoAHP.variante3.basico = function(Xmatrizvaloraciones) {
 
@@ -597,6 +606,8 @@ multicriterio.metodoAHP.variante3.basico = function(Xmatrizvaloraciones) {
 #' pesos_locales <- matrix(c(0.7, 0.3, 0.4, 0.6), nrow = 2, byrow = TRUE)
 #' multicriterio.metodoAHP.pesosglobales(pesos_cri, pesos_locales)
 #'
+#' @seealso \code{\link{multicriterio.metodoAHP.pesosglobales_entabla}},
+#'   \code{\link{multicriterio.metodoAHP.variante3.completo}}
 #' @export
 multicriterio.metodoAHP.pesosglobales = function(pesos.criterios,matriz.pesos.locales) {
   validar_matriz_numerica(matriz.pesos.locales)
@@ -623,6 +634,8 @@ multicriterio.metodoAHP.pesosglobales = function(pesos.criterios,matriz.pesos.lo
 #' pesos_locales <- matrix(c(0.7, 0.3, 0.4, 0.6), nrow = 2, byrow = TRUE)
 #' multicriterio.metodoAHP.pesosglobales_entabla(pesos_cri, pesos_locales)
 #'
+#' @seealso \code{\link{multicriterio.metodoAHP.pesosglobales}},
+#'   \code{\link{multicriterio.metodoAHP.variante3.completo}}
 #' @export
 multicriterio.metodoAHP.pesosglobales_entabla = function(pesos.criterios,
                                                          matriz.pesos.locales) {
@@ -780,7 +793,8 @@ multicriterio.metodoAHP.variante3.basico.coef.inconsistencia = function(Xmatrizv
 #' }
 #'
 #' @examples
-#' mat_cri <- multicriterio.crea.matrizvaloraciones(c(1,2,1/2,1), 2, c("R","Riesgo"))
+#' # Ejemplo 1: dos criterios y dos alternativas (nombres autogenerados)
+#' mat_cri <- multicriterio.crea.matrizvaloraciones(c(1,2,1/2,1), 2, c("Coste","Calidad"))
 #' mat_alt1 <- multicriterio.crea.matrizvaloraciones(c(1,3,1/3,1), 2, c("A","B"))
 #' mat_alt2 <- multicriterio.crea.matrizvaloraciones(c(1,1/2,2,1), 2, c("A","B"))
 #' mat_nivel2 <- array(NA, dim=c(2,2,2))
@@ -788,7 +802,35 @@ multicriterio.metodoAHP.variante3.basico.coef.inconsistencia = function(Xmatrizv
 #' mat_nivel2[,,2] <- mat_alt2
 #' resultado <- multicriterio.metodoAHP.variante3.completo(mat_cri, mat_nivel2)
 #' resultado$pesos.globales
+#' resultado$pesos.globales_entabla
 #'
+#' # Ejemplo 2: tres criterios y tres alternativas con nombres propios en el array
+#' mat_cri <- multicriterio.crea.matrizvaloraciones(c(1,2,3,1/2,1,4,1/3,1/4,1), 3,
+#'                                                 c("C1","C2","C3"))
+#' m1 <- multicriterio.crea.matrizvaloraciones(c(1,2,4,1/2,1,3,1/4,1/3,1), 3,
+#'                                            c("X","Y","Z"))
+#' m2 <- multicriterio.crea.matrizvaloraciones(c(1,3,2,1/3,1,1/2,1/2,2,1), 3,
+#'                                            c("X","Y","Z"))
+#' m3 <- multicriterio.crea.matrizvaloraciones(c(1,1/2,3,2,1,4,1/3,1/4,1), 3,
+#'                                            c("X","Y","Z"))
+#' mat_nivel2 <- array(NA, dim=c(3,3,3),
+#'                     dimnames=list(c("X","Y","Z"), c("X","Y","Z"), c("C1","C2","C3")))
+#' mat_nivel2[,,1] <- m1
+#' mat_nivel2[,,2] <- m2
+#' mat_nivel2[,,3] <- m3
+#' resultado <- multicriterio.metodoAHP.variante3.completo(mat_cri, mat_nivel2)
+#' rownames(resultado$pesos.globales_entabla)
+#'
+#' # Ejemplo 3: consultar la inconsistencia de cada nivel
+#' resultado$inconsistencia.nivel1$mensaje
+#' sapply(resultado$l.inconsistencia.nivel2, function(x) x$mensaje)
+#'
+#' @seealso \code{\link{multicriterio.metodoAHP.variante1.autovectormayorautovalor}},
+#'   \code{\link{multicriterio.metodoAHP.variante2.mediageometrica}},
+#'   \code{\link{multicriterio.metodoAHP.variante3.basico}},
+#'   \code{\link{multicriterio.metodoAHP.coef.inconsistencia}},
+#'   \code{\link{multicriterio.metodoAHP.pesosglobales}},
+#'   \code{\link{multicriterio.metodoAHP.pesosglobales_entabla}}
 #' @export
 multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel2) {
 
@@ -799,18 +841,35 @@ multicriterio.metodoAHP.variante3.completo = function(Xmatriznivel1,Xmatriznivel
   l.inconsistencia.nivel2 = vector("list",num.cri.nivel1)
   l.pesos.nivel2 = vector("list",num.cri.nivel1)
   m.pesos.nivel2 = matrix(NA,nrow = num.cri.nivel1,ncol = num.alt.nivel2)
+  # Nombres de las alternativas (nivel 2), tomados de forma consistente. Se
+  # priorizan los dimnames del array 3D; si no los tiene, los de la primera
+  # matriz de criterio; y si tampoco hay, se autogeneran (a1, a2, ...) para que
+  # la tabla devuelta siempre muestre nombres de alternativas. Al asignar
+  # rebanadas de un array (Xmatriznivel2[, , i] <- mat) R no propaga los
+  # rownames de las matrices individuales al array, por lo que usarlos directo
+  # dentro del bucle devolve NULL y las alternativas quedaban sin nombre.
+  nombres.alternativas = dimnames(Xmatriznivel2)[[1]]
+  if (is.null(nombres.alternativas)) {
+    nombres.alternativas = rownames(Xmatriznivel2[,,1])
+  }
+  if (is.null(nombres.alternativas) ||
+      length(nombres.alternativas) != num.alt.nivel2 ||
+      any(is.na(nombres.alternativas)) ||
+      any(nombres.alternativas == "")) {
+    nombres.alternativas = paste0("a", 1:num.alt.nivel2)
+  }
   for (i in 1:num.cri.nivel1) {
     Xmatriz = Xmatriznivel2[,,i]
     l.inconsistencia.nivel2[[i]] = multicriterio.metodoAHP.coef.inconsistencia(Xmatriz)
     l.pesos.nivel2[[i]] = multicriterio.metodoAHP.variante3.basico(Xmatriz)
     m.pesos.nivel2[i,] = l.pesos.nivel2[[i]]$valoraciones.ahp
   }
-  colnames(m.pesos.nivel2) = rownames(Xmatriz)
+  colnames(m.pesos.nivel2) = nombres.alternativas
   rownames(m.pesos.nivel2) = rownames(Xmatriznivel1)
   pesos.globales = multicriterio.metodoAHP.pesosglobales(pesos.nivel1$valoraciones.ahp,m.pesos.nivel2)
   pesos.globales_entabla = multicriterio.metodoAHP.pesosglobales_entabla(pesos.nivel1$valoraciones.ahp,
                                                                          m.pesos.nivel2)
-  names(pesos.globales) = rownames(Xmatriz)
+  names(pesos.globales) = nombres.alternativas
   salida = list()
   salida$pesos.nivel1 = pesos.nivel1
   salida$l.pesos.nivel2 = l.pesos.nivel2
@@ -1064,6 +1123,7 @@ multicriterio.metodoAHP.pesosglobales_formattable = function(tb.nivel01, l_tb.ni
 #' pesos <- c(0.3, 0.2, 0.4, 0.1)
 #' multicriterio.metodoELECTRE_I(tabdec, pesos, 0.7, c(15, Inf, 2, Inf))
 #'
+#' @seealso \code{\link{multicriterio.metodoelectre_varlibro}}
 #' @export
 multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concordancia.minimo.alpha,no.se.compensan,que.alternativas=TRUE) {
 
@@ -1210,6 +1270,7 @@ multicriterio.metodoELECTRE_I = function(tabdecs.X,pesos.criterios,nivel.concord
 #' Mvalor <- matrix(c(8,25,20,10,75,5,12,35,17,25,100,7), nrow=2, ncol=6, byrow=TRUE)
 #' multicriterio.metodoelectre_varlibro(Mvalor, c(0.15,0.25,0.20,0.10,0.20,0.10))
 #'
+#' @seealso \code{\link{multicriterio.metodoELECTRE_I}}
 #' @export
 multicriterio.metodoelectre_varlibro <- function (Mvalor, pesos.criterios,umbral.c=NA,umbral.d=NA) {
   num.alt = nrow(Mvalor)
@@ -1440,6 +1501,7 @@ fpref.todas = function(cual,vaj,vah,qi=0,pi=1,si=0.5) {
 #'
 #' @return Matriz cuadrada de preferencia multicriterio.
 #'
+#' @examples
 #' X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
 #' pesos <- c(0.5, 0.3, 0.2)
 #' fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
@@ -1447,6 +1509,10 @@ fpref.todas = function(cual,vaj,vah,qi=0,pi=1,si=0.5) {
 #' tab.indices <- indice.prefmulticriterio(X, pesos, fpref)
 #' tab.indices
 #'
+#' @seealso \code{\link{fpref.todas}},
+#'   \code{\link{flujo.entrante.Promethee}},
+#'   \code{\link{multicriterio.metodo.promethee_i}},
+#'   \code{\link{multicriterio.metodo.promethee_ii}}
 #' @export
 indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) {
   validar_matriz_numerica(tabdecs.X)
@@ -1487,6 +1553,7 @@ indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) {
 #'
 #' @return Vector numerico con los flujos.
 #'
+#' @examples
 #' X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
 #' pesos <- c(0.5, 0.3, 0.2)
 #' fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
@@ -1496,6 +1563,11 @@ indice.prefmulticriterio = function(tabdecs.X,pesos.criterios,tab.fpref) {
 #' flujo.saliente.Promethee(tab.indices)
 #' flujo.neto.Promethee(tab.indices)
 #'
+#' @seealso \code{\link{flujo.saliente.Promethee}},
+#'   \code{\link{flujo.neto.Promethee}},
+#'   \code{\link{indice.prefmulticriterio}},
+#'   \code{\link{multicriterio.metodo.promethee_i}},
+#'   \code{\link{multicriterio.metodo.promethee_ii}}
 #' @export
 flujo.entrante.Promethee = function(tab.indices) {
   res = rowSums(tab.indices);
@@ -1527,6 +1599,7 @@ flujo.neto.Promethee = function(tab.indices) {
 #'
 #' @return Vector numerico con los flujos medios.
 #'
+#' @examples
 #' X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
 #' pesos <- c(0.5, 0.3, 0.2)
 #' fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
@@ -1536,6 +1609,11 @@ flujo.neto.Promethee = function(tab.indices) {
 #' flujomed.saliente.Promethee(tab.indices)
 #' flujomed.neto.Promethee(tab.indices)
 #'
+#' @seealso \code{\link{flujomed.saliente.Promethee}},
+#'   \code{\link{flujomed.neto.Promethee}},
+#'   \code{\link{flujo.entrante.Promethee}},
+#'   \code{\link{multicriterio.metodo.promethee_i_med}},
+#'   \code{\link{multicriterio.metodo.promethee_ii_med}}
 #' @export
 flujomed.entrante.Promethee = function(tab.indices) {
   res = rowSums(tab.indices)/(dim(tab.indices)[1]-1);
@@ -1582,6 +1660,9 @@ flujomed.neto.Promethee = function(tab.indices) {
 #' fpref <- data.frame(tipo = c(1,1,1), qi = c(0,0,0), pi = c(5,3,2), si = c(1,1,1))
 #' multicriterio.metodo.promethee_i(X, pesos, fpref)
 #'
+#' @seealso \code{\link{multicriterio.metodo.promethee_ii}},
+#'   \code{\link{flujo.entrante.Promethee}},
+#'   \code{\link{flujo.neto.Promethee}}
 #' @export
 multicriterio.metodo.promethee_i = function(tabdecs.X,pesos.criterios,tab.fpref) {
 
@@ -1641,6 +1722,9 @@ multicriterio.metodo.promethee_i = function(tabdecs.X,pesos.criterios,tab.fpref)
 #' fpref <- data.frame(tipo = c(1,1,1), qi = c(0,0,0), pi = c(5,3,2), si = c(1,1,1))
 #' multicriterio.metodo.promethee_ii(X, pesos, fpref)
 #'
+#' @seealso \code{\link{multicriterio.metodo.promethee_i}},
+#'   \code{\link{flujo.neto.Promethee}},
+#'   \code{\link{flujo.entrante.Promethee}}
 #' @export
 multicriterio.metodo.promethee_ii = function(tabdecs.X,pesos.criterios,tab.fpref) {
 
@@ -1856,6 +1940,7 @@ topsis_construye_salida <- function(metodo, X, pesos.criterios, fminmax, matriz_
 #' res <- multicriterio.metodo.topsis(X, c(0.5, 0.3, 0.2))
 #' res$tabla
 #'
+#' @seealso \code{\link{multicriterio.metodo.topsis_modificado}}
 #' @export
 multicriterio.metodo.topsis = function(tabdecs.X,pesos.criterios,fminmax = NULL) {
 
@@ -1919,6 +2004,7 @@ multicriterio.metodo.topsis = function(tabdecs.X,pesos.criterios,fminmax = NULL)
 #' res <- multicriterio.metodo.topsis_modificado(X, c(0.5, 0.3, 0.2))
 #' res$tabla
 #'
+#' @seealso \code{\link{multicriterio.metodo.topsis}}
 #' @export
 multicriterio.metodo.topsis_modificado = function(tabdecs.X,pesos.criterios,fminmax = NULL) {
 
@@ -1976,6 +2062,7 @@ multicriterio.metodo.topsis_modificado = function(tabdecs.X,pesos.criterios,fmin
 #' Mvalor <- matrix(c(8,25,20,10,75,5), nrow=2, ncol=3, byrow=TRUE)
 #' func_calcula_matrizclasificacion(Mvalor)
 #'
+#' @seealso \code{\link{multicriterio.metodoaxiomatico.ArrowRaymond}}
 #' @export
 func_calcula_matrizclasificacion = function(Mvalor, pesos = NULL) {
   validar_matriz_numerica(Mvalor)
@@ -2029,6 +2116,7 @@ func_calcula_matrizclasificacion = function(Mvalor, pesos = NULL) {
 #' resultado <- multicriterio.metodoaxiomatico.ArrowRaymond(Mvalor)
 #' resultado$alternativasordenadas
 #'
+#' @seealso \code{\link{func_calcula_matrizclasificacion}}
 #' @export
 multicriterio.metodoaxiomatico.ArrowRaymond = function(Mvalor, pesos = NULL) {
 

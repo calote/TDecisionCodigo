@@ -16,15 +16,23 @@ Columnas: tipo funcion, qi, pi, si.}
 }
 \value{
 Matriz cuadrada de preferencia multicriterio.
-
-X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
-pesos <- c(0.5, 0.3, 0.2)
-fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
-pi = c(5, 3, 2), si = c(1, 1, 1))
-tab.indices <- indice.prefmulticriterio(X, pesos, fpref)
-tab.indices
 }
 \description{
 Calcula la matriz de preferencia agregada multicriterio para todos los
 pares de alternativas.
+}
+\examples{
+X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
+pesos <- c(0.5, 0.3, 0.2)
+fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
+                    pi = c(5, 3, 2), si = c(1, 1, 1))
+tab.indices <- indice.prefmulticriterio(X, pesos, fpref)
+tab.indices
+
+}
+\seealso{
+\code{\link{fpref.todas}},
+\code{\link{flujo.entrante.Promethee}},
+\code{\link{multicriterio.metodo.promethee_i}},
+\code{\link{multicriterio.metodo.promethee_ii}}
 }

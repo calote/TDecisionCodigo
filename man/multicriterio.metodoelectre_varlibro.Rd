@@ -47,3 +47,6 @@ Mvalor <- matrix(c(8,25,20,10,75,5,12,35,17,25,100,7), nrow=2, ncol=6, byrow=TRU
 multicriterio.metodoelectre_varlibro(Mvalor, c(0.15,0.25,0.20,0.10,0.20,0.10))
 
 }
+\seealso{
+\code{\link{multicriterio.metodoELECTRE_I}}
+}

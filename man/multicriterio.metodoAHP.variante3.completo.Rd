@@ -28,7 +28,8 @@ Aplica el metodo AHP completo con dos niveles de jerarquia: criterios
 y alternativas para cada criterio.
 }
 \examples{
-mat_cri <- multicriterio.crea.matrizvaloraciones(c(1,2,1/2,1), 2, c("R","Riesgo"))
+# Ejemplo 1: dos criterios y dos alternativas (nombres autogenerados)
+mat_cri <- multicriterio.crea.matrizvaloraciones(c(1,2,1/2,1), 2, c("Coste","Calidad"))
 mat_alt1 <- multicriterio.crea.matrizvaloraciones(c(1,3,1/3,1), 2, c("A","B"))
 mat_alt2 <- multicriterio.crea.matrizvaloraciones(c(1,1/2,2,1), 2, c("A","B"))
 mat_nivel2 <- array(NA, dim=c(2,2,2))
@@ -36,5 +37,35 @@ mat_nivel2[,,1] <- mat_alt1
 mat_nivel2[,,2] <- mat_alt2
 resultado <- multicriterio.metodoAHP.variante3.completo(mat_cri, mat_nivel2)
 resultado$pesos.globales
+resultado$pesos.globales_entabla
 
+# Ejemplo 2: tres criterios y tres alternativas con nombres propios en el array
+mat_cri <- multicriterio.crea.matrizvaloraciones(c(1,2,3,1/2,1,4,1/3,1/4,1), 3,
+                                                c("C1","C2","C3"))
+m1 <- multicriterio.crea.matrizvaloraciones(c(1,2,4,1/2,1,3,1/4,1/3,1), 3,
+                                           c("X","Y","Z"))
+m2 <- multicriterio.crea.matrizvaloraciones(c(1,3,2,1/3,1,1/2,1/2,2,1), 3,
+                                           c("X","Y","Z"))
+m3 <- multicriterio.crea.matrizvaloraciones(c(1,1/2,3,2,1,4,1/3,1/4,1), 3,
+                                           c("X","Y","Z"))
+mat_nivel2 <- array(NA, dim=c(3,3,3),
+                    dimnames=list(c("X","Y","Z"), c("X","Y","Z"), c("C1","C2","C3")))
+mat_nivel2[,,1] <- m1
+mat_nivel2[,,2] <- m2
+mat_nivel2[,,3] <- m3
+resultado <- multicriterio.metodoAHP.variante3.completo(mat_cri, mat_nivel2)
+rownames(resultado$pesos.globales_entabla)
+
+# Ejemplo 3: consultar la inconsistencia de cada nivel
+resultado$inconsistencia.nivel1$mensaje
+sapply(resultado$l.inconsistencia.nivel2, function(x) x$mensaje)
+
+}
+\seealso{
+\code{\link{multicriterio.metodoAHP.variante1.autovectormayorautovalor}},
+\code{\link{multicriterio.metodoAHP.variante2.mediageometrica}},
+\code{\link{multicriterio.metodoAHP.variante3.basico}},
+\code{\link{multicriterio.metodoAHP.coef.inconsistencia}},
+\code{\link{multicriterio.metodoAHP.pesosglobales}},
+\code{\link{multicriterio.metodoAHP.pesosglobales_entabla}}
 }

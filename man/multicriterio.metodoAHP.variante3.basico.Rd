@@ -31,3 +31,8 @@ resultado <- multicriterio.metodoAHP.variante3.basico(Xmat)
 resultado$valoraciones.ahp
 
 }
+\seealso{
+\code{\link{multicriterio.metodoAHP.variante1.autovectormayorautovalor}},
+\code{\link{multicriterio.metodoAHP.variante2.mediageometrica}},
+\code{\link{multicriterio.metodoAHP.coef.inconsistencia}}
+}

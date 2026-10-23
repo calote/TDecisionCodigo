@@ -6,12 +6,6 @@ Universidad de Sevilla).
 
 ## Installation
 
-Install the released version from CRAN (once published):
-
-```r
-install.packages("TDecisionCodigo")
-```
-
 Install the development version from GitHub (branch `master` by default):
 
 ```r
@@ -33,6 +27,12 @@ repository (<https://github.com/calote/TDecisionCodigo/tags>). For
 example, version v0.1.0 contains the functions in the legacy format of
 separate plain R script files: open its tag and download it by clicking
 on the "zip" format.
+
+Install the released version from CRAN (to be published):
+
+```r
+install.packages("TDecisionCodigo")
+```
 
 ## Requirements
 

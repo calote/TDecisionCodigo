@@ -32,3 +32,6 @@ resultado <- multicriterio.metodoaxiomatico.ArrowRaymond(Mvalor)
 resultado$alternativasordenadas
 
 }
+\seealso{
+\code{\link{func_calcula_matrizclasificacion}}
+}

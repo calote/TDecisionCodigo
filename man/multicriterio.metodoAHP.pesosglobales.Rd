@@ -25,3 +25,7 @@ pesos_locales <- matrix(c(0.7, 0.3, 0.4, 0.6), nrow = 2, byrow = TRUE)
 multicriterio.metodoAHP.pesosglobales(pesos_cri, pesos_locales)
 
 }
+\seealso{
+\code{\link{multicriterio.metodoAHP.pesosglobales_entabla}},
+\code{\link{multicriterio.metodoAHP.variante3.completo}}
+}

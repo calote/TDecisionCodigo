@@ -17,16 +17,25 @@ flujo.neto.Promethee(tab.indices)
 }
 \value{
 Vector numerico con los flujos.
-
+}
+\description{
+Funciones para calcular flujos entrantes, salientes y netos en Promethee.
+}
+\examples{
 X <- multicriterio.crea.matrizdecision(c(10, 20, 5, 8, 15, 12), 2, 3)
 pesos <- c(0.5, 0.3, 0.2)
 fpref <- data.frame(tipo = c(1, 1, 1), qi = c(0, 0, 0),
-pi = c(5, 3, 2), si = c(1, 1, 1))
+                    pi = c(5, 3, 2), si = c(1, 1, 1))
 tab.indices <- indice.prefmulticriterio(X, pesos, fpref)
 flujo.entrante.Promethee(tab.indices)
 flujo.saliente.Promethee(tab.indices)
 flujo.neto.Promethee(tab.indices)
+
 }
-\description{
-Funciones para calcular flujos entrantes, salientes y netos en Promethee.
+\seealso{
+\code{\link{flujo.saliente.Promethee}},
+\code{\link{flujo.neto.Promethee}},
+\code{\link{indice.prefmulticriterio}},
+\code{\link{multicriterio.metodo.promethee_i}},
+\code{\link{multicriterio.metodo.promethee_ii}}
 }

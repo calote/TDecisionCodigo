@@ -32,3 +32,8 @@ fpref <- data.frame(tipo = c(1,1,1), qi = c(0,0,0), pi = c(5,3,2), si = c(1,1,1)
 multicriterio.metodo.promethee_ii(X, pesos, fpref)
 
 }
+\seealso{
+\code{\link{multicriterio.metodo.promethee_i}},
+\code{\link{flujo.neto.Promethee}},
+\code{\link{flujo.entrante.Promethee}}
+}

@@ -41,3 +41,6 @@ res <- multicriterio.metodo.topsis_modificado(X, c(0.5, 0.3, 0.2))
 res$tabla
 
 }
+\seealso{
+\code{\link{multicriterio.metodo.topsis}}
+}
