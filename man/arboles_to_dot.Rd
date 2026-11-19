@@ -4,17 +4,29 @@
 \alias{arboles_to_dot}
 \title{Genera codigo DOT (Graphviz) de un arbol de decision}
 \usage{
-arboles_to_dot(tree, rb = NULL, title = NULL, rankdir = "LR")
+arboles_to_dot(
+  tree,
+  rb = NULL,
+  title = NULL,
+  rankdir = "LR",
+  show_values = TRUE,
+  mark_optimal = TRUE
+)
 }
 \arguments{
 \item{tree}{Objeto de clase \code{dtree}.}
 
-\item{rb}{Resultado de \code{\link[=arboles_rollback]{arboles_rollback()}} (se calcula si falta).}
+\item{rb}{Resultado de \code{\link[=arboles_rollback]{arboles_rollback()}} (se calcula si hace falta).}
 
 \item{title}{Titulo opcional del grafico.}
 
 \item{rankdir}{\code{"LR"} (horizontal) o \code{"TB"} (vertical; mejor para
 arboles secuenciales altos en pagina portrait).}
+
+\item{show_values}{Logico: mostrar las esperanzas calculadas.}
+
+\item{mark_optimal}{Logico: marcar en rojo la decision optima y con
+\code{*} el mejor hijo terminal.}
 }
 \value{
 Cadena de caracteres con el codigo DOT.
@@ -31,10 +43,15 @@ El codigo DOT también puede visualizarse sin instalar Graphviz con
 navegador como pagina HTML autocontenida. Para guardar esa vista en
 un fichero PNG se necesita ademas \pkg{webshot2} y un navegador
 Chrome o Chromium, igual que en la exportacion de tablas a PNG.
+
+Con \code{show_values = FALSE} y \code{mark_optimal = FALSE} no aparece ningun
+calculo ni marca de optimo: util para entregar el arbol como ejercicio.
 }
 \examples{
 t31 <- arb_D("ND1",
   A = arb_R("NR1", w1 = arb_P(0.6, arb_T(15000)), w2 = arb_P(0.4, arb_T(8000))))
 cat(arboles_to_dot(arboles_compile_tree(t31)))
+cat(arboles_to_dot(arboles_compile_tree(t31),
+                   show_values = FALSE, mark_optimal = FALSE))
 
 }

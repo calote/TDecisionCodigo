@@ -11,7 +11,9 @@ arboles_draw_tree(
   title = NULL,
   rankdir = "LR",
   dot_file = NULL,
-  dpi = 150
+  dpi = 150,
+  show_values = TRUE,
+  mark_optimal = TRUE
 )
 }
 \arguments{
@@ -29,6 +31,12 @@ extensión de \code{file} (por defecto \code{"svg"}).}
 \item{dot_file}{Donde guardar el \code{.dot} (por defecto, junto a \code{file}).}
 
 \item{dpi}{Resolucion para PNG.}
+
+\item{show_values}{Logico: mostrar las esperanzas calculadas.}
+
+\item{mark_optimal}{Logico: marcar en rojo la decision optima.
+Con ambos en \code{FALSE} el dibujo no contiene ningun calculo: util
+como enunciado de ejercicio para el alumnado.}
 }
 \value{
 \code{file}, invisiblemente. Falla con mensaje claro si \code{dot} no

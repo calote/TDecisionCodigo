@@ -381,11 +381,17 @@ arboles_format_num = function(x, digits = 6) format(x, digits = digits, trim = T
 #' un fichero PNG se necesita ademas \pkg{webshot2} y un navegador
 #' Chrome o Chromium, igual que en la exportacion de tablas a PNG.
 #'
+#' Con `show_values = FALSE` y `mark_optimal = FALSE` no aparece ningun
+#' calculo ni marca de optimo: util para entregar el arbol como ejercicio.
+#'
 #' @param tree Objeto de clase `dtree`.
-#' @param rb Resultado de [arboles_rollback()] (se calcula si falta).
+#' @param rb Resultado de [arboles_rollback()] (se calcula si hace falta).
 #' @param title Titulo opcional del grafico.
 #' @param rankdir `"LR"` (horizontal) o `"TB"` (vertical; mejor para
 #'   arboles secuenciales altos en pagina portrait).
+#' @param show_values Logico: mostrar las esperanzas calculadas.
+#' @param mark_optimal Logico: marcar en rojo la decision optima y con
+#'   `*` el mejor hijo terminal.
 #'
 #' @return Cadena de caracteres con el codigo DOT.
 #'
@@ -393,15 +399,18 @@ arboles_format_num = function(x, digits = 6) format(x, digits = digits, trim = T
 #' t31 <- arb_D("ND1",
 #'   A = arb_R("NR1", w1 = arb_P(0.6, arb_T(15000)), w2 = arb_P(0.4, arb_T(8000))))
 #' cat(arboles_to_dot(arboles_compile_tree(t31)))
+#' cat(arboles_to_dot(arboles_compile_tree(t31),
+#'                    show_values = FALSE, mark_optimal = FALSE))
 #'
 #' @export
-arboles_to_dot = function(tree, rb = NULL, title = NULL, rankdir = "LR") {
+arboles_to_dot = function(tree, rb = NULL, title = NULL, rankdir = "LR",
+                          show_values = TRUE, mark_optimal = TRUE) {
   stopifnot(inherits(tree, "dtree"))
-  if (is.null(rb)) rb = arboles_rollback(tree)
+  if ((show_values || mark_optimal) && is.null(rb)) rb = arboles_rollback(tree)
   nodes = tree$nodes
   edges = tree$edges
-  opt_children = unique(unlist(rb$optimal))
-  starred = arboles_starred_terminals(tree)
+  opt_children = if (mark_optimal) unique(unlist(rb$optimal)) else character()
+  starred = if (mark_optimal) arboles_starred_terminals(tree) else character()
   L = c("digraph dtree {", paste0("  rankdir=", rankdir, ";"),
         '  graph [fontname="DejaVu Sans"];',
         '  node [fontname="DejaVu Sans", fontsize=11];',
@@ -414,9 +423,11 @@ arboles_to_dot = function(tree, rb = NULL, title = NULL, rankdir = "LR") {
     if (tp == "D") {
       L = c(L, sprintf('  "%s" [shape=box, style=filled, fillcolor="#dbeafe", label="%s"];', id, id))
     } else if (tp == "R") {
-      col = if (id %in% opt_children) ", color=red, penwidth=2.5" else ""
-      L = c(L, sprintf('  "%s" [shape=circle%s, label="%s\\n\u03bc = %s"];',
-                       id, col, id, arboles_format_num(rb$values[[id]])))
+      col = if (mark_optimal && id %in% opt_children) ", color=red, penwidth=2.5" else ""
+      lab = id
+      if (show_values)
+        lab = paste0(lab, "\\n\u03bc = ", arboles_format_num(rb$values[[id]]))
+      L = c(L, sprintf('  "%s" [shape=circle%s, label="%s"];', id, col, lab))
     } else {
       lab = arboles_format_num(tree$payoff[[id]])
       st = if (id %in% starred) ', style=filled, fillcolor="#fef9c3"' else ""
@@ -429,7 +440,7 @@ arboles_to_dot = function(tree, rb = NULL, title = NULL, rankdir = "LR") {
     to = edges$to[e]
     lab = edges$label[e]
     if (!is.na(edges$prob[e])) lab = sprintf("%s, %s", lab, arboles_format_num(edges$prob[e]))
-    red = fr %in% names(rb$optimal) && to %in% rb$optimal[[fr]]
+    red = mark_optimal && fr %in% names(rb$optimal) && to %in% rb$optimal[[fr]]
     st = if (red) ", color=red, penwidth=2.5" else ""
     L = c(L, sprintf('  "%s" -> "%s" [label="%s"%s];', fr, to, lab, st))
   }
@@ -466,6 +477,10 @@ arboles_to_dot = function(tree, rb = NULL, title = NULL, rankdir = "LR") {
 #' @param title Titulo opcional del grafico.
 #' @param rankdir `"LR"` (horizontal) o `"TB"` (vertical).
 #' @param dot_file Donde guardar el `.dot` (por defecto, junto a `file`).
+#' @param show_values Logico: mostrar las esperanzas calculadas.
+#' @param mark_optimal Logico: marcar en rojo la decision optima.
+#'   Con ambos en `FALSE` el dibujo no contiene ningun calculo: util
+#'   como enunciado de ejercicio para el alumnado.
 #' @param dpi Resolucion para PNG.
 #'
 #' @return `file`, invisiblemente. Falla con mensaje claro si `dot` no
@@ -480,7 +495,7 @@ arboles_to_dot = function(tree, rb = NULL, title = NULL, rankdir = "LR") {
 #' @export
 arboles_draw_tree = function(tree, file, format = c("svg", "png"),
                              title = NULL, rankdir = "LR", dot_file = NULL,
-                             dpi = 150) {
+                             dpi = 150, show_values = TRUE, mark_optimal = TRUE) {
   if (missing(format)) {
     bn = basename(file)
     ext = if (grepl(".", bn, fixed = TRUE)) tolower(sub("^.*\\.([^.]+)$", "\\1", bn)) else ""
@@ -500,7 +515,8 @@ arboles_draw_tree = function(tree, file, format = c("svg", "png"),
          "Windows: `winget install graphviz.graphviz`), ",
          "reinicia RStudio y reintenta. Ver `?arboles_draw_tree`.")
   }
-  dot = arboles_to_dot(tree, title = title, rankdir = rankdir)
+  dot = arboles_to_dot(tree, title = title, rankdir = rankdir,
+                       show_values = show_values, mark_optimal = mark_optimal)
   if (is.null(dot_file)) dot_file = sub("\\.[^.]+$", ".dot", file)
   writeLines(dot, dot_file)
   args = c(paste0("-T", format), dot_file, "-o", file)
@@ -520,10 +536,15 @@ arboles_draw_tree = function(tree, file, format = c("svg", "png"),
 #' (`linkStyle`). Sin triangulos (Mermaid no los tiene): los terminales
 #' son paralelogramos.
 #'
+#' Con `show_values = FALSE` y `mark_optimal = FALSE` no aparece ningun
+#' calculo ni marca de optimo: util para entregar el arbol como ejercicio.
+#'
 #' @param tree Objeto de clase `dtree`.
 #' @param rb Resultado de [arboles_rollback()] (se calcula si falta).
 #' @param title Titulo opcional (cabecera YAML del `.mmd`).
 #' @param rankdir `"LR"` (-> `flowchart LR`) o `"TB"` (-> `flowchart TD`).
+#' @param show_values Logico: mostrar las esperanzas calculadas.
+#' @param mark_optimal Logico: marcar en rojo la decision optima.
 #'
 #' @return Cadena de caracteres con el codigo Mermaid.
 #'
@@ -531,24 +552,29 @@ arboles_draw_tree = function(tree, file, format = c("svg", "png"),
 #' t31 <- arb_D("ND1",
 #'   A = arb_R("NR1", w1 = arb_P(0.6, arb_T(15000)), w2 = arb_P(0.4, arb_T(8000))))
 #' cat(arboles_to_mermaid(arboles_compile_tree(t31)))
+#' cat(arboles_to_mermaid(arboles_compile_tree(t31),
+#'                        show_values = FALSE, mark_optimal = FALSE))
 #'
 #' @export
-arboles_to_mermaid = function(tree, rb = NULL, title = NULL, rankdir = "LR") {
+arboles_to_mermaid = function(tree, rb = NULL, title = NULL, rankdir = "LR",
+                               show_values = TRUE, mark_optimal = TRUE) {
   stopifnot(inherits(tree, "dtree"))
-  if (is.null(rb)) rb = arboles_rollback(tree)
+  if ((show_values || mark_optimal) && is.null(rb)) rb = arboles_rollback(tree)
   nodes = tree$nodes
   edges = tree$edges
   L = sprintf("flowchart %s", if (rankdir == "TB") "TD" else "LR")
   if (!is.null(title)) L = c("---", sprintf("title: %s", title), "---", L)
-  starred = arboles_starred_terminals(tree)
+  starred = if (mark_optimal) arboles_starred_terminals(tree) else character()
   for (i in seq_len(nrow(nodes))) {
     id = nodes$id[i]
     tp = nodes$type[i]
     if (tp == "D") {
       L = c(L, sprintf("  %s[%s]", id, id))
     } else if (tp == "R") {
-      L = c(L, sprintf("  %s((%s<br/>\u03bc = %s))", id, id,
-                       arboles_format_num(rb$values[[id]])))
+      lab = id
+      if (show_values)
+        lab = paste0(lab, "<br/>\u03bc = ", arboles_format_num(rb$values[[id]]))
+      L = c(L, sprintf("  %s((%s))", id, lab))
     } else {
       lab = arboles_format_num(tree$payoff[[id]])
       if (id %in% starred) lab = paste0(lab, " *")
@@ -563,7 +589,7 @@ arboles_to_mermaid = function(tree, rb = NULL, title = NULL, rankdir = "LR") {
     lab = edges$label[e]
     if (!is.na(edges$prob[e])) lab = sprintf("%s, %s", lab, arboles_format_num(edges$prob[e]))
     L = c(L, sprintf("  %s -->|%s| %s", fr, lab, to))
-    if (fr %in% names(rb$optimal) && to %in% rb$optimal[[fr]])
+    if (mark_optimal && fr %in% names(rb$optimal) && to %in% rb$optimal[[fr]])
       styles = c(styles, sprintf("  linkStyle %d stroke:#d00,stroke-width:3px", idx))
     idx = idx + 1L
   }
@@ -586,6 +612,10 @@ arboles_to_mermaid = function(tree, rb = NULL, title = NULL, rankdir = "LR") {
 #' @param mmd_file Donde guardar el `.mmd` (por defecto, junto a `file`).
 #' @param background Color de fondo (`-b` de mmdc).
 #' @param scale Escala para PNG (`--scale` de mmdc).
+#' @param show_values Lógico: mostrar las esperanzas calculadas.
+#' @param mark_optimal Lógico: marcar en rojo la decisión óptima.
+#'   Con ambos en `FALSE` no hay ningún cálculo ni marca: útil como
+#'   enunciado de ejercicio para el alumnado.
 #'
 #' @return `file` (o el `.mmd` si `format = "mmd"`), invisiblemente.
 #'
@@ -598,9 +628,11 @@ arboles_to_mermaid = function(tree, rb = NULL, title = NULL, rankdir = "LR") {
 #' @export
 arboles_draw_mermaid = function(tree, file, format = c("png", "svg", "pdf", "mmd"),
                                 title = NULL, rankdir = "LR", mmd_file = NULL,
-                                background = "white", scale = 2) {
+                                background = "white", scale = 2,
+                                show_values = TRUE, mark_optimal = TRUE) {
   format = match.arg(format)
-  code = arboles_to_mermaid(tree, title = title, rankdir = rankdir)
+  code = arboles_to_mermaid(tree, title = title, rankdir = rankdir,
+                             show_values = show_values, mark_optimal = mark_optimal)
   if (is.null(mmd_file))
     mmd_file = paste0(arboles_sin_extension(file), ".mmd")
   writeLines(code, mmd_file)

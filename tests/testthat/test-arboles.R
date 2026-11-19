@@ -127,3 +127,17 @@ test_that("arboles: draw_mermaid solo guarda .mmd sin mmdc", {
   expect_true(file.exists(out))
   expect_true(any(grepl("flowchart", readLines(out, warn = FALSE), fixed = TRUE)))
 })
+
+test_that("arboles: modo enunciado (sin valores ni óptimo)", {
+  tr <- arboles_compile_tree(arb_D("ND1",
+    A = arb_R("NR1", w1 = arb_P(0.6, arb_T(15000)), w2 = arb_P(0.4, arb_T(8000)))))
+  d <- arboles_to_dot(tr, show_values = FALSE, mark_optimal = FALSE)
+  expect_false(grepl("\u03bc", d, fixed = TRUE))
+  expect_false(grepl("red", d, fixed = TRUE))
+  expect_false(grepl("15000 *", d, fixed = TRUE))
+  expect_true(grepl("NR1", d, fixed = TRUE))
+  expect_true(grepl("15000", d, fixed = TRUE))  # los pagos son datos: se quedan
+  m <- arboles_to_mermaid(tr, show_values = FALSE, mark_optimal = FALSE)
+  expect_false(grepl("\u03bc", m, fixed = TRUE))
+  expect_false(grepl("linkStyle", m, fixed = TRUE))
+})

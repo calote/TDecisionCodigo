@@ -12,7 +12,9 @@ arboles_draw_mermaid(
   rankdir = "LR",
   mmd_file = NULL,
   background = "white",
-  scale = 2
+  scale = 2,
+  show_values = TRUE,
+  mark_optimal = TRUE
 )
 }
 \arguments{
@@ -32,6 +34,12 @@ codigo fuente).}
 \item{background}{Color de fondo (\code{-b} de mmdc).}
 
 \item{scale}{Escala para PNG (\code{--scale} de mmdc).}
+
+\item{show_values}{Lógico: mostrar las esperanzas calculadas.}
+
+\item{mark_optimal}{Lógico: marcar en rojo la decisión óptima.
+Con ambos en \code{FALSE} no hay ningún cálculo ni marca: útil como
+enunciado de ejercicio para el alumnado.}
 }
 \value{
 \code{file} (o el \code{.mmd} si \code{format = "mmd"}), invisiblemente.

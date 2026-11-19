@@ -4,7 +4,14 @@
 \alias{arboles_to_mermaid}
 \title{Genera codigo \code{flowchart} Mermaid de un arbol de decision}
 \usage{
-arboles_to_mermaid(tree, rb = NULL, title = NULL, rankdir = "LR")
+arboles_to_mermaid(
+  tree,
+  rb = NULL,
+  title = NULL,
+  rankdir = "LR",
+  show_values = TRUE,
+  mark_optimal = TRUE
+)
 }
 \arguments{
 \item{tree}{Objeto de clase \code{dtree}.}
@@ -14,6 +21,10 @@ arboles_to_mermaid(tree, rb = NULL, title = NULL, rankdir = "LR")
 \item{title}{Titulo opcional (cabecera YAML del \code{.mmd}).}
 
 \item{rankdir}{\code{"LR"} (-> \verb{flowchart LR}) o \code{"TB"} (-> \verb{flowchart TD}).}
+
+\item{show_values}{Logico: mostrar las esperanzas calculadas.}
+
+\item{mark_optimal}{Logico: marcar en rojo la decision optima.}
 }
 \value{
 Cadena de caracteres con el codigo Mermaid.
@@ -24,9 +35,15 @@ Equivalente a \code{\link[=arboles_to_dot]{arboles_to_dot()}} en sintaxis Mermai
 (\code{linkStyle}). Sin triangulos (Mermaid no los tiene): los terminales
 son paralelogramos.
 }
+\details{
+Con \code{show_values = FALSE} y \code{mark_optimal = FALSE} no aparece ningun
+calculo ni marca de optimo: util para entregar el arbol como ejercicio.
+}
 \examples{
 t31 <- arb_D("ND1",
   A = arb_R("NR1", w1 = arb_P(0.6, arb_T(15000)), w2 = arb_P(0.4, arb_T(8000))))
 cat(arboles_to_mermaid(arboles_compile_tree(t31)))
+cat(arboles_to_mermaid(arboles_compile_tree(t31),
+                       show_values = FALSE, mark_optimal = FALSE))
 
 }

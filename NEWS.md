@@ -8,7 +8,10 @@
   VEIP, `arboles_to_dot()` / `arboles_draw_tree()` (Graphviz) and
   `arboles_to_mermaid()` / `arboles_draw_mermaid()` (Mermaid) to draw
   them, plus `arboles_emit_nested_table()` / `arboles_typst_table_image()`
-  for two-level Typst tables.
+  for two-level Typst tables. Drawing functions accept `show_values`
+  and `mark_optimal` (both on by default); with both `FALSE` the tree
+  carries no computed values or optimal markings, for use as a
+  student exercise.
 
 # TDecisionCodigo 0.3.1
 
