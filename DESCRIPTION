@@ -27,6 +27,7 @@ Imports:
     utils
 Suggests:
     diagram,
+    DiagrammeR,
     dplyr,
     factoextra,
     ggrepel,

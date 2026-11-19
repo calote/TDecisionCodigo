@@ -25,6 +25,13 @@ triangulo = pago terminal; en rojo las ramas optimas de decision y el
 nodo de riesgo al que llevan; \code{*} en el mejor hijo terminal de cada
 nodo de riesgo.
 }
+\details{
+El codigo DOT también puede visualizarse sin instalar Graphviz con
+\code{DiagrammeR::grViz()}, que lo muestra en el visor de RStudio o en el
+navegador como pagina HTML autocontenida. Para guardar esa vista en
+un fichero PNG se necesita ademas \pkg{webshot2} y un navegador
+Chrome o Chromium, igual que en la exportacion de tablas a PNG.
+}
 \examples{
 t31 <- arb_D("ND1",
   A = arb_R("NR1", w1 = arb_P(0.6, arb_T(15000)), w2 = arb_P(0.4, arb_T(8000))))

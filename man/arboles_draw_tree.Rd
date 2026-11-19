@@ -19,7 +19,8 @@ arboles_draw_tree(
 
 \item{file}{Fichero de salida (extension segun \code{format}).}
 
-\item{format}{\code{"svg"} o \code{"png"}.}
+\item{format}{\code{"svg"} o \code{"png"}. Si se omite, se deduce de la
+extensión de \code{file} (por defecto \code{"svg"}).}
 
 \item{title}{Titulo opcional del grafico.}
 
@@ -39,6 +40,25 @@ programa \code{dot} (Graphviz). Guarda el \code{.dot} junto a la imagen, para
 transparencia y reproducibilidad. Recomendado para docencia: un solo
 \verb{apt install graphviz}, sin navegador ni Node.
 }
+\section{Dependencia externa}{
+
+Solo el dibujo necesita Graphviz; los cálculos
+(\code{\link[=arboles_compile_tree]{arboles_compile_tree()}}, \code{\link[=arboles_rollback]{arboles_rollback()}},
+\code{\link[=arboles_decision_table]{arboles_decision_table()}}) funcionan sin él. Instalación:
+\itemize{
+\item Linux (Debian/Ubuntu): \verb{sudo apt install graphviz}
+(Fedora: \verb{sudo dnf install graphviz}; Arch: \verb{sudo pacman -S graphviz}).
+\item macOS (Homebrew): \verb{brew install graphviz}.
+\item Windows: \verb{winget install graphviz.graphviz} o el instalador de
+\url{https://graphviz.org/download/} (marcar la casilla de añadir
+Graphviz al PATH).
+}
+
+Tras instalar, reinicia RStudio y comprueba en la consola R que
+\code{Sys.which("dot")} devuelve una ruta (si sigue vacío en macOS,
+abre RStudio desde el terminal con \verb{open -a RStudio}).
+}
+
 \examples{
 \dontrun{
 tr <- arboles_compile_tree(arb_D("ND1", A = arb_T(10)))

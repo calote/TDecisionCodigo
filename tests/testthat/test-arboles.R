@@ -102,6 +102,24 @@ test_that("arboles: draw_tree a SVG si hay Graphviz", {
   expect_true(any(grepl("<svg", readLines(f, warn = FALSE), fixed = TRUE)))
 })
 
+test_that("arboles: draw_tree deduce el formato de la extension", {
+  testthat::skip_if_not(nzchar(Sys.which("dot")), "Graphviz no instalado")
+  tr <- arboles_compile_tree(arb_D("ND1", A = arb_T(10)))
+  f <- tempfile(fileext = ".png")
+  testthat::expect_no_warning(arboles_draw_tree(tr, f))
+  # PNG real: firma de 8 bytes %89PNG\r\n\032\n
+  magic <- readBin(f, "raw", n = 8)
+  expect_equal(magic, as.raw(c(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a)))
+})
+
+test_that("arboles: draw_tree avisa si formato y extension no coinciden", {
+  testthat::skip_if_not(nzchar(Sys.which("dot")), "Graphviz no instalado")
+  tr <- arboles_compile_tree(arb_D("ND1", A = arb_T(10)))
+  f <- tempfile(fileext = ".png")
+  expect_warning(arboles_draw_tree(tr, f, format = "svg"), "no coincide")
+  expect_true(any(grepl("<svg", readLines(f, warn = FALSE), fixed = TRUE)))
+})
+
 test_that("arboles: draw_mermaid solo guarda .mmd sin mmdc", {
   tr <- arboles_compile_tree(arb_D("ND1", A = arb_T(10)))
   f <- tempfile(fileext = ".png")

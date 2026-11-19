@@ -57,6 +57,20 @@ install.packages("TDecisionCodigo")
   * `dplyr`: PROMETHEE Windows calculations.
 * A LaTeX installation (e.g. TinyTeX) is only needed to compile PDF
   documents and for table export to PDF.
+* Graphviz (`dot`) is only needed to draw decision trees with
+  `arboles_draw_tree()`; all tree computations work without it.
+  Install it with `sudo apt install graphviz` (Debian/Ubuntu),
+  `brew install graphviz` (macOS, Homebrew) or
+  `winget install graphviz.graphviz` (Windows, tick "add to PATH";
+  installers also at <https://graphviz.org/download/>). Afterwards
+  restart RStudio and check `Sys.which("dot")` in the R console.
+* Mermaid diagrams (`arboles_to_mermaid()` plus `{mermaid}` chunks in
+  Quarto documents) need nothing installed for HTML output, since
+  Quarto bundles mermaid.js. For Typst/PDF output, however, Quarto
+  converts them with mermaid-cli on first render, which requires
+  Node.js, network access and Chrome/Chromium. For static teaching
+  PDFs without a browser toolchain, `arboles_draw_tree()` (Graphviz)
+  is the simpler option.
 
 ## Overview
 

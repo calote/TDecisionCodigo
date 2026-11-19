@@ -375,6 +375,12 @@ arboles_format_num = function(x, digits = 6) format(x, digits = digits, trim = T
 #' nodo de riesgo al que llevan; `*` en el mejor hijo terminal de cada
 #' nodo de riesgo.
 #'
+#' El codigo DOT también puede visualizarse sin instalar Graphviz con
+#' `DiagrammeR::grViz()`, que lo muestra en el visor de RStudio o en el
+#' navegador como pagina HTML autocontenida. Para guardar esa vista en
+#' un fichero PNG se necesita ademas \pkg{webshot2} y un navegador
+#' Chrome o Chromium, igual que en la exportacion de tablas a PNG.
+#'
 #' @param tree Objeto de clase `dtree`.
 #' @param rb Resultado de [arboles_rollback()] (se calcula si falta).
 #' @param title Titulo opcional del grafico.
@@ -437,9 +443,26 @@ arboles_to_dot = function(tree, rb = NULL, title = NULL, rankdir = "LR") {
 #' transparencia y reproducibilidad. Recomendado para docencia: un solo
 #' `apt install graphviz`, sin navegador ni Node.
 #'
+#' @section Dependencia externa:
+#' Solo el dibujo necesita Graphviz; los cálculos
+#' ([arboles_compile_tree()], [arboles_rollback()],
+#' [arboles_decision_table()]) funcionan sin él. Instalación:
+#'
+#' * Linux (Debian/Ubuntu): `sudo apt install graphviz`
+#'   (Fedora: `sudo dnf install graphviz`; Arch: `sudo pacman -S graphviz`).
+#' * macOS (Homebrew): `brew install graphviz`.
+#' * Windows: `winget install graphviz.graphviz` o el instalador de
+#'   <https://graphviz.org/download/> (marcar la casilla de añadir
+#'   Graphviz al PATH).
+#'
+#' Tras instalar, reinicia RStudio y comprueba en la consola R que
+#' `Sys.which("dot")` devuelve una ruta (si sigue vacío en macOS,
+#' abre RStudio desde el terminal con `open -a RStudio`).
+#'
 #' @param tree Objeto de clase `dtree`.
 #' @param file Fichero de salida (extension segun `format`).
-#' @param format `"svg"` o `"png"`.
+#' @param format `"svg"` o `"png"`. Si se omite, se deduce de la
+#'   extensión de `file` (por defecto `"svg"`).
 #' @param title Titulo opcional del grafico.
 #' @param rankdir `"LR"` (horizontal) o `"TB"` (vertical).
 #' @param dot_file Donde guardar el `.dot` (por defecto, junto a `file`).
@@ -458,8 +481,25 @@ arboles_to_dot = function(tree, rb = NULL, title = NULL, rankdir = "LR") {
 arboles_draw_tree = function(tree, file, format = c("svg", "png"),
                              title = NULL, rankdir = "LR", dot_file = NULL,
                              dpi = 150) {
+  if (missing(format)) {
+    bn = basename(file)
+    ext = if (grepl(".", bn, fixed = TRUE)) tolower(sub("^.*\\.([^.]+)$", "\\1", bn)) else ""
+    if (ext %in% c("svg", "png")) format = ext
+  }
   format = match.arg(format)
-  if (Sys.which("dot") == "") stop("Graphviz (`dot`) no est\u00e1 en el PATH")
+  bn = basename(file)
+  ext = if (grepl(".", bn, fixed = TRUE)) tolower(sub("^.*\\.([^.]+)$", "\\1", bn)) else ""
+  if (nzchar(ext) && ext != format) {
+    warning("La extensi\u00f3n de `file` ('", ext, "') no coincide con ",
+            "`format = \"", format, "\"`; el fichero se escribe en formato ", format, ".")
+  }
+  if (Sys.which("dot") == "") {
+    stop("Graphviz (`dot`) no est\u00e1 en el PATH. ",
+         "Inst\u00e1lalo (Linux: `sudo apt install graphviz`; ",
+         "macOS: `brew install graphviz`; ",
+         "Windows: `winget install graphviz.graphviz`), ",
+         "reinicia RStudio y reintenta. Ver `?arboles_draw_tree`.")
+  }
   dot = arboles_to_dot(tree, title = title, rankdir = rankdir)
   if (is.null(dot_file)) dot_file = sub("\\.[^.]+$", ".dot", file)
   writeLines(dot, dot_file)
