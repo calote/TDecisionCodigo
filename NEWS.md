@@ -1,3 +1,15 @@
+# TDecisionCodigo (development version)
+
+* New family of decision-tree helpers with prefix `arb_` (DSL) and
+  `arboles_` (computations and drawing): `arb_T()`, `arb_P()`,
+  `arb_R()`, `arb_D()` to specify trees, `arboles_compile_tree()` /
+  `arboles_from_dataframes()` to validate them, `arboles_rollback()`
+  for backward induction, `arboles_decision_table()` for EMV/REMA/REIP/
+  VEIP, `arboles_to_dot()` / `arboles_draw_tree()` (Graphviz) and
+  `arboles_to_mermaid()` / `arboles_draw_mermaid()` (Mermaid) to draw
+  them, plus `arboles_emit_nested_table()` / `arboles_typst_table_image()`
+  for two-level Typst tables.
+
 # TDecisionCodigo 0.3.1
 
 ## Development changes
