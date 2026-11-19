@@ -10,7 +10,8 @@ arboles_to_dot(
   title = NULL,
   rankdir = "LR",
   show_values = TRUE,
-  mark_optimal = TRUE
+  mark_optimal = TRUE,
+  mark_starred = FALSE
 )
 }
 \arguments{
@@ -25,8 +26,12 @@ arboles secuenciales altos en pagina portrait).}
 
 \item{show_values}{Logico: mostrar las esperanzas calculadas.}
 
-\item{mark_optimal}{Logico: marcar en rojo la decision optima y con
-\code{*} el mejor hijo terminal.}
+\item{mark_optimal}{Logico: marcar en rojo la decision optima y el
+nodo de riesgo al que lleva.}
+
+\item{mark_starred}{Logico: resaltar en amarillo y con \code{*} el mejor
+hijo terminal de cada nodo de riesgo (para el REIP). Por defecto
+\code{FALSE}.}
 }
 \value{
 Cadena de caracteres con el codigo DOT.
@@ -34,8 +39,10 @@ Cadena de caracteres con el codigo DOT.
 \description{
 Cuadrado = decision, circulo = riesgo (con su media (mu) calculada),
 triangulo = pago terminal; en rojo las ramas optimas de decision y el
-nodo de riesgo al que llevan; \code{*} en el mejor hijo terminal de cada
-nodo de riesgo.
+nodo de riesgo al que llevan. Con \code{mark_starred = TRUE} se rellenan
+en amarillo y se marcan con \code{*} los mejores hijos terminales de cada
+nodo de riesgo (util para el calculo del REIP); por defecto no se
+marcan porque graficamente se usa poco.
 }
 \details{
 El codigo DOT también puede visualizarse sin instalar Graphviz con
@@ -51,6 +58,7 @@ calculo ni marca de optimo: util para entregar el arbol como ejercicio.
 t31 <- arb_D("ND1",
   A = arb_R("NR1", w1 = arb_P(0.6, arb_T(15000)), w2 = arb_P(0.4, arb_T(8000))))
 cat(arboles_to_dot(arboles_compile_tree(t31)))
+cat(arboles_to_dot(arboles_compile_tree(t31), mark_starred = TRUE))
 cat(arboles_to_dot(arboles_compile_tree(t31),
                    show_values = FALSE, mark_optimal = FALSE))
 

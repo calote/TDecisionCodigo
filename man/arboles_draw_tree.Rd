@@ -13,7 +13,8 @@ arboles_draw_tree(
   dot_file = NULL,
   dpi = 150,
   show_values = TRUE,
-  mark_optimal = TRUE
+  mark_optimal = TRUE,
+  mark_starred = FALSE
 )
 }
 \arguments{
@@ -37,6 +38,10 @@ extensión de \code{file} (por defecto \code{"svg"}).}
 \item{mark_optimal}{Logico: marcar en rojo la decision optima.
 Con ambos en \code{FALSE} el dibujo no contiene ningun calculo: util
 como enunciado de ejercicio para el alumnado.}
+
+\item{mark_starred}{Logico: resaltar en amarillo y con \code{*} el mejor
+hijo terminal de cada nodo de riesgo (para el REIP). Por defecto
+\code{FALSE}.}
 }
 \value{
 \code{file}, invisiblemente. Falla con mensaje claro si \code{dot} no

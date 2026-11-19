@@ -12,6 +12,11 @@
   and `mark_optimal` (both on by default); with both `FALSE` the tree
   carries no computed values or optimal markings, for use as a
   student exercise.
+* `arboles_aleatorio()` generates complete decision-tree problems
+  (structure, rollback solution and DOT/Mermaid code) with tunable
+  difficulty and reproducible seed, for teaching exercises.
+* `mark_starred = FALSE` by default in tree drawings: the yellow fill
+  and `*` of best terminal children (for REIP) only appear when enabled.
 
 # TDecisionCodigo 0.3.1
 

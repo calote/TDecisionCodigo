@@ -372,8 +372,10 @@ arboles_format_num = function(x, digits = 6) format(x, digits = digits, trim = T
 #'
 #' Cuadrado = decision, circulo = riesgo (con su media (mu) calculada),
 #' triangulo = pago terminal; en rojo las ramas optimas de decision y el
-#' nodo de riesgo al que llevan; `*` en el mejor hijo terminal de cada
-#' nodo de riesgo.
+#' nodo de riesgo al que llevan. Con `mark_starred = TRUE` se rellenan
+#' en amarillo y se marcan con `*` los mejores hijos terminales de cada
+#' nodo de riesgo (util para el calculo del REIP); por defecto no se
+#' marcan porque graficamente se usa poco.
 #'
 #' El codigo DOT también puede visualizarse sin instalar Graphviz con
 #' `DiagrammeR::grViz()`, que lo muestra en el visor de RStudio o en el
@@ -390,8 +392,11 @@ arboles_format_num = function(x, digits = 6) format(x, digits = digits, trim = T
 #' @param rankdir `"LR"` (horizontal) o `"TB"` (vertical; mejor para
 #'   arboles secuenciales altos en pagina portrait).
 #' @param show_values Logico: mostrar las esperanzas calculadas.
-#' @param mark_optimal Logico: marcar en rojo la decision optima y con
-#'   `*` el mejor hijo terminal.
+#' @param mark_optimal Logico: marcar en rojo la decision optima y el
+#'   nodo de riesgo al que lleva.
+#' @param mark_starred Logico: resaltar en amarillo y con `*` el mejor
+#'   hijo terminal de cada nodo de riesgo (para el REIP). Por defecto
+#'   `FALSE`.
 #'
 #' @return Cadena de caracteres con el codigo DOT.
 #'
@@ -399,18 +404,20 @@ arboles_format_num = function(x, digits = 6) format(x, digits = digits, trim = T
 #' t31 <- arb_D("ND1",
 #'   A = arb_R("NR1", w1 = arb_P(0.6, arb_T(15000)), w2 = arb_P(0.4, arb_T(8000))))
 #' cat(arboles_to_dot(arboles_compile_tree(t31)))
+#' cat(arboles_to_dot(arboles_compile_tree(t31), mark_starred = TRUE))
 #' cat(arboles_to_dot(arboles_compile_tree(t31),
 #'                    show_values = FALSE, mark_optimal = FALSE))
 #'
 #' @export
 arboles_to_dot = function(tree, rb = NULL, title = NULL, rankdir = "LR",
-                          show_values = TRUE, mark_optimal = TRUE) {
+                          show_values = TRUE, mark_optimal = TRUE,
+                          mark_starred = FALSE) {
   stopifnot(inherits(tree, "dtree"))
   if ((show_values || mark_optimal) && is.null(rb)) rb = arboles_rollback(tree)
   nodes = tree$nodes
   edges = tree$edges
   opt_children = if (mark_optimal) unique(unlist(rb$optimal)) else character()
-  starred = if (mark_optimal) arboles_starred_terminals(tree) else character()
+  starred = if (mark_starred) arboles_starred_terminals(tree) else character()
   L = c("digraph dtree {", paste0("  rankdir=", rankdir, ";"),
         '  graph [fontname="DejaVu Sans"];',
         '  node [fontname="DejaVu Sans", fontsize=11];',
@@ -481,6 +488,9 @@ arboles_to_dot = function(tree, rb = NULL, title = NULL, rankdir = "LR",
 #' @param mark_optimal Logico: marcar en rojo la decision optima.
 #'   Con ambos en `FALSE` el dibujo no contiene ningun calculo: util
 #'   como enunciado de ejercicio para el alumnado.
+#' @param mark_starred Logico: resaltar en amarillo y con `*` el mejor
+#'   hijo terminal de cada nodo de riesgo (para el REIP). Por defecto
+#'   `FALSE`.
 #' @param dpi Resolucion para PNG.
 #'
 #' @return `file`, invisiblemente. Falla con mensaje claro si `dot` no
@@ -495,7 +505,8 @@ arboles_to_dot = function(tree, rb = NULL, title = NULL, rankdir = "LR",
 #' @export
 arboles_draw_tree = function(tree, file, format = c("svg", "png"),
                              title = NULL, rankdir = "LR", dot_file = NULL,
-                             dpi = 150, show_values = TRUE, mark_optimal = TRUE) {
+                             dpi = 150, show_values = TRUE, mark_optimal = TRUE,
+                             mark_starred = FALSE) {
   if (missing(format)) {
     bn = basename(file)
     ext = if (grepl(".", bn, fixed = TRUE)) tolower(sub("^.*\\.([^.]+)$", "\\1", bn)) else ""
@@ -516,7 +527,8 @@ arboles_draw_tree = function(tree, file, format = c("svg", "png"),
          "reinicia RStudio y reintenta. Ver `?arboles_draw_tree`.")
   }
   dot = arboles_to_dot(tree, title = title, rankdir = rankdir,
-                       show_values = show_values, mark_optimal = mark_optimal)
+                       show_values = show_values, mark_optimal = mark_optimal,
+                       mark_starred = mark_starred)
   if (is.null(dot_file)) dot_file = sub("\\.[^.]+$", ".dot", file)
   writeLines(dot, dot_file)
   args = c(paste0("-T", format), dot_file, "-o", file)
@@ -545,6 +557,8 @@ arboles_draw_tree = function(tree, file, format = c("svg", "png"),
 #' @param rankdir `"LR"` (-> `flowchart LR`) o `"TB"` (-> `flowchart TD`).
 #' @param show_values Logico: mostrar las esperanzas calculadas.
 #' @param mark_optimal Logico: marcar en rojo la decision optima.
+#' @param mark_starred Logico: marcar con `*` el mejor hijo terminal de
+#'   cada nodo de riesgo (para el REIP). Por defecto `FALSE`.
 #'
 #' @return Cadena de caracteres con el codigo Mermaid.
 #'
@@ -552,19 +566,21 @@ arboles_draw_tree = function(tree, file, format = c("svg", "png"),
 #' t31 <- arb_D("ND1",
 #'   A = arb_R("NR1", w1 = arb_P(0.6, arb_T(15000)), w2 = arb_P(0.4, arb_T(8000))))
 #' cat(arboles_to_mermaid(arboles_compile_tree(t31)))
+#' cat(arboles_to_mermaid(arboles_compile_tree(t31), mark_starred = TRUE))
 #' cat(arboles_to_mermaid(arboles_compile_tree(t31),
 #'                        show_values = FALSE, mark_optimal = FALSE))
 #'
 #' @export
 arboles_to_mermaid = function(tree, rb = NULL, title = NULL, rankdir = "LR",
-                               show_values = TRUE, mark_optimal = TRUE) {
+                               show_values = TRUE, mark_optimal = TRUE,
+                               mark_starred = FALSE) {
   stopifnot(inherits(tree, "dtree"))
   if ((show_values || mark_optimal) && is.null(rb)) rb = arboles_rollback(tree)
   nodes = tree$nodes
   edges = tree$edges
   L = sprintf("flowchart %s", if (rankdir == "TB") "TD" else "LR")
   if (!is.null(title)) L = c("---", sprintf("title: %s", title), "---", L)
-  starred = if (mark_optimal) arboles_starred_terminals(tree) else character()
+  starred = if (mark_starred) arboles_starred_terminals(tree) else character()
   for (i in seq_len(nrow(nodes))) {
     id = nodes$id[i]
     tp = nodes$type[i]
@@ -616,6 +632,8 @@ arboles_to_mermaid = function(tree, rb = NULL, title = NULL, rankdir = "LR",
 #' @param mark_optimal Lógico: marcar en rojo la decisión óptima.
 #'   Con ambos en `FALSE` no hay ningún cálculo ni marca: útil como
 #'   enunciado de ejercicio para el alumnado.
+#' @param mark_starred Lógico: marcar con `*` el mejor hijo terminal de
+#'   cada nodo de riesgo (para el REIP). Por defecto `FALSE`.
 #'
 #' @return `file` (o el `.mmd` si `format = "mmd"`), invisiblemente.
 #'
@@ -629,10 +647,12 @@ arboles_to_mermaid = function(tree, rb = NULL, title = NULL, rankdir = "LR",
 arboles_draw_mermaid = function(tree, file, format = c("png", "svg", "pdf", "mmd"),
                                 title = NULL, rankdir = "LR", mmd_file = NULL,
                                 background = "white", scale = 2,
-                                show_values = TRUE, mark_optimal = TRUE) {
+                                show_values = TRUE, mark_optimal = TRUE,
+                                mark_starred = FALSE) {
   format = match.arg(format)
   code = arboles_to_mermaid(tree, title = title, rankdir = rankdir,
-                             show_values = show_values, mark_optimal = mark_optimal)
+                             show_values = show_values, mark_optimal = mark_optimal,
+                             mark_starred = mark_starred)
   if (is.null(mmd_file))
     mmd_file = paste0(arboles_sin_extension(file), ".mmd")
   writeLines(code, mmd_file)
@@ -898,4 +918,217 @@ arboles_typst_table_image = function(code, file, format = c("png", "svg", "pdf")
     if (st != 0) stop("`pdftocairo` fall\u00f3")
   }
   invisible(file)
+}
+
+
+# Arboles aleatorios (generador de problemas) ------------
+
+#' Genera un arbol de decision aleatorio reproducible
+#'
+#' Crea un problema completo de arbol de decision a partir de unos pocos
+#' parametros: numero de etapas, numero (minimo y maximo) de alternativas
+#' por nodo de decision y de resultados por nodo de riesgo, probabilidad
+#' de continuar a la etapa siguiente y rango de pagos. Con la misma
+#' `seed` se genera siempre el mismo arbol (ideal para enunciados con su
+#' solucion); variando la semilla o los parametros se gradua la dificultad
+#' de ejercicios sencillos a complejos.
+#'
+#' La estructura alterna decision -> riesgo -> (terminal o decision de la
+#' etapa siguiente). Los pagos se interpretan como beneficios y el arbol
+#' se resuelve maximizando (ver [arboles_rollback()]).
+#'
+#' @param seed Semilla para reproducibilidad (`NULL` = aleatorio no
+#'   reproducible). No altera el estado previo de `.Random.seed`.
+#' @param netapas Numero de etapas de decision (>= 1).
+#' @param min_alternativas,max_alternativas Minimo y maximo de
+#'   alternativas por nodo de decision (entre 2 y 26; se etiquetan
+#'   `A`, `B`, ...).
+#' @param min_resultados,max_resultados Minimo y maximo de resultados
+#'   por nodo de riesgo (>= 2; se etiquetan `e1`, `e2`, ...).
+#' @param p_continua Probabilidad (0-1) de que cada resultado de una
+#'   etapa no final continue a un nodo de decision de la etapa
+#'   siguiente en vez de terminar en un pago. Con `p_continua = 0` el
+#'   arbol es de una sola etapa efectiva.
+#' @param pago_min,pago_max Rango de los pagos terminales (enteros ->
+#'   pagos enteros; si no, uniformes redondeados a `decimales`).
+#' @param decimales Decimales de las probabilidades (>= 0). Siempre
+#'   suman exactamente 1 en cada nodo de riesgo.
+#' @param max_nodos Tope de seguridad de nodos de decision + riesgo
+#'   (evita arboles gigantes por despiste en los parametros).
+#' @param mark_starred Logico: resaltar en amarillo y con `*` el mejor
+#'   hijo terminal de cada nodo de riesgo en `dot`/`mermaid` (para el
+#'   REIP). Por defecto `FALSE`.
+#'
+#' @return Lista de clase `arboles_aleatorio` con `semilla`, `parametros`,
+#'   `especificacion` (objeto `arb_D()` anidado), `tree` (clase `dtree`,
+#'   ver [arboles_compile_tree()]), `rollback` (solucion, ver
+#'   [arboles_rollback()]), `dot` (codigo Graphviz para
+#'   [arboles_draw_tree()]) y `mermaid` (codigo para bloques `{mermaid}`
+#'   de Quarto). Al imprimir muestra un resumen con dimensiones, REMA
+#'   y alternativa optima de la raiz.
+#'
+#' @examples
+#' # Problema sencillo de una etapa (enunciado + solucion)
+#' a1 <- arboles_aleatorio(seed = 7)
+#' a1                       # resumen: dimensiones, REMA y optimo
+#' a1$rollback$rema
+#' a1$rollback$optimal
+#'
+#' # Mas complejo: dos etapas y pagos hasta 200
+#' a2 <- arboles_aleatorio(seed = 7, netapas = 2, max_alternativas = 3,
+#'                         pago_max = 200)
+#' a2
+#'
+#' \dontrun{
+#' # Dibujo del enunciado (requiere Graphviz)
+#' arboles_draw_tree(a2$tree, tempfile(fileext = ".svg"))
+#' }
+#'
+#' @export
+arboles_aleatorio = function(seed = NULL, netapas = 1L,
+                             min_alternativas = 2L, max_alternativas = 3L,
+                             min_resultados = 2L, max_resultados = 3L,
+                             p_continua = 0.5,
+                             pago_min = 0, pago_max = 100,
+                             decimales = 2L, max_nodos = 1000L,
+                             mark_starred = FALSE) {
+  if (!is.null(seed) && (length(seed) != 1L || !is.numeric(seed)))
+    stop("`seed` debe ser un n\u00famero o NULL")
+  netapas = as.integer(netapas)
+  min_alternativas = as.integer(min_alternativas)
+  max_alternativas = as.integer(max_alternativas)
+  min_resultados = as.integer(min_resultados)
+  max_resultados = as.integer(max_resultados)
+  decimales = as.integer(decimales)
+  max_nodos = as.integer(max_nodos)
+  if (netapas < 1L) stop("`netapas` debe ser >= 1")
+  if (min_alternativas < 2L || max_alternativas > 26L ||
+      min_alternativas > max_alternativas)
+    stop("Alternativas: 2 <= min <= max <= 26")
+  if (min_resultados < 2L || min_resultados > max_resultados)
+    stop("Resultados: 2 <= min <= max")
+  if (p_continua < 0 || p_continua > 1) stop("`p_continua` debe estar en [0, 1]")
+  if (pago_min > pago_max) stop("`pago_min` debe ser <= `pago_max`")
+  if (decimales < 0L) stop("`decimales` debe ser >= 0")
+  if (max_nodos < 1L) stop("`max_nodos` debe ser >= 1")
+
+  ## Semilla reproducible sin alterar el estado previo del generador
+  if (!is.null(seed)) {
+    if (exists(".Random.seed", envir = .GlobalEnv)) {
+      semilla_previa = get(".Random.seed", envir = .GlobalEnv)
+      on.exit(assign(".Random.seed", semilla_previa, envir = .GlobalEnv),
+              add = TRUE)
+    } else {
+      on.exit(rm(".Random.seed", envir = .GlobalEnv), add = TRUE)
+    }
+    set.seed(seed)
+  }
+
+  n_decision = 0L
+  n_riesgo = 0L
+
+  cuenta_nodo = function() {
+    if (n_decision + n_riesgo >= max_nodos)
+      stop("Se super\u00f3 `max_nodos` (", max_nodos, "): reduce `netapas`, ",
+           "`max_alternativas`, `max_resultados` o `p_continua`")
+  }
+
+  ## Probabilidades que suman exactamente 1 (enteros de 10^decimales)
+  probs_azar = function(k) {
+    m = 10^decimales
+    if (m < k) m = k
+    w = stats::runif(k)
+    (rep(1, k) + as.vector(stats::rmultinom(1, m - k, w))) / m
+  }
+
+  pago_azar = function() {
+    if (pago_min == floor(pago_min) && pago_max == floor(pago_max))
+      sample.int(pago_max - pago_min + 1L, 1L) + pago_min - 1L
+    else round(stats::runif(1, pago_min, pago_max), decimales)
+  }
+
+  nueva_D = function(etapa) {
+    cuenta_nodo()
+    n_decision <<- n_decision + 1L
+    id = paste0("D", n_decision)
+    k = sample.int(max_alternativas - min_alternativas + 1L, 1L) +
+      min_alternativas - 1L
+    ramas = lapply(seq_len(k), function(i) nueva_R(etapa))
+    ramas = stats::setNames(ramas, LETTERS[seq_len(k)])
+    do.call(arb_D, c(list(id), ramas))
+  }
+
+  nueva_R = function(etapa) {
+    cuenta_nodo()
+    n_riesgo <<- n_riesgo + 1L
+    id = paste0("R", n_riesgo)
+    k = sample.int(max_resultados - min_resultados + 1L, 1L) +
+      min_resultados - 1L
+    p = probs_azar(k)
+    ramas = lapply(seq_len(k), function(i) {
+      hijo = if (etapa < netapas && stats::runif(1) < p_continua)
+        nueva_D(etapa + 1L)
+      else
+        arb_T(pago_azar())
+      arb_P(p[i], hijo)
+    })
+    ramas = stats::setNames(ramas, paste0("e", seq_len(k)))
+    do.call(arb_R, c(list(id), ramas))
+  }
+
+  raiz = nueva_D(1L)
+  tree = arboles_compile_tree(raiz)
+  rb = arboles_rollback(tree)
+  titulo = if (!is.null(seed))
+    sprintf("\u00c1rbol aleatorio (semilla %s)", seed)
+  else
+    "\u00c1rbol aleatorio"
+  out = list(semilla = seed,
+             parametros = list(netapas = netapas,
+                               min_alternativas = min_alternativas,
+                               max_alternativas = max_alternativas,
+                               min_resultados = min_resultados,
+                               max_resultados = max_resultados,
+                               p_continua = p_continua,
+                               pago_min = pago_min, pago_max = pago_max,
+                               decimales = decimales,
+                               mark_starred = mark_starred),
+             especificacion = raiz,
+             tree = tree,
+             rollback = rb,
+             dot = arboles_to_dot(tree, rb, title = titulo,
+                                  mark_starred = mark_starred),
+             mermaid = arboles_to_mermaid(tree, rb, title = titulo,
+                                          mark_starred = mark_starred))
+  class(out) = "arboles_aleatorio"
+  out
+}
+
+#' Imprime un arbol de decision aleatorio
+#'
+#' Muestra un resumen de [arboles_aleatorio()]: dimensiones del arbol,
+#' REMA de la raiz y alternativa optima.
+#'
+#' @param x Objeto de clase `arboles_aleatorio`.
+#' @param ... Ignorado.
+#'
+#' @return `x`, invisiblemente.
+#'
+#' @export
+print.arboles_aleatorio = function(x, ...) {
+  nodos = x$tree$nodes
+  aristas = x$tree$edges
+  raiz = x$rollback$root
+  opt_ids = x$rollback$optimal[[raiz]]
+  opt_alt = aristas$label[aristas$from == raiz & aristas$to %in% opt_ids]
+  cat("Arbol de decisi\u00f3n aleatorio",
+      if (!is.null(x$semilla)) sprintf(" (semilla %s)", x$semilla),
+      "\n", sep = "")
+  cat(sprintf("  Decisiones: %d | Riesgo: %d | Terminales: %d\n",
+              sum(nodos$type == "D"), sum(nodos$type == "R"),
+              sum(nodos$type == "T")))
+  cat(sprintf("  REMA (%s): %s | \u00d3ptimo: %s\n",
+              raiz, arboles_format_num(x$rollback$rema),
+              paste(opt_alt, collapse = ", ")))
+  invisible(x)
 }

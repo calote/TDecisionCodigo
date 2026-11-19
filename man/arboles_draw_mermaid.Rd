@@ -14,7 +14,8 @@ arboles_draw_mermaid(
   background = "white",
   scale = 2,
   show_values = TRUE,
-  mark_optimal = TRUE
+  mark_optimal = TRUE,
+  mark_starred = FALSE
 )
 }
 \arguments{
@@ -40,6 +41,9 @@ codigo fuente).}
 \item{mark_optimal}{Lógico: marcar en rojo la decisión óptima.
 Con ambos en \code{FALSE} no hay ningún cálculo ni marca: útil como
 enunciado de ejercicio para el alumnado.}
+
+\item{mark_starred}{Lógico: marcar con \code{*} el mejor hijo terminal de
+cada nodo de riesgo (para el REIP). Por defecto \code{FALSE}.}
 }
 \value{
 \code{file} (o el \code{.mmd} si \code{format = "mmd"}), invisiblemente.

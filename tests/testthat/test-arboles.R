@@ -141,3 +141,37 @@ test_that("arboles: modo enunciado (sin valores ni óptimo)", {
   expect_false(grepl("\u03bc", m, fixed = TRUE))
   expect_false(grepl("linkStyle", m, fixed = TRUE))
 })
+
+test_that("arboles: sin mark_starred no hay amarillos ni asteriscos", {
+  tr <- arboles_compile_tree(arb_D("ND1",
+    A = arb_R("NR1", w1 = arb_P(0.6, arb_T(15000)), w2 = arb_P(0.4, arb_T(8000)))))
+  d <- arboles_to_dot(tr)
+  expect_false(grepl("fef9c3", d, fixed = TRUE))
+  expect_false(grepl(" *", d, fixed = TRUE))
+  expect_true(grepl("red", d, fixed = TRUE))  # el óptimo sí se marca
+  m <- arboles_to_mermaid(tr)
+  expect_false(grepl("*", m, fixed = TRUE))
+})
+
+test_that("arboles: mark_starred marca amarillos y asteriscos", {
+  tr <- arboles_compile_tree(arb_D("ND1",
+    A = arb_R("NR1", w1 = arb_P(0.6, arb_T(15000)), w2 = arb_P(0.4, arb_T(8000)))))
+  d <- arboles_to_dot(tr, mark_starred = TRUE)
+  expect_true(grepl("fef9c3", d, fixed = TRUE))
+  expect_true(grepl("15000 *", d, fixed = TRUE))
+  m <- arboles_to_mermaid(tr, mark_starred = TRUE)
+  expect_true(grepl("15000 *", m, fixed = TRUE))
+})
+
+test_that("arboles: draw_tree respeta mark_starred", {
+  testthat::skip_if_not(nzchar(Sys.which("dot")), "Graphviz no instalado")
+  tr <- arboles_compile_tree(arb_D("ND1",
+    A = arb_R("NR1", w1 = arb_P(0.6, arb_T(15000)), w2 = arb_P(0.4, arb_T(8000)))))
+  f <- tempfile(fileext = ".svg")
+  testthat::expect_no_warning(arboles_draw_tree(tr, f))
+  svg <- paste(readLines(f, warn = FALSE), collapse = "\n")
+  expect_false(grepl("fef9c3", svg, fixed = TRUE))
+  testthat::expect_no_warning(arboles_draw_tree(tr, f, mark_starred = TRUE))
+  svg <- paste(readLines(f, warn = FALSE), collapse = "\n")
+  expect_true(grepl("fef9c3", svg, fixed = TRUE))
+})

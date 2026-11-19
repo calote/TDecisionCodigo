@@ -10,7 +10,8 @@ arboles_to_mermaid(
   title = NULL,
   rankdir = "LR",
   show_values = TRUE,
-  mark_optimal = TRUE
+  mark_optimal = TRUE,
+  mark_starred = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,9 @@ arboles_to_mermaid(
 \item{show_values}{Logico: mostrar las esperanzas calculadas.}
 
 \item{mark_optimal}{Logico: marcar en rojo la decision optima.}
+
+\item{mark_starred}{Logico: marcar con \code{*} el mejor hijo terminal de
+cada nodo de riesgo (para el REIP). Por defecto \code{FALSE}.}
 }
 \value{
 Cadena de caracteres con el codigo Mermaid.
@@ -43,6 +47,7 @@ calculo ni marca de optimo: util para entregar el arbol como ejercicio.
 t31 <- arb_D("ND1",
   A = arb_R("NR1", w1 = arb_P(0.6, arb_T(15000)), w2 = arb_P(0.4, arb_T(8000))))
 cat(arboles_to_mermaid(arboles_compile_tree(t31)))
+cat(arboles_to_mermaid(arboles_compile_tree(t31), mark_starred = TRUE))
 cat(arboles_to_mermaid(arboles_compile_tree(t31),
                        show_values = FALSE, mark_optimal = FALSE))
 
